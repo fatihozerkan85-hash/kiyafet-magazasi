@@ -32,7 +32,9 @@ const urunler = [
   {
     id: '1',
     ad: 'Çiçek Desenli Elbise',
+    adEn: 'Floral Dress',
     aciklama: 'Yazlık çiçek desenli şık elbise',
+    aciklamaEn: 'Stylish summer floral dress',
     fiyat: 299.99,
     eskiFiyat: 399.99,
     kategori: 'Elbise',
@@ -45,7 +47,9 @@ const urunler = [
   {
     id: '2',
     ad: 'Klasik Jean Pantolon',
+    adEn: 'Classic Jeans',
     aciklama: 'Rahat kesim kot pantolon',
+    aciklamaEn: 'Comfortable fit denim pants',
     fiyat: 199.99,
     kategori: 'Pantolon',
     beden: ['36', '38', '40', '42'],
@@ -57,7 +61,9 @@ const urunler = [
   {
     id: '3',
     ad: 'Beyaz Gömlek',
+    adEn: 'White Shirt',
     aciklama: 'Ofis için ideal şık gömlek',
+    aciklamaEn: 'Elegant shirt ideal for office',
     fiyat: 149.99,
     eskiFiyat: 199.99,
     kategori: 'Gömlek',
@@ -70,7 +76,9 @@ const urunler = [
   {
     id: '4',
     ad: 'Deri Ceket',
+    adEn: 'Leather Jacket',
     aciklama: 'Suni deri şık ceket',
+    aciklamaEn: 'Stylish faux leather jacket',
     fiyat: 599.99,
     kategori: 'Ceket',
     beden: ['S', 'M', 'L', 'XL'],
@@ -82,7 +90,9 @@ const urunler = [
   {
     id: '5',
     ad: 'Spor Ayakkabı',
+    adEn: 'Sports Shoes',
     aciklama: 'Rahat günlük spor ayakkabı',
+    aciklamaEn: 'Comfortable daily sports shoes',
     fiyat: 349.99,
     kategori: 'Ayakkabı',
     beden: ['38', '39', '40', '41', '42', '43'],
@@ -94,7 +104,9 @@ const urunler = [
   {
     id: '6',
     ad: 'Deri Çanta',
+    adEn: 'Leather Bag',
     aciklama: 'Şık kadın omuz çantası',
+    aciklamaEn: 'Elegant women shoulder bag',
     fiyat: 449.99,
     eskiFiyat: 599.99,
     kategori: 'Aksesuar',
@@ -107,7 +119,9 @@ const urunler = [
   {
     id: '7',
     ad: 'Spor Tayt',
+    adEn: 'Sports Leggings',
     aciklama: 'Yoga ve fitness için ideal tayt',
+    aciklamaEn: 'Ideal leggings for yoga and fitness',
     fiyat: 129.99,
     kategori: 'Spor',
     beden: ['S', 'M', 'L', 'XL'],
@@ -119,7 +133,9 @@ const urunler = [
   {
     id: '8',
     ad: 'Yaz Elbisesi',
+    adEn: 'Summer Dress',
     aciklama: 'Hafif kumaş yaz elbisesi',
+    aciklamaEn: 'Light fabric summer dress',
     fiyat: 249.99,
     kategori: 'Elbise',
     beden: ['S', 'M', 'L'],
@@ -131,7 +147,9 @@ const urunler = [
   {
     id: '9',
     ad: 'Kargo Pantolon',
+    adEn: 'Cargo Pants',
     aciklama: 'Çok cepli rahat pantolon',
+    aciklamaEn: 'Multi-pocket comfortable pants',
     fiyat: 279.99,
     kategori: 'Pantolon',
     beden: ['36', '38', '40', '42', '44'],
@@ -143,7 +161,9 @@ const urunler = [
   {
     id: '10',
     ad: 'Desenli Gömlek',
+    adEn: 'Patterned Shirt',
     aciklama: 'Çiçek desenli yazlık gömlek',
+    aciklamaEn: 'Floral patterned summer shirt',
     fiyat: 169.99,
     kategori: 'Gömlek',
     beden: ['S', 'M', 'L', 'XL'],
@@ -155,7 +175,9 @@ const urunler = [
   {
     id: '11',
     ad: 'Bomber Ceket',
+    adEn: 'Bomber Jacket',
     aciklama: 'Spor bomber ceket',
+    aciklamaEn: 'Sports bomber jacket',
     fiyat: 399.99,
     kategori: 'Ceket',
     beden: ['S', 'M', 'L', 'XL'],
@@ -167,7 +189,9 @@ const urunler = [
   {
     id: '12',
     ad: 'Klasik Bot',
+    adEn: 'Classic Boots',
     aciklama: 'Deri kış botu',
+    aciklamaEn: 'Leather winter boots',
     fiyat: 499.99,
     kategori: 'Ayakkabı',
     beden: ['38', '39', '40', '41', '42'],
@@ -179,7 +203,9 @@ const urunler = [
   {
     id: '13',
     ad: 'Güneş Gözlüğü',
+    adEn: 'Sunglasses',
     aciklama: 'UV korumalı güneş gözlüğü',
+    aciklamaEn: 'UV protected sunglasses',
     fiyat: 199.99,
     kategori: 'Aksesuar',
     beden: ['Tek Beden'],
@@ -191,7 +217,9 @@ const urunler = [
   {
     id: '14',
     ad: 'Spor Sweatshirt',
+    adEn: 'Sports Sweatshirt',
     aciklama: 'Kapüşonlu spor sweatshirt',
+    aciklamaEn: 'Hooded sports sweatshirt',
     fiyat: 229.99,
     kategori: 'Spor',
     beden: ['S', 'M', 'L', 'XL', 'XXL'],
@@ -341,11 +369,12 @@ app.get('/api/admin/kategoriler', (req, res) => {
 
 // Kategori Ekle (Admin)
 app.post('/api/admin/kategori', (req, res) => {
-  const { ad, emoji } = req.body;
+  const { ad, adEn, emoji } = req.body;
   
   const yeniKategori = {
     id: 'K' + Date.now(),
     ad,
+    adEn: adEn || ad,
     emoji: emoji || '📦',
     sira: kategoriler.length + 1,
     aktif: true
@@ -358,7 +387,7 @@ app.post('/api/admin/kategori', (req, res) => {
 // Kategori Güncelle (Admin)
 app.put('/api/admin/kategori/:id', (req, res) => {
   const { id } = req.params;
-  const { ad, emoji, sira, aktif } = req.body;
+  const { ad, adEn, emoji, sira, aktif } = req.body;
   
   const kategori = kategoriler.find(k => k.id === id);
   
@@ -367,6 +396,7 @@ app.put('/api/admin/kategori/:id', (req, res) => {
   }
   
   if (ad) kategori.ad = ad;
+  if (adEn) kategori.adEn = adEn;
   if (emoji) kategori.emoji = emoji;
   if (sira !== undefined) kategori.sira = sira;
   if (aktif !== undefined) kategori.aktif = aktif;
@@ -896,14 +926,14 @@ const kampanyalar = [
 
 // Kategoriler
 const kategoriler = [
-  { id: 'K1', ad: 'Tümü', emoji: '🛍️', sira: 1, aktif: true },
-  { id: 'K2', ad: 'Elbise', emoji: '👗', sira: 2, aktif: true },
-  { id: 'K3', ad: 'Pantolon', emoji: '👖', sira: 3, aktif: true },
-  { id: 'K4', ad: 'Gömlek', emoji: '👔', sira: 4, aktif: true },
-  { id: 'K5', ad: 'Ceket', emoji: '🧥', sira: 5, aktif: true },
-  { id: 'K6', ad: 'Ayakkabı', emoji: '👟', sira: 6, aktif: true },
-  { id: 'K7', ad: 'Aksesuar', emoji: '👜', sira: 7, aktif: true },
-  { id: 'K8', ad: 'Spor', emoji: '🏃', sira: 8, aktif: true }
+  { id: 'K1', ad: 'Tümü', adEn: 'All', emoji: '🛍️', sira: 1, aktif: true },
+  { id: 'K2', ad: 'Elbise', adEn: 'Dress', emoji: '👗', sira: 2, aktif: true },
+  { id: 'K3', ad: 'Pantolon', adEn: 'Pants', emoji: '👖', sira: 3, aktif: true },
+  { id: 'K4', ad: 'Gömlek', adEn: 'Shirt', emoji: '👔', sira: 4, aktif: true },
+  { id: 'K5', ad: 'Ceket', adEn: 'Jacket', emoji: '🧥', sira: 5, aktif: true },
+  { id: 'K6', ad: 'Ayakkabı', adEn: 'Shoes', emoji: '👟', sira: 6, aktif: true },
+  { id: 'K7', ad: 'Aksesuar', adEn: 'Accessories', emoji: '👜', sira: 7, aktif: true },
+  { id: 'K8', ad: 'Spor', adEn: 'Sports', emoji: '🏃', sira: 8, aktif: true }
 ];
 
 // Başlangıç kuponları

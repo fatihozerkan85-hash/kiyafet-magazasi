@@ -34,14 +34,14 @@ function App() {
   const [dilMetinleri, setDilMetinleri] = useState({});
   
   const kategoriler = [
-    { id: 'Tümü', ad: 'Tümü', emoji: '🛍️' },
-    { id: 'Elbise', ad: 'Elbise', emoji: '👗' },
-    { id: 'Pantolon', ad: 'Pantolon', emoji: '👖' },
-    { id: 'Gömlek', ad: 'Gömlek', emoji: '👔' },
-    { id: 'Ceket', ad: 'Ceket', emoji: '🧥' },
-    { id: 'Ayakkabı', ad: 'Ayakkabı', emoji: '👟' },
-    { id: 'Aksesuar', ad: 'Aksesuar', emoji: '👜' },
-    { id: 'Spor', ad: 'Spor Giyim', emoji: '🏃' }
+    { id: 'Tümü', ad: 'Tümü', adEn: 'All', emoji: '🛍️' },
+    { id: 'Elbise', ad: 'Elbise', adEn: 'Dress', emoji: '👗' },
+    { id: 'Pantolon', ad: 'Pantolon', adEn: 'Pants', emoji: '👖' },
+    { id: 'Gömlek', ad: 'Gömlek', adEn: 'Shirt', emoji: '👔' },
+    { id: 'Ceket', ad: 'Ceket', adEn: 'Jacket', emoji: '🧥' },
+    { id: 'Ayakkabı', ad: 'Ayakkabı', adEn: 'Shoes', emoji: '👟' },
+    { id: 'Aksesuar', ad: 'Aksesuar', adEn: 'Accessories', emoji: '👜' },
+    { id: 'Spor', ad: 'Spor Giyim', adEn: 'Sports', emoji: '🏃' }
   ];
 
   useEffect(() => {
@@ -443,7 +443,7 @@ function App() {
                   boxShadow: secilenKategori === kategori.id ? '0 2px 8px rgba(102,126,234,0.3)' : 'none'
                 }}
               >
-                {kategori.emoji} {kategori.ad}
+                {kategori.emoji} {dil === 'en' ? kategori.adEn : kategori.ad}
               </button>
             ))}
           </div>
@@ -602,10 +602,10 @@ function App() {
             {/* Kategori Başlığı ve Ürün Sayısı */}
             <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h2 style={{ margin: 0, color: '#333' }}>
-                {kategoriler.find(k => k.id === secilenKategori)?.emoji} {secilenKategori}
+                {kategoriler.find(k => k.id === secilenKategori)?.emoji} {dil === 'en' ? kategoriler.find(k => k.id === secilenKategori)?.adEn : secilenKategori}
               </h2>
               <span style={{ color: '#666', fontSize: 14 }}>
-                {filtreliUrunler.length} ürün bulundu
+                {filtreliUrunler.length} {t('products').toLowerCase()}
               </span>
             </div>
 
@@ -638,14 +638,14 @@ function App() {
                   )}
                 </div>
                 <div style={{ padding: 15 }}>
-                  <h3 style={{ margin: '0 0 10px 0', fontSize: 16 }}>{urun.ad}</h3>
+                  <h3 style={{ margin: '0 0 10px 0', fontSize: 16 }}>{dil === 'en' && urun.adEn ? urun.adEn : urun.ad}</h3>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 10 }}>
                     {yildizGoster(urun.ortalamaPuan || 0)}
                     <span style={{ fontSize: 14, color: '#666' }}>
                       ({urun.yorumSayisi || 0})
                     </span>
                   </div>
-                  <p style={{ margin: '0 0 10px 0', color: '#666', fontSize: 14 }}>{urun.aciklama}</p>
+                  <p style={{ margin: '0 0 10px 0', color: '#666', fontSize: 14 }}>{dil === 'en' && urun.aciklamaEn ? urun.aciklamaEn : urun.aciklama}</p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                     <p style={{ margin: 0, fontSize: 20, fontWeight: 'bold', color: '#667eea' }}>{urun.fiyat} ₺</p>
                     <span style={{ fontSize: 12, color: urun.stokMiktari > 10 ? '#28a745' : '#dc3545' }}>
@@ -819,12 +819,12 @@ function App() {
               </div>
 
               <div>
-                <h1 style={{ margin: '0 0 15px 0' }}>{secilenUrun.ad}</h1>
+                <h1 style={{ margin: '0 0 15px 0' }}>{dil === 'en' && secilenUrun.adEn ? secilenUrun.adEn : secilenUrun.ad}</h1>
                 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 15 }}>
                   {yildizGoster(secilenUrun.ortalamaPuan || 0)}
                   <span style={{ fontSize: 16, color: '#666' }}>
-                    {secilenUrun.ortalamaPuan || 0} ({secilenUrun.yorumSayisi || 0} yorum)
+                    {secilenUrun.ortalamaPuan || 0} ({secilenUrun.yorumSayisi || 0} {dil === 'en' ? 'reviews' : 'yorum'})
                   </span>
                 </div>
 
@@ -834,27 +834,27 @@ function App() {
 
                 <div style={{ padding: 15, background: '#f8f9fa', borderRadius: 8, marginBottom: 20 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                    <strong>Stok Durumu:</strong>
+                    <strong>{t('in_stock')}:</strong>
                     <span style={{ color: secilenUrun.stokMiktari > 10 ? '#28a745' : '#dc3545', fontWeight: 'bold' }}>
-                      {secilenUrun.stokMiktari > 0 ? `${secilenUrun.stokMiktari} adet mevcut` : 'Tükendi'}
+                      {secilenUrun.stokMiktari > 0 ? `${secilenUrun.stokMiktari} ${dil === 'en' ? 'pcs' : 'adet'}` : t('out_of_stock')}
                     </span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                    <strong>Kategori:</strong>
+                    <strong>{t('categories')}:</strong>
                     <span>{secilenUrun.kategori}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                    <strong>Marka:</strong>
+                    <strong>{dil === 'en' ? 'Brand' : 'Marka'}:</strong>
                     <span>{secilenUrun.marka}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <strong>Bedenler:</strong>
+                    <strong>{dil === 'en' ? 'Sizes' : 'Bedenler'}:</strong>
                     <span>{secilenUrun.beden.join(', ')}</span>
                   </div>
                 </div>
 
                 <p style={{ color: '#666', lineHeight: 1.6, marginBottom: 20 }}>
-                  {secilenUrun.aciklama}
+                  {dil === 'en' && secilenUrun.aciklamaEn ? secilenUrun.aciklamaEn : secilenUrun.aciklama}
                 </p>
 
                 <div style={{ display: 'flex', gap: 10 }}>

@@ -208,13 +208,25 @@
                 <div class="card">
                     <h2>➕ Yeni Ürün Ekle</h2>
                     <form id="productForm">
-                        <div class="form-group">
-                            <label>Ürün Adı</label>
-                            <input type="text" id="productName" required placeholder="Çiçek Desenli Elbise">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Ürün Adı (Türkçe)</label>
+                                <input type="text" id="productName" required placeholder="Çiçek Desenli Elbise">
+                            </div>
+                            <div class="form-group">
+                                <label>Ürün Adı (English)</label>
+                                <input type="text" id="productNameEn" required placeholder="Floral Dress">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Açıklama</label>
-                            <textarea id="productDesc" required placeholder="Yazlık çiçek desenli şık elbise"></textarea>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Açıklama (Türkçe)</label>
+                                <textarea id="productDesc" required placeholder="Yazlık çiçek desenli şık elbise"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Açıklama (English)</label>
+                                <textarea id="productDescEn" required placeholder="Stylish summer floral dress"></textarea>
+                            </div>
                         </div>
                         <div class="grid-3">
                             <div class="form-group">
@@ -284,10 +296,14 @@
                 <div class="card">
                     <h2>➕ Yeni Kategori Ekle</h2>
                     <form id="categoryForm">
-                        <div class="grid-2">
+                        <div class="grid-3">
                             <div class="form-group">
-                                <label>Kategori Adı</label>
+                                <label>Kategori Adı (Türkçe)</label>
                                 <input type="text" id="categoryName" required placeholder="Elbise">
+                            </div>
+                            <div class="form-group">
+                                <label>Kategori Adı (English)</label>
+                                <input type="text" id="categoryNameEn" required placeholder="Dress">
                             </div>
                             <div class="form-group">
                                 <label>Emoji</label>
@@ -731,7 +747,9 @@
             
             const data = {
                 ad: document.getElementById('productName').value,
+                adEn: document.getElementById('productNameEn').value,
                 aciklama: document.getElementById('productDesc').value,
+                aciklamaEn: document.getElementById('productDescEn').value,
                 fiyat: parseFloat(document.getElementById('productPrice').value),
                 eskiFiyat: document.getElementById('productOldPrice').value ? parseFloat(document.getElementById('productOldPrice').value) : undefined,
                 kategori: document.getElementById('productCategory').value,
@@ -795,7 +813,8 @@
                         <thead>
                             <tr>
                                 <th>Emoji</th>
-                                <th>Kategori Adı</th>
+                                <th>Türkçe</th>
+                                <th>English</th>
                                 <th>Sıra</th>
                                 <th>Durum</th>
                                 <th>İşlemler</th>
@@ -806,6 +825,7 @@
                                 <tr>
                                     <td style="font-size: 24px;">${c.emoji}</td>
                                     <td>${c.ad}</td>
+                                    <td>${c.adEn || c.ad}</td>
                                     <td>${c.sira}</td>
                                     <td>${c.aktif ? '✅ Aktif' : '⏸️ Pasif'}</td>
                                     <td>
@@ -829,6 +849,7 @@
             
             const data = {
                 ad: document.getElementById('categoryName').value,
+                adEn: document.getElementById('categoryNameEn').value,
                 emoji: document.getElementById('categoryEmoji').value
             };
             
