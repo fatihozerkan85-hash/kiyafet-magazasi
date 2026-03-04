@@ -22,6 +22,18 @@ function App() {
   const [yorumlar, setYorumlar] = useState([]);
   const [yeniYorum, setYeniYorum] = useState({ puan: 5, yorum: '' });
   const [kargoTakipNo, setKargoTakipNo] = useState('');
+  const [secilenKategori, setSecilenKategori] = useState('Tümü');
+  
+  const kategoriler = [
+    { id: 'Tümü', ad: 'Tümü', emoji: '🛍️' },
+    { id: 'Elbise', ad: 'Elbise', emoji: '👗' },
+    { id: 'Pantolon', ad: 'Pantolon', emoji: '👖' },
+    { id: 'Gömlek', ad: 'Gömlek', emoji: '👔' },
+    { id: 'Ceket', ad: 'Ceket', emoji: '🧥' },
+    { id: 'Ayakkabı', ad: 'Ayakkabı', emoji: '👟' },
+    { id: 'Aksesuar', ad: 'Aksesuar', emoji: '👜' },
+    { id: 'Spor', ad: 'Spor Giyim', emoji: '🏃' }
+  ];
 
   useEffect(() => {
     fetch(`${API_URL}/api/urunler`)
@@ -295,6 +307,10 @@ function App() {
     return yildizlar;
   };
 
+  const filtreliUrunler = secilenKategori === 'Tümü' 
+    ? urunler 
+    : urunler.filter(urun => urun.kategori === secilenKategori);
+
   return (
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ background: 'white', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
@@ -339,6 +355,35 @@ function App() {
           </div>
         </div>
       </header>
+
+      {/* Kategori Menüsü */}
+      <div style={{ background: 'white', borderBottom: '1px solid #eee', padding: '15px 0', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}>
+          <div style={{ display: 'flex', gap: 15, overflowX: 'auto', paddingBottom: 5 }}>
+            {kategoriler.map(kategori => (
+              <button
+                key={kategori.id}
+                onClick={() => { setSecilenKategori(kategori.id); setSecilenSayfa('ana'); }}
+                style={{
+                  padding: '10px 20px',
+                  background: secilenKategori === kategori.id ? '#667eea' : '#f8f9fa',
+                  color: secilenKategori === kategori.id ? 'white' : '#333',
+                  border: 'none',
+                  borderRadius: 25,
+                  cursor: 'pointer',
+                  fontSize: 14,
+                  fontWeight: secilenKategori === kategori.id ? 600 : 400,
+                  whiteSpace: 'nowrap',
+                  transition: 'all 0.3s ease',
+                  boxShadow: secilenKategori === kategori.id ? '0 2px 8px rgba(102,126,234,0.3)' : 'none'
+                }}
+              >
+                {kategori.emoji} {kategori.ad}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       <div style={{ maxWidth: 1200, margin: '20px auto', padding: 20 }}>
         {secilenSayfa === 'giris' && (
@@ -421,8 +466,30 @@ function App() {
         )}
 
         {secilenSayfa === 'ana' && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 20 }}>
-            {urunler.map(urun => (
+          <div>
+            {/* Kategori Başlığı ve Ürün Sayısı */}
+            <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 style={{ margin: 0, color: '#333' }}>
+                {kategoriler.find(k => k.id === secilenKategori)?.emoji} {secilenKategori}
+              </h2>
+              <span style={{ color: '#666', fontSize: 14 }}>
+                {filtreliUrunler.length} ürün bulundu
+              </span>
+            </div>
+
+            {filtreliUrunler.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: 50, background: 'white', borderRadius: 12 }}>
+                <p style={{ fontSize: 18, color: '#666' }}>Bu kategoride ürün bulunamadı</p>
+                <button 
+                  onClick={() => setSecilenKategori('Tümü')} 
+                  style={{ marginTop: 20, padding: '12px 30px', background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}
+                >
+                  Tüm Ürünleri Gör
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 20 }}>
+                {filtreliUrunler.map(urun => (
               <div key={urun.id} style={{ background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', cursor: 'pointer' }}>
                 <div style={{ position: 'relative' }} onClick={() => urunDetayAc(urun)}>
                   <img src={urun.resimler[0]} alt={urun.ad} style={{ width: '100%', height: 300, objectFit: 'cover' }} />
@@ -463,6 +530,8 @@ function App() {
                 </div>
               </div>
             ))}
+              </div>
+            )}
           </div>
         )}
 
