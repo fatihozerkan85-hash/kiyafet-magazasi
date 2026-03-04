@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Paneli</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .success {
+            background: #28a745;
+        }
+        .danger {
+            background: #dc3545;
+        }
+        .warning {
+            background: #ffc107;
+            color: #333;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #667eea;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .result {
+            margin-top: 15px;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 API Test Paneli</h1>
+    <p>Backend: <strong>http://localhost:5000</strong></p>
+
+    <!-- 1. Kullanıcı Girişi -->
+    <div class="test-section">
+        <h2>1. Kullanıcı Girişi</h2>
+        <p>Admin: admin@kiyafet.com / admin123</p>
+        <input type="email" id="giris-email" placeholder="Email" value="admin@kiyafet.com">
+        <input type="password" id="giris-sifre" placeholder="Şifre" value="admin123">
+        <button onclick="girisYap()">Giriş Yap</button>
+        <div id="giris-sonuc" class="result"></div>
+    </div>
+
+    <!-- 2. Kullanıcı Kaydı -->
+    <div class="test-section">
+        <h2>2. Kullanıcı Kaydı</h2>
+        <input type="text" id="kayit-ad" placeholder="Ad" value="Test">
+        <input type="text" id="kayit-soyad" placeholder="Soyad" value="User">
+        <input type="email" id="kayit-email" placeholder="Email" value="test@test.com">
+        <input type="password" id="kayit-sifre" placeholder="Şifre" value="123456">
+        <input type="tel" id="kayit-telefon" placeholder="Telefon" value="5551234567">
+        <button onclick="kayitOl()">Kayıt Ol</button>
+        <div id="kayit-sonuc" class="result"></div>
+    </div>
+
+    <!-- 3. Ürün Arama -->
+    <div class="test-section">
+        <h2>3. Ürün Arama</h2>
+        <input type="text" id="arama-metin" placeholder="Arama kelimesi" value="elbise">
+        <button onclick="urunAra()">Ara</button>
+        <button class="warning" onclick="tumUrunleriGetir()">Tüm Ürünler</button>
+        <div id="arama-sonuc" class="result"></div>
+    </div>
+
+    <!-- 4. Sipariş Oluştur -->
+    <div class="test-section">
+        <h2>4. Sipariş Oluştur</h2>
+        <p>Önce giriş yapmalısınız!</p>
+        <button onclick="siparisOlustur()">Test Siparişi Oluştur</button>
+        <div id="siparis-sonuc" class="result"></div>
+    </div>
+
+    <!-- 5. Siparişlerimi Görüntüle -->
+    <div class="test-section">
+        <h2>5. Siparişlerimi Görüntüle</h2>
+        <button onclick="siparisleriGetir()">Siparişlerimi Getir</button>
+        <div id="siparislerim-sonuc" class="result"></div>
+    </div>
+
+    <!-- 6. Admin: Tüm Siparişler -->
+    <div class="test-section">
+        <h2>6. Admin: Tüm Siparişler</h2>
+        <p>Admin girişi gerekli</p>
+        <button onclick="adminSiparisleriGetir()">Tüm Siparişleri Getir</button>
+        <div id="admin-siparisler-sonuc" class="result"></div>
+    </div>
+
+    <!-- 7. Admin: İstatistikler -->
+    <div class="test-section">
+        <h2>7. Admin: İstatistikler</h2>
+        <button onclick="istatistikleriGetir()">İstatistikleri Getir</button>
+        <div id="istatistikler-sonuc" class="result"></div>
+    </div>
+
+    <!-- 8. Admin: Ürün Ekle -->
+    <div class="test-section">
+        <h2>8. Admin: Ürün Ekle</h2>
+        <input type="text" id="urun-ad" placeholder="Ürün Adı" value="Test Ürün">
+        <input type="text" id="urun-aciklama" placeholder="Açıklama" value="Test açıklama">
+        <input type="number" id="urun-fiyat" placeholder="Fiyat" value="199.99">
+        <input type="text" id="urun-kategori" placeholder="Kategori" value="elbise">
+        <input type="text" id="urun-marka" placeholder="Marka" value="Test Marka">
+        <button onclick="urunEkle()">Ürün Ekle</button>
+        <div id="urun-ekle-sonuc" class="result"></div>
+    </div>
+
+    <!-- 9. Havale ile Ödeme -->
+    <div class="test-section">
+        <h2>9. Havale ile Ödeme</h2>
+        <button onclick="havaleIleOde()">Havale ile Sipariş Ver</button>
+        <div id="havale-sonuc" class="result"></div>
+    </div>
+
+    <!-- 10. Kapıda Ödeme -->
+    <div class="test-section">
+        <h2>10. Kapıda Ödeme</h2>
+        <button onclick="kapidaOde()">Kapıda Ödeme ile Sipariş Ver</button>
+        <div id="kapida-sonuc" class="result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        let kullanici = null;
+
+        function gosterSonuc(elementId, sonuc, basarili = true) {
+            const element = document.getElementById(elementId);
+            const statusClass = basarili ? 'success' : 'error';
+            const statusText = basarili ? '✅ Başarılı' : '❌ Hata';
+            
+            element.innerHTML = `
+                <div class="status ${statusClass}">${statusText}</div>
+                <pre>${JSON.stringify(sonuc, null, 2)}</pre>
+            `;
+        }
+
+        async function girisYap() {
+            const email = document.getElementById('giris-email').value;
+            const sifre = document.getElementById('giris-sifre').value;
+
+            try {
+                const response = await fetch(`${API_URL}/api/giris`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, sifre })
+                });
+
+                const sonuc = await response.json();
+                
+                if (sonuc.basarili) {
+                    kullanici = sonuc.kullanici;
+                    gosterSonuc('giris-sonuc', sonuc, true);
+                } else {
+                    gosterSonuc('giris-sonuc', sonuc, false);
+                }
+            } catch (error) {
+                gosterSonuc('giris-sonuc', { hata: error.message }, false);
+            }
+        }
+
+        async function kayitOl() {
+            const ad = document.getElementById('kayit-ad').value;
+            const soyad = document.getElementById('kayit-soyad').value;
+            const email = document.getElementById('kayit-email').value;
+            const sifre = document.getElementById('kayit-sifre').value;
+            const telefon = document.getElementById('kayit-telefon').value;
+
+            try {
+                const response = await fetch(`${API_URL}/api/kayit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ad, soyad, email, sifre, telefon })
+                });
+
+                const sonuc = await response.json();
+                gosterSonuc('kayit-sonuc', sonuc, sonuc.basarili);
+                
+                if (sonuc.basarili) {
+                    kullanici = sonuc.kullanici;
+                }
+            } catch (error) {
+                gosterSonuc('kayit-sonuc', { hata: error.message }, false);
+            }
+        }
+
+        async function urunAra() {
+            const aramaMetni = document.getElementById('arama-metin').value;
+
+            try {
+                const response = await fetch(`${API_URL}/api/urunler/ara?q=${encodeURIComponent(aramaMetni)}`);
+                const sonuc = await response.json();
+                gosterSonuc('arama-sonuc', { bulunanUrunSayisi: sonuc.length, urunler: sonuc }, true);
+            } catch (error) {
+                gosterSonuc('arama-sonuc', { hata: error.message }, false);
+            }
+        }
+
+        async function tumUrunleriGetir() {
+            try {
+                const response = await fetch(`${API_URL}/api/urunler`);
+                const sonuc = await response.json();
+                gosterSonuc('arama-sonuc', { toplamUrun: sonuc.length, urunler: sonuc }, true);
+            } catch (error) {
+                gosterSonuc('arama-sonuc', { hata: error.message }, false);
+            }
+        }
+
+        async function siparisOlustur() {
+            if (!kullanici) {
+                alert('Önce giriş yapmalısınız!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/siparis-olustur`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        kullaniciId: kullanici.id,
+                        sepet: [
+                            { id: '1', ad: 'Test Ürün', fiyat: 299.99 }
+                        ],
+                        adres: 'Test Adres, Istanbul',
+                        toplamTutar: 299.99
+                    })
+                });
+
+                const sonuc = await response.json();
+                gosterSonuc('siparis-sonuc', sonuc, sonuc.basarili);
+            } catch (error) {
+                gosterSonuc('siparis-sonuc', { hata: error.message }, false);
+            }
+        }
+
+        async function siparisleriGetir() {
+            if (!kullanici) {
+                alert('Önce giriş yapmalısınız!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/siparislerim/${kullanici.id}`);
+                const sonuc = await response.json();
+                gosterSonuc('siparislerim-sonuc', { siparisSayisi: sonuc.length, siparisler: sonuc }, true);
+            } catch (error) {
+                gosterSonuc('siparislerim-sonuc', { hata: error.message }, false);
+            }
+        }
+
+        async function adminSiparisleriGetir() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/siparisler`);
+                const sonuc = await response.json();
+                gosterSonuc('admin-siparisler-sonuc', { toplamSiparis: sonuc.length, siparisler: sonuc }, true);
+            } catch (error) {
+                gosterSonuc('admin-siparisler-sonuc', { hata: error.message }, false);
+            }
+        }
+
+        async function istatistikleriGetir() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/istatistikler`);
+                const sonuc = await response.json();
+                gosterSonuc('istatistikler-sonuc', sonuc, true);
+            } catch (error) {
+                gosterSonuc('istatistikler-sonuc', { hata: error.message }, false);
+            }
+        }
+
+        async function urunEkle() {
+            const ad = document.getElementById('urun-ad').value;
+            const aciklama = document.getElementById('urun-aciklama').value;
+            const fiyat = parseFloat(document.getElementById('urun-fiyat').value);
+            const kategori = document.getElementById('urun-kategori').value;
+            const marka = document.getElementById('urun-marka').value;
+
+            try {
+                const response = await fetch(`${API_URL}/api/admin/urun`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ad, aciklama, fiyat, kategori, marka,
+                        beden: ['S', 'M', 'L'],
+                        renk: ['Siyah', 'Beyaz'],
+                        resimler: ['https://via.placeholder.com/400x600']
+                    })
+                });
+
+                const sonuc = await response.json();
+                gosterSonuc('urun-ekle-sonuc', sonuc, sonuc.basarili);
+            } catch (error) {
+                gosterSonuc('urun-ekle-sonuc', { hata: error.message }, false);
+            }
+        }
+
+        async function havaleIleOde() {
+            if (!kullanici) {
+                alert('Önce giriş yapmalısınız!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/odeme/havale`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        kullaniciId: kullanici.id,
+                        sepet: [{ id: '1', ad: 'Test Ürün', fiyat: 299.99 }],
+                        adres: 'Test Adres'
+                    })
+                });
+
+                const sonuc = await response.json();
+                gosterSonuc('havale-sonuc', sonuc, sonuc.basarili);
+            } catch (error) {
+                gosterSonuc('havale-sonuc', { hata: error.message }, false);
+            }
+        }
+
+        async function kapidaOde() {
+            if (!kullanici) {
+                alert('Önce giriş yapmalısınız!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/odeme/kapida`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        kullaniciId: kullanici.id,
+                        sepet: [{ id: '1', ad: 'Test Ürün', fiyat: 299.99 }],
+                        adres: 'Test Adres'
+                    })
+                });
+
+                const sonuc = await response.json();
+                gosterSonuc('kapida-sonuc', sonuc, sonuc.basarili);
+            } catch (error) {
+                gosterSonuc('kapida-sonuc', { hata: error.message }, false);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+      {/* Ödeme Sayfası */}
+      {secilenSayfa === 'odeme' && (
+        <div style={{ maxWidth: 800, margin: '0 auto', padding: 40 }}>
+          <button 
+            onClick={() => setSecilenSayfa('sepet')}
+            style={{
+              background: '#f0f0f0',
+              padding: '10px 20px',
+              borderRadius: 8,
+              marginBottom: 30,
+              cursor: 'pointer',
+              border: 'none'
+            }}
+          >
+            ← Sepete Dön
+          </button>
+
+          <h1 style={{ fontSize: 36, marginBottom: 40 }}>Ödeme Bilgileri</h1>
+
+          {/* Sipariş Özeti */}
+          <div style={{ background: 'white', padding: 20, borderRadius: 12, marginBottom: 30 }}>
+            <h2 style={{ fontSize: 24, marginBottom: 20 }}>Sipariş Özeti</h2>
+            {sepet.map((item, index) => (
+              <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                <span>{item.ad}</span>
+                <span style={{ fontWeight: 600 }}>{item.fiyat} ₺</span>
+              </div>
+            ))}
+            <hr style={{ margin: '15px 0', border: 'none', borderTop: '1px solid #eee' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 20, fontWeight: 700 }}>
+              <span>Toplam:</span>
+              <span>{sepet.reduce((sum, item) => sum + item.fiyat, 0).toFixed(2)} ₺</span>
+            </div>
+          </div>
+
+          {/* Kişisel Bilgiler */}
+          <div style={{ background: 'white', padding: 20, borderRadius: 12, marginBottom: 30 }}>
+            <h2 style={{ fontSize: 24, marginBottom: 20 }}>Kişisel Bilgiler</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
+              <input
+                type="text"
+                placeholder="Ad"
+                value={kullaniciBilgileri.ad}
+                onChange={(e) => setKullaniciBilgileri({...kullaniciBilgileri, ad: e.target.value})}
+                style={{ padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16 }}
+              />
+              <input
+                type="text"
+                placeholder="Soyad"
+                value={kullaniciBilgileri.soyad}
+                onChange={(e) => setKullaniciBilgileri({...kullaniciBilgileri, soyad: e.target.value})}
+                style={{ padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16 }}
+              />
+              <input
+                type="email"
+                placeholder="E-posta"
+                value={kullaniciBilgileri.email}
+                onChange={(e) => setKullaniciBilgileri({...kullaniciBilgileri, email: e.target.value})}
+                style={{ padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16 }}
+              />
+              <input
+                type="tel"
+                placeholder="Telefon"
+                value={kullaniciBilgileri.telefon}
+                onChange={(e) => setKullaniciBilgileri({...kullaniciBilgileri, telefon: e.target.value})}
+                style={{ padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16 }}
+              />
+            </div>
+            <textarea
+              placeholder="Adres"
+              value={kullaniciBilgileri.adres}
+              onChange={(e) => setKullaniciBilgileri({...kullaniciBilgileri, adres: e.target.value})}
+              style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16, marginTop: 15, minHeight: 80 }}
+            />
+          </div>
+
+          {/* Kart Bilgileri */}
+          <div style={{ background: 'white', padding: 20, borderRadius: 12, marginBottom: 30 }}>
+            <h2 style={{ fontSize: 24, marginBottom: 20 }}>Kart Bilgileri</h2>
+            
+            <div style={{ background: '#fff3cd', padding: 15, borderRadius: 8, marginBottom: 20, fontSize: 14 }}>
+              <strong>🧪 Test Kartı:</strong><br/>
+              Kart No: 5528 7900 0000 0008<br/>
+              Tarih: 12/30 | CVC: 123
+            </div>
+
+            <input
+              type="text"
+              placeholder="Kart Üzerindeki İsim"
+              value={kartBilgileri.cardHolderName}
+              onChange={(e) => setKartBilgileri({...kartBilgileri, cardHolderName: e.target.value})}
+              style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16, marginBottom: 15 }}
+            />
+            
+            <input
+              type="text"
+              placeholder="Kart Numarası"
+              value={kartBilgileri.cardNumber}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+                setKartBilgileri({...kartBilgileri, cardNumber: value});
+              }}
+              maxLength="19"
+              style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16, marginBottom: 15 }}
+            />
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 15 }}>
+              <input
+                type="text"
+                placeholder="Ay (MM)"
+                value={kartBilgileri.expireMonth}
+                onChange={(e) => setKartBilgileri({...kartBilgileri, expireMonth: e.target.value})}
+                maxLength="2"
+                style={{ padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16 }}
+              />
+              <input
+                type="text"
+                placeholder="Yıl (YY)"
+                value={kartBilgileri.expireYear}
+                onChange={(e) => setKartBilgileri({...kartBilgileri, expireYear: e.target.value})}
+                maxLength="2"
+                style={{ padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16 }}
+              />
+              <input
+                type="text"
+                placeholder="CVC"
+                value={kartBilgileri.cvc}
+                onChange={(e) => setKartBilgileri({...kartBilgileri, cvc: e.target.value})}
+                maxLength="3"
+                style={{ padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16 }}
+              />
+            </div>
+          </div>
+
+          {/* Ödeme Butonu */}
+          <button 
+            onClick={odemeYap}
+            style={{
+              width: '100%',
+              background: '#28a745',
+              color: 'white',
+              padding: 20,
+              fontSize: 20,
+              fontWeight: 700,
+              borderRadius: 12,
+              cursor: 'pointer',
+              border: 'none'
+            }}
+          >
+            💳 Ödemeyi Tamamla ({sepet.reduce((sum, item) => sum + item.fiyat, 0).toFixed(2)} ₺)
+          </button>
+
+          <p style={{ textAlign: 'center', color: '#666', fontSize: 14, marginTop: 20 }}>
+            🔒 Ödemeniz güvenli bir şekilde iyzico altyapısı ile işlenmektedir.
+          </p>
+        </div>
+      )}

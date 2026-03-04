@@ -1,0 +1,18 @@
+{
+  "name": "kiyafet-magazasi",
+  "version": "1.0.0",
+  "description": "Online kıyafet mağazası - Web ve Mobil Uygulama",
+  "private": true,
+  "workspaces": [
+    "web",
+    "mobile",
+    "backend",
+    "shared"
+  ],
+  "scripts": {
+    "web": "cd web && npm start",
+    "mobile": "cd mobile && npm start",
+    "backend": "cd backend && npm run dev",
+    "install-all": "npm install && npm install --workspace=web && npm install --workspace=mobile && npm install --workspace=backend && npm install --workspace=shared"
+  }
+}

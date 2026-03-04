@@ -1,0 +1,140 @@
+.urun-detay {
+  padding: 40px 20px;
+}
+
+.geri-btn {
+  background: #f0f0f0;
+  padding: 10px 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+.detay-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  margin-top: 20px;
+}
+
+.resim-bolumu img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.bilgi-bolumu .marka {
+  color: #999;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.bilgi-bolumu h1 {
+  font-size: 32px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.aciklama {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.fiyat-bolumu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.fiyat-bolumu .fiyat {
+  font-size: 36px;
+  font-weight: 700;
+  color: #333;
+}
+
+.fiyat-bolumu .eski-fiyat {
+  font-size: 24px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.secim-bolumu {
+  margin-bottom: 30px;
+}
+
+.beden-secimi,
+.renk-secimi {
+  margin-bottom: 20px;
+}
+
+.secim-bolumu label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.secenekler {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.secenek-btn {
+  padding: 10px 20px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.secenek-btn:hover {
+  border-color: #667eea;
+}
+
+.secenek-btn.aktif {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.sepete-ekle-btn {
+  width: 100%;
+  background: #667eea;
+  color: white;
+  padding: 18px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  transition: background 0.3s;
+}
+
+.sepete-ekle-btn:hover {
+  background: #5568d3;
+}
+
+.ozellikler h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.ozellikler ul {
+  list-style: none;
+}
+
+.ozellikler li {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .detay-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}

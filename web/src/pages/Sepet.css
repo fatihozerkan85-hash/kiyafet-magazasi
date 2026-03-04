@@ -1,0 +1,166 @@
+.sepet-bos {
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.sepet-bos h2 {
+  font-size: 32px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.sepet-bos p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.alisverise-don-btn {
+  display: inline-block;
+  background: #667eea;
+  color: white;
+  padding: 15px 40px;
+  border-radius: 30px;
+  font-weight: 600;
+}
+
+.sepet-sayfa h1 {
+  font-size: 36px;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.sepet-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+.sepet-item {
+  display: grid;
+  grid-template-columns: 120px 1fr auto auto auto;
+  gap: 20px;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.sepet-item img {
+  width: 120px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.item-bilgi h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.item-bilgi p {
+  color: #666;
+  font-size: 14px;
+  margin: 4px 0;
+}
+
+.item-adet {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.item-adet button {
+  background: #f0f0f0;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  font-size: 18px;
+}
+
+.item-adet span {
+  font-weight: 600;
+  min-width: 30px;
+  text-align: center;
+}
+
+.item-fiyat {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+
+.sil-btn {
+  background: #fee;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 18px;
+}
+
+.sepet-ozet {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+}
+
+.sepet-ozet h2 {
+  font-size: 24px;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.ozet-satir {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  color: #666;
+}
+
+.ozet-satir.toplam {
+  border-bottom: none;
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-top: 10px;
+}
+
+.odeme-btn {
+  width: 100%;
+  background: #667eea;
+  color: white;
+  padding: 18px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 12px;
+  margin-top: 25px;
+  transition: background 0.3s;
+}
+
+.odeme-btn:hover {
+  background: #5568d3;
+}
+
+@media (max-width: 768px) {
+  .sepet-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .sepet-item {
+    grid-template-columns: 80px 1fr;
+    gap: 15px;
+  }
+  
+  .item-adet,
+  .item-fiyat,
+  .sil-btn {
+    grid-column: 2;
+  }
+}
