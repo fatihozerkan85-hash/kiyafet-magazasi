@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli - Kıyafet Mağazası</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #f5f5f5; }
+        
+        /* Login */
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .login-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-width: 400px; width: 100%; }
+        .login-box h1 { color: #667eea; margin-bottom: 30px; text-align: center; }
+        .login-input { width: 100%; padding: 15px; margin-bottom: 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; }
+        .login-input:focus { outline: none; border-color: #667eea; }
+        .login-btn { width: 100%; padding: 15px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .login-btn:hover { background: #5568d3; }
+        .login-error { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none; }
+        
+        /* Admin Panel */
+        .admin-panel { display: none; }
+        .admin-panel.active { display: block; }
+        
+        header { background: white; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        h1 { color: #667eea; margin: 0; }
+        .logout-btn { padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; background: white; padding: 20px; border-radius: 12px; overflow-x: auto; }
+        .tab { padding: 12px 24px; background: #f8f9fa; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; white-space: nowrap; }
+        .tab.active { background: #667eea; color: white; font-weight: 600; }
+        
+        /* Tab Content */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Cards */
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .card h2 { margin-bottom: 20px; color: #333; }
+        
+        /* Forms */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        textarea { min-height: 100px; resize: vertical; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        
+        /* Buttons */
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-warning { background: #ffc107; color: #333; }
+        .btn:hover { opacity: 0.9; }
+        
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; }
+        tr:hover { background: #f8f9fa; }
+        
+        /* Stats */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .stat-value { font-size: 36px; font-weight: bold; color: #667eea; margin: 10px 0; }
+        .stat-label { color: #666; font-size: 14px; }
+        
+        /* Alert */
+        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-error { background: #f8d7da; color: #721c24; }
+        
+        /* Product Image */
+        .product-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h1>🔒 Admin Girişi</h1>
+            <div id="loginError" class="login-error"></div>
+            <form id="loginForm">
+                <input type="text" id="username" class="login-input" placeholder="Kullanıcı Adı" required>
+                <input type="password" id="password" class="login-input" placeholder="Şifre" required>
+                <button type="submit" class="login-btn">Giriş Yap</button>
+            </form>
+            <div style="margin-top: 20px; padding: 15px; background: #d1ecf1; border-radius: 8px; font-size: 13px;">
+                <strong>Test Hesabı:</strong><br>
+                Kullanıcı: admin<br>
+                Şifre: admin123
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel">
+        <header>
+            <div class="header-content">
+                <h1>⚙️ Admin Paneli</h1>
+                <button onclick="logout()" class="logout-btn">🚪 Çıkış Yap</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <div id="alert"></div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+                <button class="tab" onclick="switchTab('campaigns')">🎉 Kampanyalar</button>
+                <button class="tab" onclick="switchTab('products')">🛍️ Ürünler</button>
+                <button class="tab" onclick="switchTab('categories')">📁 Kategoriler</button>
+                <button class="tab" onclick="switchTab('orders')">📦 Siparişler</button>
+                <button class="tab" onclick="switchTab('users')">👥 Kullanıcılar</button>
+                <button class="tab" onclick="switchTab('coupons')">🎟️ Kuponlar</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Toplam Ürün</div>
+                        <div class="stat-value" id="statProducts">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Toplam Sipariş</div>
+                        <div class="stat-value" id="statOrders">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Toplam Kullanıcı</div>
+                        <div class="stat-value" id="statUsers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Toplam Gelir</div>
+                        <div class="stat-value" id="statRevenue">0 ₺</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>Hoş Geldiniz!</h2>
+                    <p>Admin paneline hoş geldiniz. Yukarıdaki sekmelerden istediğiniz bölüme geçebilirsiniz.</p>
+                </div>
+            </div>
+
+            <!-- Campaigns Tab -->
+            <div id="campaigns" class="tab-content">
+                <div class="card">
+                    <h2>➕ Yeni Kampanya Ekle</h2>
+                    <form id="campaignForm">
+                        <div class="form-group">
+                            <label>Kampanya Başlığı</label>
+                            <input type="text" id="campaignTitle" required placeholder="🎉 Yaz İndirimi">
+                        </div>
+                        <div class="form-group">
+                            <label>Açıklama</label>
+                            <textarea id="campaignDesc" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Resim URL</label>
+                            <input type="url" id="campaignImage" required>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Başlangıç Tarihi</label>
+                                <input type="date" id="campaignStart" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Bitiş Tarihi</label>
+                                <input type="date" id="campaignEnd" required>
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Renk</label>
+                                <input type="color" id="campaignColor" value="#667eea">
+                            </div>
+                            <div class="form-group">
+                                <label>Link</label>
+                                <select id="campaignLink">
+                                    <option value="/kategori/Tümü">Tümü</option>
+                                    <option value="/kategori/Elbise">Elbise</option>
+                                    <option value="/kategori/Pantolon">Pantolon</option>
+                                    <option value="/kategori/Gömlek">Gömlek</option>
+                                    <option value="/kategori/Ceket">Ceket</option>
+                                    <option value="/kategori/Ayakkabı">Ayakkabı</option>
+                                    <option value="/kategori/Aksesuar">Aksesuar</option>
+                                    <option value="/kategori/Spor">Spor</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">➕ Kampanya Ekle</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <h2>📋 Mevcut Kampanyalar</h2>
+                    <div id="campaignList"></div>
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="products" class="tab-content">
+                <div class="card">
+                    <h2>🛍️ Ürün Listesi</h2>
+                    <div id="productList"></div>
+                </div>
+            </div>
+
+            <!-- Categories Tab -->
+            <div id="categories" class="tab-content">
+                <div class="card">
+                    <h2>📁 Kategori Listesi</h2>
+                    <div id="categoryList"></div>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="orders" class="tab-content">
+                <div class="card">
+                    <h2>📦 Sipariş Listesi</h2>
+                    <div id="orderList"></div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="users" class="tab-content">
+                <div class="card">
+                    <h2>👥 Kullanıcı Listesi</h2>
+                    <div id="userList"></div>
+                </div>
+            </div>
+
+            <!-- Coupons Tab -->
+            <div id="coupons" class="tab-content">
+                <div class="card">
+                    <h2>🎟️ Kupon Listesi</h2>
+                    <div id="couponList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:5000' 
+            : 'https://kiyafet-magazasi-backend.vercel.app';
+
+        const ADMIN_CREDENTIALS = { username: 'admin', password: 'admin123' };
+
+        // Auth
+        function checkAuth() {
+            const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+            if (isLoggedIn === 'true') {
+                showAdminPanel();
+                loadDashboard();
+                loadCampaigns();
+            } else {
+                showLoginPage();
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                showAdminPanel();
+                loadDashboard();
+                loadCampaigns();
+            } else {
+                showLoginError('❌ Kullanıcı adı veya şifre hatalı!');
+            }
+        });
+
+        function logout() {
+            if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
+                sessionStorage.removeItem('adminLoggedIn');
+                showLoginPage();
+            }
+        }
+
+        function showLoginPage() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('adminPanel').classList.remove('active');
+        }
+
+        function showAdminPanel() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('adminPanel').classList.add('active');
+        }
+
+        function showLoginError(message) {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => errorDiv.style.display = 'none', 3000);
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            // Load data for the tab
+            if (tabName === 'campaigns') loadCampaigns();
+            if (tabName === 'products') loadProducts();
+            if (tabName === 'categories') loadCategories();
+            if (tabName === 'orders') loadOrders();
+            if (tabName === 'users') loadUsers();
+            if (tabName === 'coupons') loadCoupons();
+        }
+
+        // Dashboard
+        async function loadDashboard() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/istatistikler`);
+                const stats = await response.json();
+                
+                document.getElementById('statProducts').textContent = stats.toplamUrun || 0;
+                document.getElementById('statOrders').textContent = stats.toplamSiparis || 0;
+                document.getElementById('statUsers').textContent = stats.toplamKullanici || 0;
+                document.getElementById('statRevenue').textContent = (stats.toplamGelir || 0) + ' ₺';
+            } catch (error) {
+                console.error('Dashboard yüklenemedi:', error);
+            }
+        }
+
+        // Campaigns
+        async function loadCampaigns() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kampanyalar`);
+                const campaigns = await response.json();
+                
+                const listDiv = document.getElementById('campaignList');
+                if (campaigns.length === 0) {
+                    listDiv.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Henüz kampanya yok</p>';
+                    return;
+                }
+                
+                listDiv.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Resim</th>
+                                <th>Başlık</th>
+                                <th>Tarih</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${campaigns.map(c => `
+                                <tr>
+                                    <td><img src="${c.resim}" class="product-img"></td>
+                                    <td>${c.baslik}</td>
+                                    <td>${new Date(c.baslangicTarihi).toLocaleDateString('tr-TR')} - ${new Date(c.bitisTarihi).toLocaleDateString('tr-TR')}</td>
+                                    <td>${c.aktif ? '✅ Aktif' : '⏸️ Pasif'}</td>
+                                    <td>
+                                        <button class="btn btn-warning" onclick="toggleCampaign('${c.id}')">
+                                            ${c.aktif ? 'Pasif Yap' : 'Aktif Yap'}
+                                        </button>
+                                        <button class="btn btn-danger" onclick="deleteCampaign('${c.id}')">Sil</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                showAlert('Kampanyalar yüklenemedi', 'error');
+            }
+        }
+
+        document.getElementById('campaignForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                baslik: document.getElementById('campaignTitle').value,
+                aciklama: document.getElementById('campaignDesc').value,
+                resim: document.getElementById('campaignImage').value,
+                baslangicTarihi: document.getElementById('campaignStart').value,
+                bitisTarihi: document.getElementById('campaignEnd').value,
+                renk: document.getElementById('campaignColor').value,
+                link: document.getElementById('campaignLink').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kampanya`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Kampanya eklendi!', 'success');
+                    document.getElementById('campaignForm').reset();
+                    loadCampaigns();
+                }
+            } catch (error) {
+                showAlert('❌ Kampanya eklenemedi', 'error');
+            }
+        });
+
+        async function toggleCampaign(id) {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kampanya/${id}/toggle`, {
+                    method: 'PATCH'
+                });
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Kampanya güncellendi', 'success');
+                    loadCampaigns();
+                }
+            } catch (error) {
+                showAlert('❌ İşlem başarısız', 'error');
+            }
+        }
+
+        async function deleteCampaign(id) {
+            if (!confirm('Bu kampanyayı silmek istediğinizden emin misiniz?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kampanya/${id}`, {
+                    method: 'DELETE'
+                });
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Kampanya silindi', 'success');
+                    loadCampaigns();
+                }
+            } catch (error) {
+                showAlert('❌ Kampanya silinemedi', 'error');
+            }
+        }
+
+        // Products
+        async function loadProducts() {
+            try {
+                const response = await fetch(`${API_URL}/api/urunler`);
+                const products = await response.json();
+                
+                const listDiv = document.getElementById('productList');
+                listDiv.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Resim</th>
+                                <th>Ürün Adı</th>
+                                <th>Kategori</th>
+                                <th>Fiyat</th>
+                                <th>Stok</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${products.map(p => `
+                                <tr>
+                                    <td><img src="${p.resimler[0]}" class="product-img"></td>
+                                    <td>${p.ad}</td>
+                                    <td>${p.kategori}</td>
+                                    <td>${p.fiyat} ₺</td>
+                                    <td>${p.stokMiktari || 0} adet</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                showAlert('Ürünler yüklenemedi', 'error');
+            }
+        }
+
+        // Categories
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kategoriler`);
+                const categories = await response.json();
+                
+                const listDiv = document.getElementById('categoryList');
+                listDiv.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Emoji</th>
+                                <th>Kategori Adı</th>
+                                <th>Sıra</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${categories.map(c => `
+                                <tr>
+                                    <td style="font-size: 24px;">${c.emoji}</td>
+                                    <td>${c.ad}</td>
+                                    <td>${c.sira}</td>
+                                    <td>${c.aktif ? '✅ Aktif' : '⏸️ Pasif'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                showAlert('Kategoriler yüklenemedi', 'error');
+            }
+        }
+
+        // Orders
+        async function loadOrders() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/siparisler`);
+                const orders = await response.json();
+                
+                const listDiv = document.getElementById('orderList');
+                if (orders.length === 0) {
+                    listDiv.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Henüz sipariş yok</p>';
+                    return;
+                }
+                
+                listDiv.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sipariş No</th>
+                                <th>Tarih</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${orders.map(o => `
+                                <tr>
+                                    <td>${o.id}</td>
+                                    <td>${new Date(o.olusturmaTarihi).toLocaleDateString('tr-TR')}</td>
+                                    <td>${o.toplamTutar} ₺</td>
+                                    <td>${o.durum}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                showAlert('Siparişler yüklenemedi', 'error');
+            }
+        }
+
+        // Users
+        async function loadUsers() {
+            document.getElementById('userList').innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Kullanıcı listesi yükleniyor...</p>';
+        }
+
+        // Coupons
+        async function loadCoupons() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kuponlar`);
+                const coupons = await response.json();
+                
+                const listDiv = document.getElementById('couponList');
+                listDiv.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kupon Kodu</th>
+                                <th>İndirim Tipi</th>
+                                <th>İndirim Miktarı</th>
+                                <th>Kullanım</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${coupons.map(c => `
+                                <tr>
+                                    <td><strong>${c.kod}</strong></td>
+                                    <td>${c.indirimTipi === 'yuzde' ? 'Yüzde' : 'Sabit'}</td>
+                                    <td>${c.indirimMiktari}${c.indirimTipi === 'yuzde' ? '%' : ' ₺'}</td>
+                                    <td>${c.kullanimSayisi || 0} kez</td>
+                                    <td>${c.aktif ? '✅ Aktif' : '⏸️ Pasif'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                showAlert('Kuponlar yüklenemedi', 'error');
+            }
+        }
+
+        // Alert
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => alertDiv.innerHTML = '', 5000);
+        }
+
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+</html>

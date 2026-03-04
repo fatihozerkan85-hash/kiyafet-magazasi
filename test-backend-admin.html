@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Admin API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 50px auto; padding: 20px; background: #f5f5f5; }
+        h1 { color: #667eea; }
+        .test-section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        button { padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #5568d3; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .success { color: #28a745; }
+        .error { color: #e74c3c; }
+        .info { color: #667eea; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Backend Admin API Test</h1>
+    <p>Bu sayfa backend API'lerinin çalışıp çalışmadığını test eder.</p>
+
+    <div class="test-section">
+        <h2>1. Backend Bağlantı Testi</h2>
+        <button onclick="testBackendConnection()">Test Et</button>
+        <div id="connectionResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Kampanyalar API Testi</h2>
+        <button onclick="testCampaigns()">Kampanyaları Getir</button>
+        <button onclick="testAdminCampaigns()">Admin Kampanyaları Getir</button>
+        <div id="campaignsResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Kategoriler API Testi</h2>
+        <button onclick="testCategories()">Kategorileri Getir</button>
+        <button onclick="testAdminCategories()">Admin Kategorileri Getir</button>
+        <div id="categoriesResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Ürünler API Testi</h2>
+        <button onclick="testProducts()">Ürünleri Getir</button>
+        <div id="productsResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. İstatistikler API Testi</h2>
+        <button onclick="testStats()">İstatistikleri Getir</button>
+        <div id="statsResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>6. Kuponlar API Testi</h2>
+        <button onclick="testCoupons()">Kuponları Getir</button>
+        <div id="couponsResult"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://kiyafet-magazasi-backend.vercel.app';
+
+        async function testBackendConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.innerHTML = '<p class="info">⏳ Test ediliyor...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ Backend çalışıyor!</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Hata: ${error.message}</p>`;
+            }
+        }
+
+        async function testCampaigns() {
+            const resultDiv = document.getElementById('campaignsResult');
+            resultDiv.innerHTML = '<p class="info">⏳ Kampanyalar yükleniyor...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/kampanyalar`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ ${data.length} kampanya bulundu</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Hata: ${error.message}</p>`;
+            }
+        }
+
+        async function testAdminCampaigns() {
+            const resultDiv = document.getElementById('campaignsResult');
+            resultDiv.innerHTML = '<p class="info">⏳ Admin kampanyaları yükleniyor...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kampanyalar`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ ${data.length} kampanya bulundu (Admin)</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Hata: ${error.message}</p>`;
+            }
+        }
+
+        async function testCategories() {
+            const resultDiv = document.getElementById('categoriesResult');
+            resultDiv.innerHTML = '<p class="info">⏳ Kategoriler yükleniyor...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/kategoriler`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ ${data.length} kategori bulundu</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Hata: ${error.message}</p>`;
+            }
+        }
+
+        async function testAdminCategories() {
+            const resultDiv = document.getElementById('categoriesResult');
+            resultDiv.innerHTML = '<p class="info">⏳ Admin kategorileri yükleniyor...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kategoriler`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ ${data.length} kategori bulundu (Admin)</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Hata: ${error.message}</p>`;
+            }
+        }
+
+        async function testProducts() {
+            const resultDiv = document.getElementById('productsResult');
+            resultDiv.innerHTML = '<p class="info">⏳ Ürünler yükleniyor...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/urunler`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ ${data.length} ürün bulundu</p>
+                    <pre>${JSON.stringify(data.slice(0, 3), null, 2)}</pre>
+                    <p><em>İlk 3 ürün gösteriliyor...</em></p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Hata: ${error.message}</p>`;
+            }
+        }
+
+        async function testStats() {
+            const resultDiv = document.getElementById('statsResult');
+            resultDiv.innerHTML = '<p class="info">⏳ İstatistikler yükleniyor...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/istatistikler`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ İstatistikler yüklendi</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Hata: ${error.message}</p>`;
+            }
+        }
+
+        async function testCoupons() {
+            const resultDiv = document.getElementById('couponsResult');
+            resultDiv.innerHTML = '<p class="info">⏳ Kuponlar yükleniyor...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kuponlar`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ ${data.length} kupon bulundu</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Hata: ${error.message}</p>`;
+            }
+        }
+
+        // Sayfa yüklendiğinde otomatik test
+        window.onload = () => {
+            testBackendConnection();
+        };
+    </script>
+</body>
+</html>
