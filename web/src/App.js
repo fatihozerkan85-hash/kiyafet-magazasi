@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
@@ -6,7 +6,6 @@ function App() {
   const [urunler, setUrunler] = useState([]);
   const [sepet, setSepet] = useState([]);
   const [secilenSayfa, setSecilenSayfa] = useState('ana');
-  const [secilenUrun, setSecilenUrun] = useState(null);
   const [kullanici, setKullanici] = useState(null);
   const [aramaMetni, setAramaMetni] = useState('');
   const [girisFormu, setGirisFormu] = useState({ email: '', sifre: '' });
@@ -268,7 +267,7 @@ function App() {
               placeholder="Şifre"
               value={girisFormu.sifre}
               onChange={(e) => setGirisFormu({...girisFormu, sifre: e.target.value})}
-              onKeyPress={(e) => e.key === 'Enter' && girisYap()}
+              onKeyDown={(e) => e.key === 'Enter' && girisYap()}
               style={{ width: '100%', padding: 12, marginBottom: 20, border: '1px solid #ddd', borderRadius: 8 }}
             />
             <button onClick={girisYap} style={{ width: '100%', padding: 15, background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
