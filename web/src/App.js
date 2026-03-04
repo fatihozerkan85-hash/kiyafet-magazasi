@@ -95,6 +95,33 @@ function App() {
     return dilMetinleri[key] || key;
   };
 
+  // Kategori renkleri
+  const getCategoryColor = (kategoriId) => {
+    const colors = {
+      'Elbise': '#FFE5E5',
+      'Pantolon': '#E5F3FF',
+      'Gömlek': '#FFF5E5',
+      'Ceket': '#F0E5FF',
+      'Ayakkabı': '#E5FFF0',
+      'Aksesuar': '#FFE5F5',
+      'Spor': '#E5FFFF'
+    };
+    return colors[kategoriId] || '#F5F5F5';
+  };
+
+  const getCategoryColorDark = (kategoriId) => {
+    const colors = {
+      'Elbise': '#FFD0D0',
+      'Pantolon': '#D0E8FF',
+      'Gömlek': '#FFE8D0',
+      'Ceket': '#E0D0FF',
+      'Ayakkabı': '#D0FFE0',
+      'Aksesuar': '#FFD0E8',
+      'Spor': '#D0FFFF'
+    };
+    return colors[kategoriId] || '#E0E0E0';
+  };
+
   const girisYap = async () => {
     try {
       const response = await fetch(`${API_URL}/api/giris`, {
@@ -545,27 +572,21 @@ function App() {
 
         {secilenSayfa === 'ana' && (
           <div>
-            {/* Test Banner - Her zaman görünür */}
-            <div style={{ marginBottom: 20, padding: 20, background: '#000000', color: 'white', borderRadius: 12, textAlign: 'center' }}>
-              <h3>🎉 Kampanya Sistemi Aktif - Toplam {kampanyalar.length} kampanya</h3>
-              {kampanyalar.length === 0 && <p>Kampanyalar yükleniyor...</p>}
-            </div>
-
-            {/* Kampanya Banner'ları */}
-            {console.log('Ana sayfa render - Kampanya sayısı:', kampanyalar.length)}
+            {/* Kampanya Banner'ları - Boyner Tarzı */}
             {kampanyalar.length > 0 && (
-              <div style={{ marginBottom: 30, position: 'relative', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+              <div style={{ marginBottom: 40 }}>
                 {kampanyalar.map((kampanya, index) => (
                   <div
                     key={kampanya.id}
                     style={{
                       display: index === aktifBanner ? 'block' : 'none',
                       position: 'relative',
-                      height: 400,
+                      height: 500,
                       backgroundImage: `url(${kampanya.resim})`,
                       backgroundSize: 'cover',
                       backgroundPosition: 'center',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      marginBottom: 0
                     }}
                     onClick={() => {
                       if (kampanya.link.includes('/kategori/')) {
@@ -574,34 +595,51 @@ function App() {
                       }
                     }}
                   >
-                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3))' }} />
-                    <div style={{ position: 'relative', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 60, color: 'white' }}>
-                      <h1 style={{ fontSize: 48, fontWeight: 'bold', margin: '0 0 20px 0', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.2))' }} />
+                    <div style={{ position: 'relative', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 80px', color: 'white', maxWidth: 1400, margin: '0 auto' }}>
+                      <h1 style={{ fontSize: 56, fontWeight: 'bold', margin: '0 0 20px 0', textShadow: '2px 2px 8px rgba(0,0,0,0.3)', letterSpacing: '-1px' }}>
                         {kampanya.baslik}
                       </h1>
-                      <p style={{ fontSize: 24, margin: '0 0 30px 0', maxWidth: 600, textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>
+                      <p style={{ fontSize: 24, margin: '0 0 40px 0', maxWidth: 600, textShadow: '1px 1px 4px rgba(0,0,0,0.3)', lineHeight: 1.4 }}>
                         {kampanya.aciklama}
                       </p>
-                      <button style={{ padding: '15px 40px', background: kampanya.renk, color: 'white', border: 'none', borderRadius: 8, fontSize: 18, fontWeight: 'bold', cursor: 'pointer', alignSelf: 'flex-start', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
-                        Şimdi Keşfet →
+                      <button style={{ 
+                        padding: '18px 50px', 
+                        background: 'white', 
+                        color: '#000', 
+                        border: 'none', 
+                        borderRadius: 4, 
+                        fontSize: 16, 
+                        fontWeight: 'bold', 
+                        cursor: 'pointer', 
+                        alignSelf: 'flex-start',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                      }}
+                      onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                      onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+                      >
+                        Keşfet
                       </button>
                     </div>
                   </div>
                 ))}
                 
-                {/* Banner Navigasyon Noktaları */}
+                {/* Banner Navigasyon */}
                 {kampanyalar.length > 1 && (
-                  <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 10, zIndex: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: 12, padding: '30px 0', background: 'white' }}>
                     {kampanyalar.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => setAktifBanner(index)}
                         style={{
-                          width: 12,
+                          width: index === aktifBanner ? 40 : 12,
                           height: 12,
-                          borderRadius: '50%',
+                          borderRadius: 6,
                           border: 'none',
-                          background: index === aktifBanner ? 'white' : 'rgba(255,255,255,0.5)',
+                          background: index === aktifBanner ? '#000' : '#ddd',
                           cursor: 'pointer',
                           transition: 'all 0.3s ease'
                         }}
@@ -612,71 +650,185 @@ function App() {
               </div>
             )}
 
-            {/* Kategori Başlığı ve Ürün Sayısı */}
-            <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ margin: 0, color: '#333' }}>
-                {kategoriler.find(k => k.id === secilenKategori)?.emoji} {dil === 'en' ? kategoriler.find(k => k.id === secilenKategori)?.adEn : secilenKategori}
+            {/* Kategori Grid - Boyner Tarzı */}
+            <div style={{ maxWidth: 1400, margin: '0 auto', padding: '60px 20px' }}>
+              <h2 style={{ fontSize: 32, fontWeight: 'bold', marginBottom: 40, textAlign: 'center', color: '#000', letterSpacing: '-0.5px' }}>
+                {dil === 'en' ? 'Shop by Category' : 'Kategoriler'}
               </h2>
-              <span style={{ color: '#666', fontSize: 14 }}>
-                {filtreliUrunler.length} {t('products').toLowerCase()}
-              </span>
+              
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+                gap: 20,
+                marginBottom: 60
+              }}>
+                {kategoriler.filter(k => k.id !== 'Tümü').map(kategori => (
+                  <div
+                    key={kategori.id}
+                    onClick={() => { setSecilenKategori(kategori.id); window.scrollTo(0, 0); }}
+                    style={{
+                      position: 'relative',
+                      height: 350,
+                      borderRadius: 8,
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-8px)';
+                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.08)';
+                    }}
+                  >
+                    {/* Kategori Resmi (Placeholder) */}
+                    <div style={{
+                      width: '100%',
+                      height: '100%',
+                      background: `linear-gradient(135deg, ${getCategoryColor(kategori.id)} 0%, ${getCategoryColorDark(kategori.id)} 100%)`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <span style={{ fontSize: 80 }}>{kategori.emoji}</span>
+                    </div>
+                    
+                    {/* Kategori Bilgisi */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      padding: '25px',
+                      background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)',
+                      color: 'white'
+                    }}>
+                      <h3 style={{ 
+                        fontSize: 24, 
+                        fontWeight: 'bold', 
+                        margin: 0,
+                        textShadow: '1px 1px 3px rgba(0,0,0,0.5)'
+                      }}>
+                        {dil === 'en' ? kategori.adEn : kategori.ad}
+                      </h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
+            {/* Ürün Listesi - Modern Grid */}
+            <div style={{ background: '#f8f9fa', padding: '60px 0' }}>
+              <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40 }}>
+                  <h2 style={{ fontSize: 32, fontWeight: 'bold', margin: 0, color: '#000' }}>
+                    {dil === 'en' ? kategoriler.find(k => k.id === secilenKategori)?.adEn : secilenKategori}
+                  </h2>
+                  <span style={{ color: '#666', fontSize: 16 }}>
+                    {filtreliUrunler.length} {dil === 'en' ? 'products' : 'ürün'}
+                  </span>
+                </div>
+
             {filtreliUrunler.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 50, background: 'white', borderRadius: 12 }}>
-                <p style={{ fontSize: 18, color: '#666' }}>Bu kategoride ürün bulunamadı</p>
+              <div style={{ textAlign: 'center', padding: 80, background: 'white', borderRadius: 12 }}>
+                <p style={{ fontSize: 20, color: '#666', marginBottom: 30 }}>Bu kategoride ürün bulunamadı</p>
                 <button 
                   onClick={() => setSecilenKategori('Tümü')} 
-                  style={{ marginTop: 20, padding: '12px 30px', background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}
+                  style={{ padding: '14px 40px', background: '#000', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 16, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}
                 >
                   Tüm Ürünleri Gör
                 </button>
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 20 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 24 }}>
                 {filtreliUrunler.map(urun => (
-              <div key={urun.id} style={{ background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', cursor: 'pointer' }}>
+              <div key={urun.id} style={{ background: 'white', borderRadius: 8, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', cursor: 'pointer', transition: 'all 0.3s ease' }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+                }}
+              >
                 <div style={{ position: 'relative' }} onClick={() => urunDetayAc(urun)}>
-                  <img src={urun.resimler[0]} alt={urun.ad} style={{ width: '100%', height: 300, objectFit: 'cover' }} />
+                  <img src={urun.resimler[0]} alt={urun.ad} style={{ width: '100%', height: 400, objectFit: 'cover' }} />
                   <button 
                     onClick={(e) => { e.stopPropagation(); favoriToggle(urun.id); }} 
-                    style={{ position: 'absolute', top: 10, right: 10, background: 'white', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 20, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}
+                    style={{ position: 'absolute', top: 15, right: 15, background: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 22, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   >
                     {favoriler.some(f => f.urunId === urun.id) ? '❤️' : '🤍'}
                   </button>
                   {!urun.stokDurumu && (
-                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>STOKTA YOK</span>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ color: '#000', fontSize: 18, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>STOKTA YOK</span>
                     </div>
                   )}
                 </div>
-                <div style={{ padding: 15 }}>
-                  <h3 style={{ margin: '0 0 10px 0', fontSize: 16 }}>{dil === 'en' && urun.adEn ? urun.adEn : urun.ad}</h3>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 10 }}>
+                <div style={{ padding: 20 }}>
+                  <div style={{ marginBottom: 8 }}>
+                    <span style={{ fontSize: 12, color: '#999', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{urun.marka}</span>
+                  </div>
+                  <h3 style={{ margin: '0 0 12px 0', fontSize: 16, fontWeight: 600, color: '#000', lineHeight: 1.4, height: 44, overflow: 'hidden' }}>
+                    {dil === 'en' && urun.adEn ? urun.adEn : urun.ad}
+                  </h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 12 }}>
                     {yildizGoster(urun.ortalamaPuan || 0)}
-                    <span style={{ fontSize: 14, color: '#666' }}>
+                    <span style={{ fontSize: 13, color: '#666' }}>
                       ({urun.yorumSayisi || 0})
                     </span>
                   </div>
-                  <p style={{ margin: '0 0 10px 0', color: '#666', fontSize: 14 }}>{dil === 'en' && urun.aciklamaEn ? urun.aciklamaEn : urun.aciklama}</p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                    <p style={{ margin: 0, fontSize: 20, fontWeight: 'bold', color: '#000000' }}>{urun.fiyat} ₺</p>
-                    <span style={{ fontSize: 12, color: urun.stokMiktari > 10 ? '#28a745' : '#dc3545' }}>
-                      {urun.stokMiktari > 0 ? `${urun.stokMiktari} adet` : 'Tükendi'}
-                    </span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                    <div>
+                      {urun.eskiFiyat && (
+                        <span style={{ fontSize: 14, color: '#999', textDecoration: 'line-through', marginRight: 8 }}>
+                          {urun.eskiFiyat} ₺
+                        </span>
+                      )}
+                      <span style={{ fontSize: 22, fontWeight: 'bold', color: '#000' }}>{urun.fiyat} ₺</span>
+                    </div>
                   </div>
                   <button 
                     onClick={(e) => { e.stopPropagation(); sepeteEkle(urun); }} 
                     disabled={!urun.stokDurumu || urun.stokMiktari === 0}
-                    style={{ width: '100%', padding: 12, background: (!urun.stokDurumu || urun.stokMiktari === 0) ? '#ccc' : '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: (!urun.stokDurumu || urun.stokMiktari === 0) ? 'not-allowed' : 'pointer', fontSize: 14, fontWeight: 600 }}
+                    style={{ 
+                      width: '100%', 
+                      padding: 14, 
+                      background: (!urun.stokDurumu || urun.stokMiktari === 0) ? '#e0e0e0' : '#000', 
+                      color: (!urun.stokDurumu || urun.stokMiktari === 0) ? '#999' : 'white', 
+                      border: 'none', 
+                      borderRadius: 4, 
+                      cursor: (!urun.stokDurumu || urun.stokMiktari === 0) ? 'not-allowed' : 'pointer', 
+                      fontSize: 14, 
+                      fontWeight: 'bold',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseOver={(e) => {
+                      if (urun.stokDurumu && urun.stokMiktari > 0) {
+                        e.target.style.background = '#333';
+                      }
+                    }}
+                    onMouseOut={(e) => {
+                      if (urun.stokDurumu && urun.stokMiktari > 0) {
+                        e.target.style.background = '#000';
+                      }
+                    }}
                   >
-                    {(!urun.stokDurumu || urun.stokMiktari === 0) ? '❌ Stokta Yok' : '🛒 Sepete Ekle'}
+                    {(!urun.stokDurumu || urun.stokMiktari === 0) ? 'Stokta Yok' : 'Sepete Ekle'}
                   </button>
                 </div>
               </div>
             ))}
               </div>
             )}
+              </div>
+            </div>
           </div>
         )}
 
