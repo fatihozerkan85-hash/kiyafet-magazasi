@@ -315,9 +315,26 @@ app.patch('/api/admin/kampanya/:id/toggle', (req, res) => {
   res.json({ basarili: true, mesaj: `Kampanya ${kampanya.aktif ? 'aktif' : 'pasif'} edildi`, kampanya });
 });
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    mesaj: 'Kıyafet Mağazası API çalışıyor',
+    version: '1.0.0',
+    endpoints: {
+      urunler: '/api/urunler',
+      kampanyalar: '/api/kampanyalar',
+      giris: '/api/giris',
+      kayit: '/api/kayit'
+    }
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Backend sunucu ${PORT} portunda çalışıyor`);
 });
+
+// Vercel için export
+module.exports = app;
 
 // iyzico Ödeme Entegrasyonu
 const Iyzipay = require('iyzipay');
