@@ -7,9 +7,22 @@ const PORT = process.env.PORT || 5000;
 
 // CORS ayarları - hem local hem production için
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://kiyafet-magazasi.vercel.app', 'https://*.vercel.app'],
+  origin: function(origin, callback) {
+    // İzin verilen origin'ler
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'https://kiyafet-magazasi.vercel.app'
+    ];
+    
+    // Vercel domain'lerini kontrol et
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.includes('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS policy violation'));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
