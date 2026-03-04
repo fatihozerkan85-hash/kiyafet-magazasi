@@ -378,7 +378,20 @@ function App() {
             <select 
               value={dil} 
               onChange={(e) => dilDegistir(e.target.value)}
-              style={{ padding: '8px 12px', borderRadius: 5, border: '1px solid #ddd', cursor: 'pointer', background: 'white' }}
+              style={{ 
+                padding: '10px 15px', 
+                borderRadius: 8, 
+                border: '2px solid #ddd', 
+                cursor: 'pointer', 
+                background: 'white',
+                fontSize: 15,
+                fontWeight: 600,
+                color: '#333',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseOver={(e) => e.target.style.borderColor = '#667eea'}
+              onMouseOut={(e) => e.target.style.borderColor = '#ddd'}
             >
               <option value="tr">🇹🇷 Türkçe</option>
               <option value="en">🇬🇧 English</option>
