@@ -119,6 +119,7 @@
                 <button class="tab" onclick="switchTab('orders')">📦 Siparişler</button>
                 <button class="tab" onclick="switchTab('users')">👥 Kullanıcılar</button>
                 <button class="tab" onclick="switchTab('coupons')">🎟️ Kuponlar</button>
+                <button class="tab" onclick="switchTab('reports')">📊 Raporlar</button>
             </div>
 
             <!-- Dashboard Tab -->
@@ -400,6 +401,34 @@
                     <div id="couponList"></div>
                 </div>
             </div>
+
+            <!-- Reports Tab -->
+            <div id="reports" class="tab-content">
+                <div class="card">
+                    <h2>📊 Satış Raporu</h2>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <button class="btn btn-primary" onclick="loadSalesReport('gunluk')">Günlük</button>
+                        <button class="btn btn-primary" onclick="loadSalesReport('haftalik')">Haftalık</button>
+                        <button class="btn btn-primary" onclick="loadSalesReport('aylik')">Aylık</button>
+                    </div>
+                    <div id="salesReport"></div>
+                </div>
+
+                <div class="card">
+                    <h2>🏆 En Çok Satan Ürünler</h2>
+                    <div id="bestSellers"></div>
+                </div>
+
+                <div class="card">
+                    <h2>📁 Kategori Bazlı Satışlar</h2>
+                    <div id="categorySales"></div>
+                </div>
+
+                <div class="card">
+                    <h2>💰 Gelir Grafiği (Son 30 Gün)</h2>
+                    <div id="revenueChart"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -476,6 +505,7 @@
             if (tabName === 'orders') loadOrders();
             if (tabName === 'users') loadUsers();
             if (tabName === 'coupons') loadCoupons();
+            if (tabName === 'reports') loadReports();
         }
 
         // Dashboard
@@ -1047,9 +1077,110 @@
             }
         }
 
-        // Users
+        // Users with Segmentation
+        let currentSegment = 'vip';
+
         async function loadUsers() {
-            document.getElementById('userList').innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Kullanıcı listesi yükleniyor...</p>';
+            try {
+                const response = await fetch(`${API_URL}/api/admin/musteri-segmentleri`);
+                const result = await response.json();
+                
+                if (!result.basarili) {
+                    showAlert('Müşteri segmentleri yüklenemedi', 'error');
+                    return;
+                }
+                
+                const segments = result.segmentler;
+                
+                const listDiv = document.getElementById('userList');
+                listDiv.innerHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <button class="btn ${currentSegment === 'vip' ? 'btn-primary' : ''}" onclick="showSegment('vip', ${JSON.stringify(segments).replace(/"/g, '&quot;')})">
+                                👑 VIP (${segments.vip.adet})
+                            </button>
+                            <button class="btn ${currentSegment === 'sadik' ? 'btn-primary' : ''}" onclick="showSegment('sadik', ${JSON.stringify(segments).replace(/"/g, '&quot;')})">
+                                ⭐ Sadık (${segments.sadik.adet})
+                            </button>
+                            <button class="btn ${currentSegment === 'yeni' ? 'btn-primary' : ''}" onclick="showSegment('yeni', ${JSON.stringify(segments).replace(/"/g, '&quot;')})">
+                                🆕 Yeni (${segments.yeni.adet})
+                            </button>
+                            <button class="btn ${currentSegment === 'pasif' ? 'btn-primary' : ''}" onclick="showSegment('pasif', ${JSON.stringify(segments).replace(/"/g, '&quot;')})">
+                                😴 Pasif (${segments.pasif.adet})
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-success" onclick="sendSegmentNotification('email')">📧 Segment'e Email Gönder</button>
+                            <button class="btn btn-success" onclick="sendSegmentNotification('sms')">📱 Segment'e SMS Gönder</button>
+                        </div>
+                    </div>
+                    <div id="segmentContent"></div>
+                `;
+                
+                showSegment(currentSegment, segments);
+            } catch (error) {
+                showAlert('Müşteri segmentleri yüklenemedi', 'error');
+            }
+        }
+
+        function showSegment(segment, segments) {
+            currentSegment = segment;
+            const customers = segments[segment].musteriler;
+            
+            const contentDiv = document.getElementById('segmentContent');
+            if (customers.length === 0) {
+                contentDiv.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Bu segmentte müşteri yok</p>';
+                return;
+            }
+            
+            contentDiv.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ad Soyad</th>
+                            <th>Email</th>
+                            <th>Sipariş Sayısı</th>
+                            <th>Toplam Harcama</th>
+                            <th>Son Sipariş</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${customers.map(c => `
+                            <tr>
+                                <td>${c.ad} ${c.soyad}</td>
+                                <td>${c.email}</td>
+                                <td>${c.siparisSayisi}</td>
+                                <td>${c.toplamHarcama} ₺</td>
+                                <td>${c.sonSiparisTarihi ? new Date(c.sonSiparisTarihi).toLocaleDateString('tr-TR') : 'Yok'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function sendSegmentNotification(type) {
+            const message = prompt(`${currentSegment} segmentine gönderilecek mesajı yazın:`);
+            if (!message) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/segment-bildirim`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        segment: currentSegment,
+                        tip: type,
+                        mesaj: message
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert(`✅ ${currentSegment} segmentine ${type} gönderildi!`, 'success');
+                }
+            } catch (error) {
+                showAlert('❌ Bildirim gönderilemedi', 'error');
+            }
         }
 
         // Coupons
@@ -1127,6 +1258,199 @@
             const alertDiv = document.getElementById('alert');
             alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
             setTimeout(() => alertDiv.innerHTML = '', 5000);
+        }
+
+        // Reports
+        async function loadReports() {
+            await loadSalesReport('aylik');
+            await loadBestSellers();
+            await loadCategorySales();
+            await loadRevenueChart();
+        }
+
+        async function loadSalesReport(period) {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/rapor/satis?period=${period}`);
+                const result = await response.json();
+                
+                if (!result.basarili) {
+                    showAlert('Satış raporu yüklenemedi', 'error');
+                    return;
+                }
+                
+                const reportDiv = document.getElementById('salesReport');
+                reportDiv.innerHTML = `
+                    <div class="stats" style="margin-bottom: 20px;">
+                        <div class="stat-card">
+                            <div class="stat-label">Toplam Satış</div>
+                            <div class="stat-value">${result.toplamSatis}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Toplam Gelir</div>
+                            <div class="stat-value">${result.toplamGelir} ₺</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Ortalama Sepet</div>
+                            <div class="stat-value">${result.ortalamaSepet} ₺</div>
+                        </div>
+                    </div>
+                    <h3>Günlük Dağılım</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Sipariş Adedi</th>
+                                <th>Gelir</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.entries(result.gunlukDagilim).map(([tarih, data]) => `
+                                <tr>
+                                    <td>${tarih}</td>
+                                    <td>${data.adet}</td>
+                                    <td>${data.tutar.toFixed(2)} ₺</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                showAlert('Satış raporu yüklenemedi', 'error');
+            }
+        }
+
+        async function loadBestSellers() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/rapor/en-cok-satanlar?limit=10`);
+                const result = await response.json();
+                
+                if (!result.basarili) {
+                    showAlert('En çok satanlar yüklenemedi', 'error');
+                    return;
+                }
+                
+                const listDiv = document.getElementById('bestSellers');
+                if (result.enCokSatanlar.length === 0) {
+                    listDiv.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Henüz satış yok</p>';
+                    return;
+                }
+                
+                listDiv.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sıra</th>
+                                <th>Ürün</th>
+                                <th>Satış Adedi</th>
+                                <th>Toplam Gelir</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${result.enCokSatanlar.map((item, index) => `
+                                <tr>
+                                    <td><strong>${index + 1}</strong></td>
+                                    <td>${item.urun.ad}</td>
+                                    <td>${item.adet}</td>
+                                    <td>${item.gelir.toFixed(2)} ₺</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                showAlert('En çok satanlar yüklenemedi', 'error');
+            }
+        }
+
+        async function loadCategorySales() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/rapor/kategori-satis`);
+                const result = await response.json();
+                
+                if (!result.basarili) {
+                    showAlert('Kategori satışları yüklenemedi', 'error');
+                    return;
+                }
+                
+                const listDiv = document.getElementById('categorySales');
+                if (result.kategoriSatislari.length === 0) {
+                    listDiv.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Henüz satış yok</p>';
+                    return;
+                }
+                
+                listDiv.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kategori</th>
+                                <th>Satış Adedi</th>
+                                <th>Toplam Gelir</th>
+                                <th>Oran</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${result.kategoriSatislari.map(item => {
+                                const toplamGelir = result.kategoriSatislari.reduce((sum, k) => sum + k.gelir, 0);
+                                const oran = ((item.gelir / toplamGelir) * 100).toFixed(1);
+                                return `
+                                    <tr>
+                                        <td><strong>${item.kategori}</strong></td>
+                                        <td>${item.adet}</td>
+                                        <td>${item.gelir.toFixed(2)} ₺</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                <div style="flex: 1; background: #f0f0f0; height: 20px; border-radius: 10px; overflow: hidden;">
+                                                    <div style="width: ${oran}%; background: #667eea; height: 100%;"></div>
+                                                </div>
+                                                <span>${oran}%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                showAlert('Kategori satışları yüklenemedi', 'error');
+            }
+        }
+
+        async function loadRevenueChart() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/rapor/gelir-grafik`);
+                const result = await response.json();
+                
+                if (!result.basarili) {
+                    showAlert('Gelir grafiği yüklenemedi', 'error');
+                    return;
+                }
+                
+                const chartDiv = document.getElementById('revenueChart');
+                const maxGelir = Math.max(...result.grafik.map(g => g.gelir));
+                
+                chartDiv.innerHTML = `
+                    <div style="overflow-x: auto;">
+                        <div style="display: flex; align-items: flex-end; gap: 5px; min-width: 1000px; height: 300px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                            ${result.grafik.map(item => {
+                                const height = maxGelir > 0 ? (item.gelir / maxGelir) * 250 : 0;
+                                return `
+                                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                                        <div style="font-size: 11px; color: #666; text-align: center;">${item.gelir.toFixed(0)} ₺</div>
+                                        <div style="width: 100%; background: #667eea; border-radius: 4px 4px 0 0; height: ${height}px; min-height: 2px;" title="${item.tarih}: ${item.gelir} ₺ (${item.siparisSayisi} sipariş)"></div>
+                                        <div style="font-size: 10px; color: #999; writing-mode: vertical-rl; transform: rotate(180deg);">${item.tarih.split('.')[0]}.${item.tarih.split('.')[1]}</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                    <p style="text-align: center; color: #666; margin-top: 15px; font-size: 13px;">
+                        Son 30 günlük gelir grafiği
+                    </p>
+                `;
+            } catch (error) {
+                showAlert('Gelir grafiği yüklenemedi', 'error');
+            }
         }
 
         // Initialize

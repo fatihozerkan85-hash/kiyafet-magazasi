@@ -30,6 +30,8 @@ function App() {
   const [secilenKategori, setSecilenKategori] = useState('Tümü');
   const [kampanyalar, setKampanyalar] = useState([]);
   const [aktifBanner, setAktifBanner] = useState(0);
+  const [dil, setDil] = useState('tr');
+  const [dilMetinleri, setDilMetinleri] = useState({});
   
   const kategoriler = [
     { id: 'Tümü', ad: 'Tümü', emoji: '🛍️' },
@@ -64,7 +66,34 @@ function App() {
       setKullanici(kullaniciData);
       favorileriYukle(kullaniciData.id);
     }
+
+    // Dil ayarını yükle
+    const kaydedilmisDil = localStorage.getItem('dil') || 'tr';
+    setDil(kaydedilmisDil);
+    dilYukle(kaydedilmisDil);
   }, []);
+
+  const dilYukle = async (dilKodu) => {
+    try {
+      const response = await fetch(`${API_URL}/api/dil/${dilKodu}`);
+      const result = await response.json();
+      if (result.basarili) {
+        setDilMetinleri(result.metinler);
+      }
+    } catch (error) {
+      console.error('Dil yüklenemedi:', error);
+    }
+  };
+
+  const dilDegistir = (yeniDil) => {
+    setDil(yeniDil);
+    localStorage.setItem('dil', yeniDil);
+    dilYukle(yeniDil);
+  };
+
+  const t = (key) => {
+    return dilMetinleri[key] || key;
+  };
 
   const girisYap = async () => {
     try {
@@ -342,36 +371,46 @@ function App() {
       <header style={{ background: 'white', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1 style={{ margin: 0, color: '#667eea', cursor: 'pointer' }} onClick={() => setSecilenSayfa('ana')}>
-            KIYAFET MAĞAZASI
+            {t('site_title')}
           </h1>
           <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
+            {/* Dil Seçici */}
+            <select 
+              value={dil} 
+              onChange={(e) => dilDegistir(e.target.value)}
+              style={{ padding: '8px 12px', borderRadius: 5, border: '1px solid #ddd', cursor: 'pointer', background: 'white' }}
+            >
+              <option value="tr">🇹🇷 Türkçe</option>
+              <option value="en">🇬🇧 English</option>
+            </select>
+            
             <input
               type="text"
-              placeholder="Ürün ara..."
+              placeholder={t('search')}
               value={aramaMetni}
               onChange={(e) => setAramaMetni(e.target.value)}
               style={{ padding: '10px', borderRadius: 5, border: '1px solid #ddd' }}
             />
             {kullanici ? (
               <>
-                <span>Merhaba, {kullanici.ad}</span>
+                <span>{t('welcome')}, {kullanici.ad}</span>
                 <button onClick={() => { setSecilenSayfa('favorilerim'); favorileriYukle(kullanici.id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20 }}>
                   ❤️ {favoriler.length > 0 && `(${favoriler.length})`}
                 </button>
                 <button onClick={() => { setSecilenSayfa('siparislerim'); siparisleriYukle(); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>
-                  📦 Siparişlerim
+                  📦 {t('my_orders')}
                 </button>
                 <button onClick={cikisYap} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>
-                  🚪 Çıkış
+                  🚪 {t('logout')}
                 </button>
               </>
             ) : (
               <>
                 <button onClick={() => setSecilenSayfa('giris')} style={{ padding: '10px 20px', background: '#667eea', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer' }}>
-                  🔐 Giriş
+                  🔐 {t('login')}
                 </button>
                 <button onClick={() => setSecilenSayfa('kayit')} style={{ padding: '10px 20px', background: '#28a745', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer' }}>
-                  📝 Kayıt
+                  📝 {t('register')}
                 </button>
               </>
             )}

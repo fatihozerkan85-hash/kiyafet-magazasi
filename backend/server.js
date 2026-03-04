@@ -1629,8 +1629,463 @@ app.get('/api/admin/bildirim-gecmisi', (req, res) => {
   });
 });
 
+// ============================================
+// 15. GELİŞMİŞ RAPORLAMA
+// ============================================
+
+// Satış Raporu (Günlük, Haftalık, Aylık)
+app.get('/api/admin/rapor/satis', (req, res) => {
+  const { period } = req.query; // 'gunluk', 'haftalik', 'aylik'
+  
+  const now = new Date();
+  let baslangic;
+  
+  switch(period) {
+    case 'gunluk':
+      baslangic = new Date(now.setHours(0, 0, 0, 0));
+      break;
+    case 'haftalik':
+      baslangic = new Date(now.setDate(now.getDate() - 7));
+      break;
+    case 'aylik':
+      baslangic = new Date(now.setMonth(now.getMonth() - 1));
+      break;
+    default:
+      baslangic = new Date(now.setMonth(now.getMonth() - 1));
+  }
+  
+  const filtreliSiparisler = siparisler.filter(s => 
+    new Date(s.olusturmaTarihi) >= baslangic
+  );
+  
+  const toplamSatis = filtreliSiparisler.length;
+  const toplamGelir = filtreliSiparisler.reduce((sum, s) => sum + s.toplamTutar, 0);
+  const ortalamaSepetutu = toplamSatis > 0 ? toplamGelir / toplamSatis : 0;
+  
+  // Günlük dağılım
+  const gunlukDagilim = {};
+  filtreliSiparisler.forEach(s => {
+    const gun = new Date(s.olusturmaTarihi).toLocaleDateString('tr-TR');
+    if (!gunlukDagilim[gun]) {
+      gunlukDagilim[gun] = { adet: 0, tutar: 0 };
+    }
+    gunlukDagilim[gun].adet++;
+    gunlukDagilim[gun].tutar += s.toplamTutar;
+  });
+  
+  res.json({
+    basarili: true,
+    period,
+    toplamSatis,
+    toplamGelir: toplamGelir.toFixed(2),
+    ortalamaSepet: ortalamaSepetutu.toFixed(2),
+    gunlukDagilim
+  });
+});
+
+// En Çok Satan Ürünler
+app.get('/api/admin/rapor/en-cok-satanlar', (req, res) => {
+  const { limit } = req.query;
+  
+  const urunSatislari = {};
+  
+  siparisler.forEach(siparis => {
+    siparis.urunler.forEach(urun => {
+      if (!urunSatislari[urun.id]) {
+        urunSatislari[urun.id] = {
+          urun: urun,
+          adet: 0,
+          gelir: 0
+        };
+      }
+      urunSatislari[urun.id].adet++;
+      urunSatislari[urun.id].gelir += urun.fiyat;
+    });
+  });
+  
+  const sirali = Object.values(urunSatislari)
+    .sort((a, b) => b.adet - a.adet)
+    .slice(0, parseInt(limit) || 10);
+  
+  res.json({
+    basarili: true,
+    enCokSatanlar: sirali
+  });
+});
+
+// Kategori Bazlı Satışlar
+app.get('/api/admin/rapor/kategori-satis', (req, res) => {
+  const kategoriSatislari = {};
+  
+  siparisler.forEach(siparis => {
+    siparis.urunler.forEach(urun => {
+      const kategori = urun.kategori;
+      if (!kategoriSatislari[kategori]) {
+        kategoriSatislari[kategori] = {
+          kategori,
+          adet: 0,
+          gelir: 0
+        };
+      }
+      kategoriSatislari[kategori].adet++;
+      kategoriSatislari[kategori].gelir += urun.fiyat;
+    });
+  });
+  
+  const sirali = Object.values(kategoriSatislari)
+    .sort((a, b) => b.gelir - a.gelir);
+  
+  res.json({
+    basarili: true,
+    kategoriSatislari: sirali
+  });
+});
+
+// Gelir Grafiği (Son 30 gün)
+app.get('/api/admin/rapor/gelir-grafik', (req, res) => {
+  const son30Gun = [];
+  const bugun = new Date();
+  
+  for (let i = 29; i >= 0; i--) {
+    const tarih = new Date(bugun);
+    tarih.setDate(tarih.getDate() - i);
+    const tarihStr = tarih.toLocaleDateString('tr-TR');
+    
+    const gunlukSiparisler = siparisler.filter(s => {
+      const siparisTarih = new Date(s.olusturmaTarihi).toLocaleDateString('tr-TR');
+      return siparisTarih === tarihStr;
+    });
+    
+    const gunlukGelir = gunlukSiparisler.reduce((sum, s) => sum + s.toplamTutar, 0);
+    
+    son30Gun.push({
+      tarih: tarihStr,
+      gelir: gunlukGelir,
+      siparisSayisi: gunlukSiparisler.length
+    });
+  }
+  
+  res.json({
+    basarili: true,
+    grafik: son30Gun
+  });
+});
+
+// ============================================
+// 16. MÜŞTERİ SEGMENTASYONU
+// ============================================
+
+// Müşteri Segmentleri
+app.get('/api/admin/musteri-segmentleri', (req, res) => {
+  const segmentler = {
+    vip: [],      // 5+ sipariş veya 5000+ TL harcama
+    sadik: [],    // 3-4 sipariş
+    yeni: [],     // 1-2 sipariş
+    pasif: []     // 90+ gün sipariş yok
+  };
+  
+  const bugun = new Date();
+  
+  kullanicilar.forEach(kullanici => {
+    const kullaniciSiparisleri = siparisler.filter(s => s.kullaniciId === kullanici.id);
+    const siparisSayisi = kullaniciSiparisleri.length;
+    const toplamHarcama = kullaniciSiparisleri.reduce((sum, s) => sum + s.toplamTutar, 0);
+    
+    // Son sipariş tarihi
+    const sonSiparis = kullaniciSiparisleri.length > 0 
+      ? new Date(Math.max(...kullaniciSiparisleri.map(s => new Date(s.olusturmaTarihi))))
+      : null;
+    
+    const gunFarki = sonSiparis 
+      ? Math.floor((bugun - sonSiparis) / (1000 * 60 * 60 * 24))
+      : 999;
+    
+    const musteriData = {
+      ...kullanici,
+      siparisSayisi,
+      toplamHarcama: toplamHarcama.toFixed(2),
+      sonSiparisTarihi: sonSiparis,
+      gunFarki
+    };
+    
+    // Segmentlere ayır
+    if (siparisSayisi >= 5 || toplamHarcama >= 5000) {
+      segmentler.vip.push(musteriData);
+    } else if (siparisSayisi >= 3) {
+      segmentler.sadik.push(musteriData);
+    } else if (siparisSayisi >= 1 && gunFarki <= 90) {
+      segmentler.yeni.push(musteriData);
+    } else if (gunFarki > 90) {
+      segmentler.pasif.push(musteriData);
+    }
+  });
+  
+  res.json({
+    basarili: true,
+    segmentler: {
+      vip: { adet: segmentler.vip.length, musteriler: segmentler.vip },
+      sadik: { adet: segmentler.sadik.length, musteriler: segmentler.sadik },
+      yeni: { adet: segmentler.yeni.length, musteriler: segmentler.yeni },
+      pasif: { adet: segmentler.pasif.length, musteriler: segmentler.pasif }
+    }
+  });
+});
+
+// Müşteri Detay Analizi
+app.get('/api/admin/musteri-analiz/:id', (req, res) => {
+  const { id } = req.params;
+  const kullanici = kullanicilar.find(k => k.id === id);
+  
+  if (!kullanici) {
+    return res.status(404).json({ basarili: false, mesaj: 'Müşteri bulunamadı' });
+  }
+  
+  const kullaniciSiparisleri = siparisler.filter(s => s.kullaniciId === id);
+  const toplamHarcama = kullaniciSiparisleri.reduce((sum, s) => sum + s.toplamTutar, 0);
+  const ortalamaSepet = kullaniciSiparisleri.length > 0 
+    ? toplamHarcama / kullaniciSiparisleri.length 
+    : 0;
+  
+  // En çok aldığı kategoriler
+  const kategoriTercihleri = {};
+  kullaniciSiparisleri.forEach(siparis => {
+    siparis.urunler.forEach(urun => {
+      kategoriTercihleri[urun.kategori] = (kategoriTercihleri[urun.kategori] || 0) + 1;
+    });
+  });
+  
+  res.json({
+    basarili: true,
+    kullanici,
+    istatistikler: {
+      siparisSayisi: kullaniciSiparisleri.length,
+      toplamHarcama: toplamHarcama.toFixed(2),
+      ortalamaSepet: ortalamaSepet.toFixed(2),
+      kategoriTercihleri,
+      sonSiparisler: kullaniciSiparisleri.slice(-5).reverse()
+    }
+  });
+});
+
+// Segment'e Toplu Email/SMS Gönder
+app.post('/api/admin/segment-bildirim', (req, res) => {
+  const { segment, tip, mesaj } = req.body; // segment: 'vip', 'sadik', 'yeni', 'pasif'
+  
+  // Segment müşterilerini al
+  // Email veya SMS gönder
+  
+  console.log(`📧 ${segment} segmentine ${tip} gönderildi: ${mesaj}`);
+  
+  res.json({
+    basarili: true,
+    mesaj: `${segment} segmentine bildirim gönderildi`,
+    gonderimSayisi: 0 // Simülasyon
+  });
+});
+
+// ============================================
+// 17. ÇOKLU DİL DESTEĞİ (Geliştirilmiş)
+// ============================================
+
+const dilMetinleri = {
+  tr: {
+    // Genel
+    'site_title': 'Kıyafet Mağazası',
+    'welcome': 'Hoş Geldiniz',
+    'search': 'Ara',
+    'login': 'Giriş Yap',
+    'register': 'Kayıt Ol',
+    'logout': 'Çıkış Yap',
+    
+    // Ürünler
+    'products': 'Ürünler',
+    'all_products': 'Tüm Ürünler',
+    'product_detail': 'Ürün Detayı',
+    'add_to_cart': 'Sepete Ekle',
+    'buy_now': 'Hemen Al',
+    'out_of_stock': 'Stokta Yok',
+    'in_stock': 'Stokta Var',
+    
+    // Sepet
+    'cart': 'Sepet',
+    'my_cart': 'Sepetim',
+    'cart_empty': 'Sepetiniz boş',
+    'continue_shopping': 'Alışverişe Devam',
+    'checkout': 'Ödeme',
+    'total': 'Toplam',
+    'subtotal': 'Ara Toplam',
+    'shipping': 'Kargo',
+    'free_shipping': 'Ücretsiz Kargo',
+    
+    // Sipariş
+    'order': 'Sipariş',
+    'my_orders': 'Siparişlerim',
+    'order_success': 'Siparişiniz alındı',
+    'order_number': 'Sipariş Numarası',
+    'order_date': 'Sipariş Tarihi',
+    'order_status': 'Sipariş Durumu',
+    
+    // Kategoriler
+    'categories': 'Kategoriler',
+    'all': 'Tümü',
+    'dress': 'Elbise',
+    'pants': 'Pantolon',
+    'shirt': 'Gömlek',
+    'jacket': 'Ceket',
+    'shoes': 'Ayakkabı',
+    'accessories': 'Aksesuar',
+    'sports': 'Spor',
+    
+    // Kampanya
+    'campaigns': 'Kampanyalar',
+    'discount': 'İndirim',
+    'special_offer': 'Özel Teklif',
+    
+    // Kupon
+    'coupon': 'Kupon',
+    'apply_coupon': 'Kupon Uygula',
+    'coupon_applied': 'Kupon uygulandı',
+    'invalid_coupon': 'Geçersiz kupon',
+    
+    // Hesap
+    'account': 'Hesabım',
+    'profile': 'Profil',
+    'favorites': 'Favorilerim',
+    'addresses': 'Adreslerim',
+    
+    // Form
+    'name': 'Ad',
+    'surname': 'Soyad',
+    'email': 'E-posta',
+    'phone': 'Telefon',
+    'password': 'Şifre',
+    'address': 'Adres',
+    'city': 'Şehir',
+    'save': 'Kaydet',
+    'cancel': 'İptal',
+    'delete': 'Sil',
+    'edit': 'Düzenle',
+    
+    // Mesajlar
+    'success': 'Başarılı',
+    'error': 'Hata',
+    'loading': 'Yükleniyor',
+    'no_results': 'Sonuç bulunamadı'
+  },
+  en: {
+    // General
+    'site_title': 'Clothing Store',
+    'welcome': 'Welcome',
+    'search': 'Search',
+    'login': 'Login',
+    'register': 'Register',
+    'logout': 'Logout',
+    
+    // Products
+    'products': 'Products',
+    'all_products': 'All Products',
+    'product_detail': 'Product Detail',
+    'add_to_cart': 'Add to Cart',
+    'buy_now': 'Buy Now',
+    'out_of_stock': 'Out of Stock',
+    'in_stock': 'In Stock',
+    
+    // Cart
+    'cart': 'Cart',
+    'my_cart': 'My Cart',
+    'cart_empty': 'Your cart is empty',
+    'continue_shopping': 'Continue Shopping',
+    'checkout': 'Checkout',
+    'total': 'Total',
+    'subtotal': 'Subtotal',
+    'shipping': 'Shipping',
+    'free_shipping': 'Free Shipping',
+    
+    // Order
+    'order': 'Order',
+    'my_orders': 'My Orders',
+    'order_success': 'Order received',
+    'order_number': 'Order Number',
+    'order_date': 'Order Date',
+    'order_status': 'Order Status',
+    
+    // Categories
+    'categories': 'Categories',
+    'all': 'All',
+    'dress': 'Dress',
+    'pants': 'Pants',
+    'shirt': 'Shirt',
+    'jacket': 'Jacket',
+    'shoes': 'Shoes',
+    'accessories': 'Accessories',
+    'sports': 'Sports',
+    
+    // Campaign
+    'campaigns': 'Campaigns',
+    'discount': 'Discount',
+    'special_offer': 'Special Offer',
+    
+    // Coupon
+    'coupon': 'Coupon',
+    'apply_coupon': 'Apply Coupon',
+    'coupon_applied': 'Coupon applied',
+    'invalid_coupon': 'Invalid coupon',
+    
+    // Account
+    'account': 'My Account',
+    'profile': 'Profile',
+    'favorites': 'Favorites',
+    'addresses': 'Addresses',
+    
+    // Form
+    'name': 'Name',
+    'surname': 'Surname',
+    'email': 'Email',
+    'phone': 'Phone',
+    'password': 'Password',
+    'address': 'Address',
+    'city': 'City',
+    'save': 'Save',
+    'cancel': 'Cancel',
+    'delete': 'Delete',
+    'edit': 'Edit',
+    
+    // Messages
+    'success': 'Success',
+    'error': 'Error',
+    'loading': 'Loading',
+    'no_results': 'No results found'
+  }
+};
+
+// Dil metinlerini getir
+app.get('/api/dil/:kod', (req, res) => {
+  const { kod } = req.params;
+  const metinler = dilMetinleri[kod] || dilMetinleri['tr'];
+  
+  res.json({
+    basarili: true,
+    dil: kod,
+    metinler
+  });
+});
+
+// Desteklenen diller
+app.get('/api/diller', (req, res) => {
+  res.json({
+    basarili: true,
+    diller: [
+      { kod: 'tr', ad: 'Türkçe', bayrak: '🇹🇷' },
+      { kod: 'en', ad: 'English', bayrak: '🇬🇧' }
+    ]
+  });
+});
+
 console.log('✅ Tüm yeni özellikler yüklendi!');
 console.log('📦 Kupon kodları: HOSGELDIN, YENISEZON, 50TL');
 console.log('📧 Email bildirimleri: Aktif (simülasyon)');
 console.log('📱 SMS entegrasyonu: Aktif (simülasyon)');
 console.log('📸 Resim upload: Aktif (base64)');
+console.log('📊 Gelişmiş raporlama: Aktif');
+console.log('👥 Müşteri segmentasyonu: Aktif');
+console.log('🌍 Çoklu dil desteği: Türkçe, English');
