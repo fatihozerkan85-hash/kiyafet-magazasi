@@ -328,6 +328,90 @@ app.patch('/api/admin/kampanya/:id/toggle', (req, res) => {
   res.json({ basarili: true, mesaj: `Kampanya ${kampanya.aktif ? 'aktif' : 'pasif'} edildi`, kampanya });
 });
 
+// ============================================
+// KATEGORİ YÖNETİMİ API'LERİ
+// ============================================
+
+// Tüm Kategorileri Getir
+app.get('/api/kategoriler', (req, res) => {
+  const aktifKategoriler = kategoriler
+    .filter(k => k.aktif)
+    .sort((a, b) => a.sira - b.sira);
+  res.json(aktifKategoriler);
+});
+
+// Tüm Kategorileri Getir (Admin)
+app.get('/api/admin/kategoriler', (req, res) => {
+  const tumKategoriler = kategoriler.sort((a, b) => a.sira - b.sira);
+  res.json(tumKategoriler);
+});
+
+// Kategori Ekle (Admin)
+app.post('/api/admin/kategori', (req, res) => {
+  const { ad, emoji } = req.body;
+  
+  const yeniKategori = {
+    id: 'K' + Date.now(),
+    ad,
+    emoji: emoji || '📦',
+    sira: kategoriler.length + 1,
+    aktif: true
+  };
+  
+  kategoriler.push(yeniKategori);
+  res.json({ basarili: true, mesaj: 'Kategori eklendi', kategori: yeniKategori });
+});
+
+// Kategori Güncelle (Admin)
+app.put('/api/admin/kategori/:id', (req, res) => {
+  const { id } = req.params;
+  const { ad, emoji, sira, aktif } = req.body;
+  
+  const kategori = kategoriler.find(k => k.id === id);
+  
+  if (!kategori) {
+    return res.status(404).json({ basarili: false, mesaj: 'Kategori bulunamadı' });
+  }
+  
+  if (ad) kategori.ad = ad;
+  if (emoji) kategori.emoji = emoji;
+  if (sira !== undefined) kategori.sira = sira;
+  if (aktif !== undefined) kategori.aktif = aktif;
+  
+  res.json({ basarili: true, mesaj: 'Kategori güncellendi', kategori });
+});
+
+// Kategori Sil (Admin)
+app.delete('/api/admin/kategori/:id', (req, res) => {
+  const { id } = req.params;
+  const index = kategoriler.findIndex(k => k.id === id);
+  
+  if (index === -1) {
+    return res.status(404).json({ basarili: false, mesaj: 'Kategori bulunamadı' });
+  }
+  
+  // "Tümü" kategorisi silinemez
+  if (kategoriler[index].ad === 'Tümü') {
+    return res.status(400).json({ basarili: false, mesaj: 'Tümü kategorisi silinemez' });
+  }
+  
+  kategoriler.splice(index, 1);
+  res.json({ basarili: true, mesaj: 'Kategori silindi' });
+});
+
+// Kategori Aktif/Pasif (Admin)
+app.patch('/api/admin/kategori/:id/toggle', (req, res) => {
+  const { id } = req.params;
+  const kategori = kategoriler.find(k => k.id === id);
+  
+  if (!kategori) {
+    return res.status(404).json({ basarili: false, mesaj: 'Kategori bulunamadı' });
+  }
+  
+  kategori.aktif = !kategori.aktif;
+  res.json({ basarili: true, mesaj: `Kategori ${kategori.aktif ? 'aktif' : 'pasif'} edildi`, kategori });
+});
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({ 
@@ -815,6 +899,18 @@ const kampanyalar = [
     renk: '#28a745',
     sira: 3
   }
+];
+
+// Kategoriler
+const kategoriler = [
+  { id: 'K1', ad: 'Tümü', emoji: '🛍️', sira: 1, aktif: true },
+  { id: 'K2', ad: 'Elbise', emoji: '👗', sira: 2, aktif: true },
+  { id: 'K3', ad: 'Pantolon', emoji: '👖', sira: 3, aktif: true },
+  { id: 'K4', ad: 'Gömlek', emoji: '👔', sira: 4, aktif: true },
+  { id: 'K5', ad: 'Ceket', emoji: '🧥', sira: 5, aktif: true },
+  { id: 'K6', ad: 'Ayakkabı', emoji: '👟', sira: 6, aktif: true },
+  { id: 'K7', ad: 'Aksesuar', emoji: '👜', sira: 7, aktif: true },
+  { id: 'K8', ad: 'Spor', emoji: '🏃', sira: 8, aktif: true }
 ];
 
 // Başlangıç kuponları
