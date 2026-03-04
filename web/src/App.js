@@ -370,7 +370,7 @@ function App() {
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ background: 'white', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={{ margin: 0, color: '#667eea', cursor: 'pointer' }} onClick={() => setSecilenSayfa('ana')}>
+          <h1 style={{ margin: 0, color: '#000000', cursor: 'pointer' }} onClick={() => setSecilenSayfa('ana')}>
             {t('site_title')}
           </h1>
           <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
@@ -390,7 +390,7 @@ function App() {
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                 transition: 'all 0.3s ease'
               }}
-              onMouseOver={(e) => e.target.style.borderColor = '#667eea'}
+              onMouseOver={(e) => e.target.style.borderColor = '#000000'}
               onMouseOut={(e) => e.target.style.borderColor = '#ddd'}
             >
               <option value="tr">🇹🇷 Türkçe</option>
@@ -419,7 +419,7 @@ function App() {
               </>
             ) : (
               <>
-                <button onClick={() => setSecilenSayfa('giris')} style={{ padding: '10px 20px', background: '#667eea', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer' }}>
+                <button onClick={() => setSecilenSayfa('giris')} style={{ padding: '10px 20px', background: '#000000', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer' }}>
                   🔐 {t('login')}
                 </button>
                 <button onClick={() => setSecilenSayfa('kayit')} style={{ padding: '10px 20px', background: '#28a745', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer' }}>
@@ -444,7 +444,7 @@ function App() {
                 onClick={() => { setSecilenKategori(kategori.id); setSecilenSayfa('ana'); }}
                 style={{
                   padding: '10px 20px',
-                  background: secilenKategori === kategori.id ? '#667eea' : '#f8f9fa',
+                  background: secilenKategori === kategori.id ? '#000000' : '#f8f9fa',
                   color: secilenKategori === kategori.id ? 'white' : '#333',
                   border: 'none',
                   borderRadius: 25,
@@ -453,7 +453,7 @@ function App() {
                   fontWeight: secilenKategori === kategori.id ? 600 : 400,
                   whiteSpace: 'nowrap',
                   transition: 'all 0.3s ease',
-                  boxShadow: secilenKategori === kategori.id ? '0 2px 8px rgba(102,126,234,0.3)' : 'none'
+                  boxShadow: secilenKategori === kategori.id ? '0 2px 8px rgba(0,0,0,0.3)' : 'none'
                 }}
               >
                 {kategori.emoji} {dil === 'en' ? kategori.adEn : kategori.ad}
@@ -482,11 +482,11 @@ function App() {
               onKeyDown={(e) => e.key === 'Enter' && girisYap()}
               style={{ width: '100%', padding: 12, marginBottom: 20, border: '1px solid #ddd', borderRadius: 8 }}
             />
-            <button onClick={girisYap} style={{ width: '100%', padding: 15, background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+            <button onClick={girisYap} style={{ width: '100%', padding: 15, background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
               Giriş Yap
             </button>
             <div style={{ textAlign: 'center', marginTop: 15, fontSize: 14 }}>
-              Hesabınız yok mu? <button onClick={() => setSecilenSayfa('kayit')} style={{ background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', textDecoration: 'underline' }}>Kayıt Ol</button>
+              Hesabınız yok mu? <button onClick={() => setSecilenSayfa('kayit')} style={{ background: 'none', border: 'none', color: '#000000', cursor: 'pointer', textDecoration: 'underline' }}>Kayıt Ol</button>
             </div>
             <div style={{ marginTop: 20, padding: 15, background: '#fff3cd', borderRadius: 8, fontSize: 13 }}>
               <strong>Test Hesabı:</strong><br/>
@@ -538,7 +538,7 @@ function App() {
               Kayıt Ol
             </button>
             <div style={{ textAlign: 'center', marginTop: 15, fontSize: 14 }}>
-              Zaten hesabınız var mı? <button onClick={() => setSecilenSayfa('giris')} style={{ background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', textDecoration: 'underline' }}>Giriş Yap</button>
+              Zaten hesabınız var mı? <button onClick={() => setSecilenSayfa('giris')} style={{ background: 'none', border: 'none', color: '#000000', cursor: 'pointer', textDecoration: 'underline' }}>Giriş Yap</button>
             </div>
           </div>
         )}
@@ -546,7 +546,7 @@ function App() {
         {secilenSayfa === 'ana' && (
           <div>
             {/* Test Banner - Her zaman görünür */}
-            <div style={{ marginBottom: 20, padding: 20, background: '#667eea', color: 'white', borderRadius: 12, textAlign: 'center' }}>
+            <div style={{ marginBottom: 20, padding: 20, background: '#000000', color: 'white', borderRadius: 12, textAlign: 'center' }}>
               <h3>🎉 Kampanya Sistemi Aktif - Toplam {kampanyalar.length} kampanya</h3>
               {kampanyalar.length === 0 && <p>Kampanyalar yükleniyor...</p>}
             </div>
@@ -627,7 +627,7 @@ function App() {
                 <p style={{ fontSize: 18, color: '#666' }}>Bu kategoride ürün bulunamadı</p>
                 <button 
                   onClick={() => setSecilenKategori('Tümü')} 
-                  style={{ marginTop: 20, padding: '12px 30px', background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}
+                  style={{ marginTop: 20, padding: '12px 30px', background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}
                 >
                   Tüm Ürünleri Gör
                 </button>
@@ -660,7 +660,7 @@ function App() {
                   </div>
                   <p style={{ margin: '0 0 10px 0', color: '#666', fontSize: 14 }}>{dil === 'en' && urun.aciklamaEn ? urun.aciklamaEn : urun.aciklama}</p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                    <p style={{ margin: 0, fontSize: 20, fontWeight: 'bold', color: '#667eea' }}>{urun.fiyat} ₺</p>
+                    <p style={{ margin: 0, fontSize: 20, fontWeight: 'bold', color: '#000000' }}>{urun.fiyat} ₺</p>
                     <span style={{ fontSize: 12, color: urun.stokMiktari > 10 ? '#28a745' : '#dc3545' }}>
                       {urun.stokMiktari > 0 ? `${urun.stokMiktari} adet` : 'Tükendi'}
                     </span>
@@ -668,7 +668,7 @@ function App() {
                   <button 
                     onClick={(e) => { e.stopPropagation(); sepeteEkle(urun); }} 
                     disabled={!urun.stokDurumu || urun.stokMiktari === 0}
-                    style={{ width: '100%', padding: 12, background: (!urun.stokDurumu || urun.stokMiktari === 0) ? '#ccc' : '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: (!urun.stokDurumu || urun.stokMiktari === 0) ? 'not-allowed' : 'pointer', fontSize: 14, fontWeight: 600 }}
+                    style={{ width: '100%', padding: 12, background: (!urun.stokDurumu || urun.stokMiktari === 0) ? '#ccc' : '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: (!urun.stokDurumu || urun.stokMiktari === 0) ? 'not-allowed' : 'pointer', fontSize: 14, fontWeight: 600 }}
                   >
                     {(!urun.stokDurumu || urun.stokMiktari === 0) ? '❌ Stokta Yok' : '🛒 Sepete Ekle'}
                   </button>
@@ -686,7 +686,7 @@ function App() {
             {sepet.length === 0 ? (
               <div style={{ textAlign: 'center', padding: 50 }}>
                 <p style={{ fontSize: 18, color: '#666' }}>Sepetiniz boş</p>
-                <button onClick={() => setSecilenSayfa('ana')} style={{ padding: '12px 30px', background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginTop: 20 }}>
+                <button onClick={() => setSecilenSayfa('ana')} style={{ padding: '12px 30px', background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginTop: 20 }}>
                   Alışverişe Başla
                 </button>
               </div>
@@ -697,7 +697,7 @@ function App() {
                     <img src={item.resimler[0]} alt={item.ad} style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 8 }} />
                     <div style={{ flex: 1 }}>
                       <h3 style={{ margin: '0 0 10px 0' }}>{item.ad}</h3>
-                      <p style={{ margin: 0, fontSize: 18, fontWeight: 'bold', color: '#667eea' }}>{item.fiyat} ₺</p>
+                      <p style={{ margin: 0, fontSize: 18, fontWeight: 'bold', color: '#000000' }}>{item.fiyat} ₺</p>
                     </div>
                     <button onClick={() => sepettenCikar(index)} style={{ padding: '10px 20px', background: '#e74c3c', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
                       🗑️ Sil
@@ -723,9 +723,9 @@ function App() {
                     </div>
                   )}
                   <div style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'right', marginBottom: 20 }}>
-                    Toplam: <span style={{ color: '#667eea' }}>{indirimliToplam.toFixed(2)} ₺</span>
+                    Toplam: <span style={{ color: '#000000' }}>{indirimliToplam.toFixed(2)} ₺</span>
                   </div>
-                  <button onClick={() => setSecilenSayfa('odeme')} style={{ width: '100%', padding: 15, background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+                  <button onClick={() => setSecilenSayfa('odeme')} style={{ width: '100%', padding: 15, background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
                     Ödemeye Geç
                   </button>
                 </div>
@@ -749,8 +749,8 @@ function App() {
                       <img src={urun.resimler[0]} alt={urun.ad} style={{ width: '100%', height: 300, objectFit: 'cover' }} />
                       <div style={{ padding: 15 }}>
                         <h3>{urun.ad}</h3>
-                        <p style={{ fontSize: 20, fontWeight: 'bold', color: '#667eea' }}>{urun.fiyat} ₺</p>
-                        <button onClick={() => sepeteEkle(urun)} style={{ width: '100%', padding: 12, background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginBottom: 10 }}>
+                        <p style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>{urun.fiyat} ₺</p>
+                        <button onClick={() => sepeteEkle(urun)} style={{ width: '100%', padding: 12, background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginBottom: 10 }}>
                           Sepete Ekle
                         </button>
                         <button onClick={() => favoriToggle(urun.id)} style={{ width: '100%', padding: 12, background: '#e74c3c', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
@@ -775,7 +775,7 @@ function App() {
                 <div key={siparis.id} style={{ padding: 20, borderBottom: '1px solid #eee', marginBottom: 20 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                     <strong>Sipariş No: {siparis.id}</strong>
-                    <span style={{ padding: '5px 15px', background: '#667eea', color: 'white', borderRadius: 5, fontSize: 14 }}>
+                    <span style={{ padding: '5px 15px', background: '#000000', color: 'white', borderRadius: 5, fontSize: 14 }}>
                       {siparis.durum}
                     </span>
                   </div>
@@ -788,7 +788,7 @@ function App() {
                       <strong>📦 Kargo Takip No:</strong> {siparis.kargoTakipNo}
                       <button 
                         onClick={() => { setKargoTakipNo(siparis.kargoTakipNo); kargoTakipSorgula(); }}
-                        style={{ marginLeft: 15, padding: '8px 15px', background: '#667eea', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer', fontSize: 13 }}
+                        style={{ marginLeft: 15, padding: '8px 15px', background: '#000000', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer', fontSize: 13 }}
                       >
                         🔍 Takip Et
                       </button>
@@ -807,7 +807,7 @@ function App() {
                   onChange={(e) => setKargoTakipNo(e.target.value)}
                   style={{ flex: 1, padding: 12, border: '1px solid #ddd', borderRadius: 8 }}
                 />
-                <button onClick={kargoTakipSorgula} style={{ padding: '12px 30px', background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+                <button onClick={kargoTakipSorgula} style={{ padding: '12px 30px', background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
                   Sorgula
                 </button>
               </div>
@@ -841,7 +841,7 @@ function App() {
                   </span>
                 </div>
 
-                <p style={{ fontSize: 32, fontWeight: 'bold', color: '#667eea', margin: '0 0 20px 0' }}>
+                <p style={{ fontSize: 32, fontWeight: 'bold', color: '#000000', margin: '0 0 20px 0' }}>
                   {secilenUrun.fiyat} ₺
                 </p>
 
@@ -874,7 +874,7 @@ function App() {
                   <button 
                     onClick={() => sepeteEkle(secilenUrun)} 
                     disabled={!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0}
-                    style={{ flex: 1, padding: 15, background: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? '#ccc' : '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? 'not-allowed' : 'pointer', fontSize: 16, fontWeight: 600 }}
+                    style={{ flex: 1, padding: 15, background: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? '#ccc' : '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? 'not-allowed' : 'pointer', fontSize: 16, fontWeight: 600 }}
                   >
                     {(!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? '❌ Stokta Yok' : '🛒 Sepete Ekle'}
                   </button>
@@ -914,7 +914,7 @@ function App() {
                     onChange={(e) => setYeniYorum({...yeniYorum, yorum: e.target.value})}
                     style={{ width: '100%', padding: 15, border: '1px solid #ddd', borderRadius: 8, minHeight: 100, fontSize: 14, fontFamily: 'inherit' }}
                   />
-                  <button onClick={yorumEkle} style={{ marginTop: 15, padding: '12px 30px', background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                  <button onClick={yorumEkle} style={{ marginTop: 15, padding: '12px 30px', background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
                     📝 Yorum Gönder
                   </button>
                 </div>
@@ -950,13 +950,13 @@ function App() {
             <div style={{ marginBottom: 30 }}>
               <h3>Ödeme Yöntemi Seçin</h3>
               <div style={{ display: 'flex', gap: 15, marginTop: 15 }}>
-                <button onClick={() => setOdemeTipi('kart')} style={{ flex: 1, padding: 15, background: odemeTipi === 'kart' ? '#667eea' : '#f0f0f0', color: odemeTipi === 'kart' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+                <button onClick={() => setOdemeTipi('kart')} style={{ flex: 1, padding: 15, background: odemeTipi === 'kart' ? '#000000' : '#f0f0f0', color: odemeTipi === 'kart' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
                   💳 Kredi Kartı
                 </button>
-                <button onClick={() => setOdemeTipi('havale')} style={{ flex: 1, padding: 15, background: odemeTipi === 'havale' ? '#667eea' : '#f0f0f0', color: odemeTipi === 'havale' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+                <button onClick={() => setOdemeTipi('havale')} style={{ flex: 1, padding: 15, background: odemeTipi === 'havale' ? '#000000' : '#f0f0f0', color: odemeTipi === 'havale' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
                   🏦 Havale/EFT
                 </button>
-                <button onClick={() => setOdemeTipi('kapida')} style={{ flex: 1, padding: 15, background: odemeTipi === 'kapida' ? '#667eea' : '#f0f0f0', color: odemeTipi === 'kapida' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+                <button onClick={() => setOdemeTipi('kapida')} style={{ flex: 1, padding: 15, background: odemeTipi === 'kapida' ? '#000000' : '#f0f0f0', color: odemeTipi === 'kapida' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
                   🚪 Kapıda Ödeme
                 </button>
               </div>
@@ -980,7 +980,7 @@ function App() {
 
             <div style={{ padding: 20, background: '#f8f9fa', borderRadius: 8, marginBottom: 20 }}>
               <div style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'right' }}>
-                Toplam: <span style={{ color: '#667eea' }}>{indirimliToplam.toFixed(2)} ₺</span>
+                Toplam: <span style={{ color: '#000000' }}>{indirimliToplam.toFixed(2)} ₺</span>
               </div>
             </div>
 
