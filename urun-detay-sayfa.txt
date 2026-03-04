@@ -1,0 +1,128 @@
+        {secilenSayfa === 'urun-detay' && secilenUrun && (
+          <div style={{ background: 'white', padding: 30, borderRadius: 12 }}>
+            <button onClick={() => setSecilenSayfa('ana')} style={{ marginBottom: 20, padding: '10px 20px', background: '#f0f0f0', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+              ← Geri
+            </button>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+              <div>
+                <img src={secilenUrun.resimler[0]} alt={secilenUrun.ad} style={{ width: '100%', height: 500, objectFit: 'cover', borderRadius: 12, marginBottom: 15 }} />
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+                  {secilenUrun.resimler.slice(0, 4).map((resim, index) => (
+                    <img key={index} src={resim} alt={`${secilenUrun.ad} ${index + 1}`} style={{ width: '100%', height: 100, objectFit: 'cover', borderRadius: 8, cursor: 'pointer', border: '2px solid #ddd' }} />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h1 style={{ margin: '0 0 15px 0' }}>{secilenUrun.ad}</h1>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 15 }}>
+                  {yildizGoster(secilenUrun.ortalamaPuan || 0)}
+                  <span style={{ fontSize: 16, color: '#666' }}>
+                    {secilenUrun.ortalamaPuan || 0} ({secilenUrun.yorumSayisi || 0} yorum)
+                  </span>
+                </div>
+
+                <p style={{ fontSize: 32, fontWeight: 'bold', color: '#667eea', margin: '0 0 20px 0' }}>
+                  {secilenUrun.fiyat} ₺
+                </p>
+
+                <div style={{ padding: 15, background: '#f8f9fa', borderRadius: 8, marginBottom: 20 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <strong>Stok Durumu:</strong>
+                    <span style={{ color: secilenUrun.stokMiktari > 10 ? '#28a745' : '#dc3545', fontWeight: 'bold' }}>
+                      {secilenUrun.stokMiktari > 0 ? `${secilenUrun.stokMiktari} adet mevcut` : 'Tükendi'}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <strong>Kategori:</strong>
+                    <span>{secilenUrun.kategori}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <strong>Marka:</strong>
+                    <span>{secilenUrun.marka}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Bedenler:</strong>
+                    <span>{secilenUrun.beden.join(', ')}</span>
+                  </div>
+                </div>
+
+                <p style={{ color: '#666', lineHeight: 1.6, marginBottom: 20 }}>
+                  {secilenUrun.aciklama}
+                </p>
+
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button 
+                    onClick={() => sepeteEkle(secilenUrun)} 
+                    disabled={!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0}
+                    style={{ flex: 1, padding: 15, background: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? '#ccc' : '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? 'not-allowed' : 'pointer', fontSize: 16, fontWeight: 600 }}
+                  >
+                    {(!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? '❌ Stokta Yok' : '🛒 Sepete Ekle'}
+                  </button>
+                  <button 
+                    onClick={() => favoriToggle(secilenUrun.id)}
+                    style={{ padding: 15, background: favoriler.some(f => f.urunId === secilenUrun.id) ? '#e74c3c' : '#f0f0f0', color: favoriler.some(f => f.urunId === secilenUrun.id) ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 20 }}
+                  >
+                    {favoriler.some(f => f.urunId === secilenUrun.id) ? '❤️' : '🤍'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 50, borderTop: '2px solid #eee', paddingTop: 30 }}>
+              <h2>⭐ Müşteri Yorumları ({yorumlar.length})</h2>
+
+              {kullanici && (
+                <div style={{ padding: 20, background: '#f8f9fa', borderRadius: 12, marginBottom: 30 }}>
+                  <h3>Yorum Yap</h3>
+                  <div style={{ marginBottom: 15 }}>
+                    <label style={{ display: 'block', marginBottom: 10, fontWeight: 'bold' }}>Puanınız:</label>
+                    <div style={{ display: 'flex', gap: 5 }}>
+                      {[1, 2, 3, 4, 5].map(puan => (
+                        <button
+                          key={puan}
+                          onClick={() => setYeniYorum({...yeniYorum, puan})}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 30, color: puan <= yeniYorum.puan ? '#ffc107' : '#ddd' }}
+                        >
+                          ★
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <textarea
+                    placeholder="Yorumunuzu yazın..."
+                    value={yeniYorum.yorum}
+                    onChange={(e) => setYeniYorum({...yeniYorum, yorum: e.target.value})}
+                    style={{ width: '100%', padding: 15, border: '1px solid #ddd', borderRadius: 8, minHeight: 100, fontSize: 14, fontFamily: 'inherit' }}
+                  />
+                  <button onClick={yorumEkle} style={{ marginTop: 15, padding: '12px 30px', background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                    📝 Yorum Gönder
+                  </button>
+                </div>
+              )}
+
+              {yorumlar.length === 0 ? (
+                <p style={{ textAlign: 'center', color: '#666', padding: 30 }}>Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
+              ) : (
+                <div>
+                  {yorumlar.map(yorum => (
+                    <div key={yorum.id} style={{ padding: 20, borderBottom: '1px solid #eee', marginBottom: 20 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                        <strong>{yorum.kullaniciAd}</strong>
+                        <span style={{ fontSize: 13, color: '#999' }}>
+                          {new Date(yorum.tarih).toLocaleDateString('tr-TR')}
+                        </span>
+                      </div>
+                      <div style={{ marginBottom: 10 }}>
+                        {yildizGoster(yorum.puan)}
+                      </div>
+                      <p style={{ color: '#666', lineHeight: 1.6 }}>{yorum.yorum}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}

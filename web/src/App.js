@@ -18,6 +18,10 @@ function App() {
     cardHolderName: '', cardNumber: '', expireMonth: '', expireYear: '', cvc: ''
   });
   const [odemeTipi, setOdemeTipi] = useState('kart');
+  const [secilenUrun, setSecilenUrun] = useState(null);
+  const [yorumlar, setYorumlar] = useState([]);
+  const [yeniYorum, setYeniYorum] = useState({ puan: 5, yorum: '' });
+  const [kargoTakipNo, setKargoTakipNo] = useState('');
 
   useEffect(() => {
     fetch(`${API_URL}/api/urunler`)
@@ -206,6 +210,91 @@ function App() {
   const sepetToplam = sepet.reduce((sum, item) => sum + (item.fiyat * (item.adet || 1)), 0);
   const indirimliToplam = uygulanmisKupon ? parseFloat(uygulanmisKupon.yeniToplam) : sepetToplam;
 
+  const urunDetayAc = async (urun) => {
+    setSecilenUrun(urun);
+    setSecilenSayfa('urun-detay');
+    // Yorumları yükle
+    try {
+      const response = await fetch(`${API_URL}/api/yorumlar/${urun.id}`);
+      const data = await response.json();
+      setYorumlar(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const yorumEkle = async () => {
+    if (!kullanici) {
+      alert('⚠️ Yorum yapmak için giriş yapmalısınız!');
+      setSecilenSayfa('giris');
+      return;
+    }
+    if (!yeniYorum.yorum.trim()) {
+      alert('⚠️ Lütfen yorum yazın!');
+      return;
+    }
+    try {
+      const response = await fetch(`${API_URL}/api/yorum`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          urunId: secilenUrun.id,
+          kullaniciId: kullanici.id,
+          kullaniciAd: kullanici.ad + ' ' + kullanici.soyad,
+          puan: yeniYorum.puan,
+          yorum: yeniYorum.yorum
+        })
+      });
+      const sonuc = await response.json();
+      if (sonuc.basarili) {
+        alert('✅ Yorumunuz eklendi!');
+        setYeniYorum({ puan: 5, yorum: '' });
+        // Yorumları yeniden yükle
+        const yorumResponse = await fetch(`${API_URL}/api/yorumlar/${secilenUrun.id}`);
+        const yorumData = await yorumResponse.json();
+        setYorumlar(yorumData);
+        // Ürün listesini güncelle
+        const urunResponse = await fetch(`${API_URL}/api/urunler`);
+        const urunData = await urunResponse.json();
+        setUrunler(urunData);
+        const guncelUrun = urunData.find(u => u.id === secilenUrun.id);
+        setSecilenUrun(guncelUrun);
+      }
+    } catch (error) {
+      alert('❌ Yorum eklenemedi');
+    }
+  };
+
+  const kargoTakipSorgula = async () => {
+    if (!kargoTakipNo.trim()) {
+      alert('⚠️ Lütfen takip numarası girin!');
+      return;
+    }
+    try {
+      const response = await fetch(`${API_URL}/api/kargo-takip/${kargoTakipNo}`);
+      const sonuc = await response.json();
+      if (sonuc.basarili) {
+        alert(`📦 Kargo Durumu: ${sonuc.durum}\n📍 Konum: ${sonuc.konum}\n📅 Son Güncelleme: ${new Date(sonuc.sonGuncelleme).toLocaleString('tr-TR')}`);
+      } else {
+        alert('❌ ' + sonuc.mesaj);
+      }
+    } catch (error) {
+      alert('❌ Kargo takip sorgulanamadı');
+    }
+  };
+
+  const yildizGoster = (puan) => {
+    const yildizlar = [];
+    for (let i = 1; i <= 5; i++) {
+      yildizlar.push(
+        <span key={i} style={{ color: i <= puan ? '#ffc107' : '#ddd', fontSize: 20 }}>
+          ★
+        </span>
+      );
+    }
+    return yildizlar;
+  };
+
   return (
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ background: 'white', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
@@ -334,22 +423,42 @@ function App() {
         {secilenSayfa === 'ana' && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 20 }}>
             {urunler.map(urun => (
-              <div key={urun.id} style={{ background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                <div style={{ position: 'relative' }}>
+              <div key={urun.id} style={{ background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', cursor: 'pointer' }}>
+                <div style={{ position: 'relative' }} onClick={() => urunDetayAc(urun)}>
                   <img src={urun.resimler[0]} alt={urun.ad} style={{ width: '100%', height: 300, objectFit: 'cover' }} />
                   <button 
-                    onClick={() => favoriToggle(urun.id)} 
+                    onClick={(e) => { e.stopPropagation(); favoriToggle(urun.id); }} 
                     style={{ position: 'absolute', top: 10, right: 10, background: 'white', border: 'none', borderRadius: '50%', width: 40, height: 40, fontSize: 20, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}
                   >
                     {favoriler.some(f => f.urunId === urun.id) ? '❤️' : '🤍'}
                   </button>
+                  {!urun.stokDurumu && (
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>STOKTA YOK</span>
+                    </div>
+                  )}
                 </div>
                 <div style={{ padding: 15 }}>
                   <h3 style={{ margin: '0 0 10px 0', fontSize: 16 }}>{urun.ad}</h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 10 }}>
+                    {yildizGoster(urun.ortalamaPuan || 0)}
+                    <span style={{ fontSize: 14, color: '#666' }}>
+                      ({urun.yorumSayisi || 0})
+                    </span>
+                  </div>
                   <p style={{ margin: '0 0 10px 0', color: '#666', fontSize: 14 }}>{urun.aciklama}</p>
-                  <p style={{ margin: '0 0 15px 0', fontSize: 20, fontWeight: 'bold', color: '#667eea' }}>{urun.fiyat} ₺</p>
-                  <button onClick={() => sepeteEkle(urun)} style={{ width: '100%', padding: 12, background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
-                    🛒 Sepete Ekle
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                    <p style={{ margin: 0, fontSize: 20, fontWeight: 'bold', color: '#667eea' }}>{urun.fiyat} ₺</p>
+                    <span style={{ fontSize: 12, color: urun.stokMiktari > 10 ? '#28a745' : '#dc3545' }}>
+                      {urun.stokMiktari > 0 ? `${urun.stokMiktari} adet` : 'Tükendi'}
+                    </span>
+                  </div>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); sepeteEkle(urun); }} 
+                    disabled={!urun.stokDurumu || urun.stokMiktari === 0}
+                    style={{ width: '100%', padding: 12, background: (!urun.stokDurumu || urun.stokMiktari === 0) ? '#ccc' : '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: (!urun.stokDurumu || urun.stokMiktari === 0) ? 'not-allowed' : 'pointer', fontSize: 14, fontWeight: 600 }}
+                  >
+                    {(!urun.stokDurumu || urun.stokMiktari === 0) ? '❌ Stokta Yok' : '🛒 Sepete Ekle'}
                   </button>
                 </div>
               </div>
@@ -460,9 +569,164 @@ function App() {
                   <p style={{ fontSize: 13, color: '#666' }}>
                     Tarih: {new Date(siparis.olusturmaTarihi).toLocaleDateString('tr-TR')}
                   </p>
+                  {siparis.kargoTakipNo && (
+                    <div style={{ marginTop: 10, padding: 15, background: '#f8f9fa', borderRadius: 8 }}>
+                      <strong>📦 Kargo Takip No:</strong> {siparis.kargoTakipNo}
+                      <button 
+                        onClick={() => { setKargoTakipNo(siparis.kargoTakipNo); kargoTakipSorgula(); }}
+                        style={{ marginLeft: 15, padding: '8px 15px', background: '#667eea', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer', fontSize: 13 }}
+                      >
+                        🔍 Takip Et
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))
             )}
+            <div style={{ marginTop: 30, padding: 20, background: '#f8f9fa', borderRadius: 12 }}>
+              <h3>🔍 Kargo Takip Sorgula</h3>
+              <div style={{ display: 'flex', gap: 10, marginTop: 15 }}>
+                <input
+                  type="text"
+                  placeholder="Takip numarası girin (örn: KRG123456)"
+                  value={kargoTakipNo}
+                  onChange={(e) => setKargoTakipNo(e.target.value)}
+                  style={{ flex: 1, padding: 12, border: '1px solid #ddd', borderRadius: 8 }}
+                />
+                <button onClick={kargoTakipSorgula} style={{ padding: '12px 30px', background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+                  Sorgula
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {secilenSayfa === 'urun-detay' && secilenUrun && (
+          <div style={{ background: 'white', padding: 30, borderRadius: 12 }}>
+            <button onClick={() => setSecilenSayfa('ana')} style={{ marginBottom: 20, padding: '10px 20px', background: '#f0f0f0', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+              ← Geri
+            </button>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+              <div>
+                <img src={secilenUrun.resimler[0]} alt={secilenUrun.ad} style={{ width: '100%', height: 500, objectFit: 'cover', borderRadius: 12, marginBottom: 15 }} />
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+                  {secilenUrun.resimler.slice(0, 4).map((resim, index) => (
+                    <img key={index} src={resim} alt={`${secilenUrun.ad} ${index + 1}`} style={{ width: '100%', height: 100, objectFit: 'cover', borderRadius: 8, cursor: 'pointer', border: '2px solid #ddd' }} />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h1 style={{ margin: '0 0 15px 0' }}>{secilenUrun.ad}</h1>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 15 }}>
+                  {yildizGoster(secilenUrun.ortalamaPuan || 0)}
+                  <span style={{ fontSize: 16, color: '#666' }}>
+                    {secilenUrun.ortalamaPuan || 0} ({secilenUrun.yorumSayisi || 0} yorum)
+                  </span>
+                </div>
+
+                <p style={{ fontSize: 32, fontWeight: 'bold', color: '#667eea', margin: '0 0 20px 0' }}>
+                  {secilenUrun.fiyat} ₺
+                </p>
+
+                <div style={{ padding: 15, background: '#f8f9fa', borderRadius: 8, marginBottom: 20 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <strong>Stok Durumu:</strong>
+                    <span style={{ color: secilenUrun.stokMiktari > 10 ? '#28a745' : '#dc3545', fontWeight: 'bold' }}>
+                      {secilenUrun.stokMiktari > 0 ? `${secilenUrun.stokMiktari} adet mevcut` : 'Tükendi'}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <strong>Kategori:</strong>
+                    <span>{secilenUrun.kategori}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <strong>Marka:</strong>
+                    <span>{secilenUrun.marka}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <strong>Bedenler:</strong>
+                    <span>{secilenUrun.beden.join(', ')}</span>
+                  </div>
+                </div>
+
+                <p style={{ color: '#666', lineHeight: 1.6, marginBottom: 20 }}>
+                  {secilenUrun.aciklama}
+                </p>
+
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button 
+                    onClick={() => sepeteEkle(secilenUrun)} 
+                    disabled={!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0}
+                    style={{ flex: 1, padding: 15, background: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? '#ccc' : '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? 'not-allowed' : 'pointer', fontSize: 16, fontWeight: 600 }}
+                  >
+                    {(!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? '❌ Stokta Yok' : '🛒 Sepete Ekle'}
+                  </button>
+                  <button 
+                    onClick={() => favoriToggle(secilenUrun.id)}
+                    style={{ padding: 15, background: favoriler.some(f => f.urunId === secilenUrun.id) ? '#e74c3c' : '#f0f0f0', color: favoriler.some(f => f.urunId === secilenUrun.id) ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 20 }}
+                  >
+                    {favoriler.some(f => f.urunId === secilenUrun.id) ? '❤️' : '🤍'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 50, borderTop: '2px solid #eee', paddingTop: 30 }}>
+              <h2>⭐ Müşteri Yorumları ({yorumlar.length})</h2>
+
+              {kullanici && (
+                <div style={{ padding: 20, background: '#f8f9fa', borderRadius: 12, marginBottom: 30 }}>
+                  <h3>Yorum Yap</h3>
+                  <div style={{ marginBottom: 15 }}>
+                    <label style={{ display: 'block', marginBottom: 10, fontWeight: 'bold' }}>Puanınız:</label>
+                    <div style={{ display: 'flex', gap: 5 }}>
+                      {[1, 2, 3, 4, 5].map(puan => (
+                        <button
+                          key={puan}
+                          onClick={() => setYeniYorum({...yeniYorum, puan})}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 30, color: puan <= yeniYorum.puan ? '#ffc107' : '#ddd' }}
+                        >
+                          ★
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <textarea
+                    placeholder="Yorumunuzu yazın..."
+                    value={yeniYorum.yorum}
+                    onChange={(e) => setYeniYorum({...yeniYorum, yorum: e.target.value})}
+                    style={{ width: '100%', padding: 15, border: '1px solid #ddd', borderRadius: 8, minHeight: 100, fontSize: 14, fontFamily: 'inherit' }}
+                  />
+                  <button onClick={yorumEkle} style={{ marginTop: 15, padding: '12px 30px', background: '#667eea', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                    📝 Yorum Gönder
+                  </button>
+                </div>
+              )}
+
+              {yorumlar.length === 0 ? (
+                <p style={{ textAlign: 'center', color: '#666', padding: 30 }}>Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
+              ) : (
+                <div>
+                  {yorumlar.map(yorum => (
+                    <div key={yorum.id} style={{ padding: 20, borderBottom: '1px solid #eee', marginBottom: 20 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                        <strong>{yorum.kullaniciAd}</strong>
+                        <span style={{ fontSize: 13, color: '#999' }}>
+                          {new Date(yorum.tarih).toLocaleDateString('tr-TR')}
+                        </span>
+                      </div>
+                      <div style={{ marginBottom: 10 }}>
+                        {yildizGoster(yorum.puan)}
+                      </div>
+                      <p style={{ color: '#666', lineHeight: 1.6 }}>{yorum.yorum}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -517,3 +781,4 @@ function App() {
 }
 
 export default App;
+// Ürün Detay Sayfası eklendi - urun-detay-sayfa.txt dosyasından kopyalanacak
