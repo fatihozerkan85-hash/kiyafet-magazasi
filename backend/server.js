@@ -202,13 +202,6 @@ const urunler = [
   }
 ];
 
-const kategoriler = [
-  { id: '1', ad: 'Elbise', resim: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=200&fit=crop' },
-  { id: '2', ad: 'Pantolon', resim: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=200&fit=crop' },
-  { id: '3', ad: 'Bluz', resim: 'https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?w=300&h=200&fit=crop' },
-  { id: '4', ad: 'Etek', resim: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=300&h=200&fit=crop' }
-];
-
 // API Routes
 app.get('/api/urunler', (req, res) => {
   const { kategori, minFiyat, maxFiyat } = req.query;
