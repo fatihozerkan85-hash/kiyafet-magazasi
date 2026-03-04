@@ -226,6 +226,95 @@ app.post('/api/siparis', (req, res) => {
   res.json({ mesaj: 'Siparişiniz alındı', siparisId: Date.now().toString() });
 });
 
+// ============================================
+// 12. KAMPANYA YÖNETİMİ
+// ============================================
+
+// Aktif Kampanyaları Getir (Müşteri)
+app.get('/api/kampanyalar', (req, res) => {
+  const aktifKampanyalar = kampanyalar
+    .filter(k => k.aktif)
+    .sort((a, b) => a.sira - b.sira);
+  res.json(aktifKampanyalar);
+});
+
+// Tüm Kampanyaları Getir (Admin)
+app.get('/api/admin/kampanyalar', (req, res) => {
+  const tumKampanyalar = kampanyalar.sort((a, b) => a.sira - b.sira);
+  res.json(tumKampanyalar);
+});
+
+// Kampanya Ekle (Admin)
+app.post('/api/admin/kampanya', (req, res) => {
+  const { baslik, aciklama, resim, link, baslangicTarihi, bitisTarihi, renk } = req.body;
+  
+  const yeniKampanya = {
+    id: 'K' + Date.now(),
+    baslik,
+    aciklama,
+    resim,
+    link: link || '/kategori/Tümü',
+    aktif: true,
+    baslangicTarihi: new Date(baslangicTarihi),
+    bitisTarihi: new Date(bitisTarihi),
+    renk: renk || '#667eea',
+    sira: kampanyalar.length + 1
+  };
+  
+  kampanyalar.push(yeniKampanya);
+  res.json({ basarili: true, mesaj: 'Kampanya eklendi', kampanya: yeniKampanya });
+});
+
+// Kampanya Güncelle (Admin)
+app.put('/api/admin/kampanya/:id', (req, res) => {
+  const { id } = req.params;
+  const { baslik, aciklama, resim, link, aktif, baslangicTarihi, bitisTarihi, renk, sira } = req.body;
+  
+  const kampanya = kampanyalar.find(k => k.id === id);
+  
+  if (!kampanya) {
+    return res.status(404).json({ basarili: false, mesaj: 'Kampanya bulunamadı' });
+  }
+  
+  if (baslik) kampanya.baslik = baslik;
+  if (aciklama) kampanya.aciklama = aciklama;
+  if (resim) kampanya.resim = resim;
+  if (link) kampanya.link = link;
+  if (typeof aktif !== 'undefined') kampanya.aktif = aktif;
+  if (baslangicTarihi) kampanya.baslangicTarihi = new Date(baslangicTarihi);
+  if (bitisTarihi) kampanya.bitisTarihi = new Date(bitisTarihi);
+  if (renk) kampanya.renk = renk;
+  if (sira) kampanya.sira = sira;
+  
+  res.json({ basarili: true, mesaj: 'Kampanya güncellendi', kampanya });
+});
+
+// Kampanya Sil (Admin)
+app.delete('/api/admin/kampanya/:id', (req, res) => {
+  const { id } = req.params;
+  const index = kampanyalar.findIndex(k => k.id === id);
+  
+  if (index === -1) {
+    return res.status(404).json({ basarili: false, mesaj: 'Kampanya bulunamadı' });
+  }
+  
+  kampanyalar.splice(index, 1);
+  res.json({ basarili: true, mesaj: 'Kampanya silindi' });
+});
+
+// Kampanya Aktif/Pasif (Admin)
+app.patch('/api/admin/kampanya/:id/toggle', (req, res) => {
+  const { id } = req.params;
+  const kampanya = kampanyalar.find(k => k.id === id);
+  
+  if (!kampanya) {
+    return res.status(404).json({ basarili: false, mesaj: 'Kampanya bulunamadı' });
+  }
+  
+  kampanya.aktif = !kampanya.aktif;
+  res.json({ basarili: true, mesaj: `Kampanya ${kampanya.aktif ? 'aktif' : 'pasif'} edildi`, kampanya });
+});
+
 app.listen(PORT, () => {
   console.log(`Backend sunucu ${PORT} portunda çalışıyor`);
 });
@@ -657,6 +746,46 @@ const favoriler = [];
 const kuponlar = [];
 const kargoTakip = [];
 const canlıDestekMesajları = [];
+
+// Kampanya Banner'ları
+const kampanyalar = [
+  {
+    id: 'K1',
+    baslik: '🎉 Yaz İndirimi Başladı!',
+    aciklama: 'Tüm ürünlerde %50\'ye varan indirimler',
+    resim: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=1200&h=400&fit=crop',
+    link: '/kategori/Tümü',
+    aktif: true,
+    baslangicTarihi: new Date('2024-03-01'),
+    bitisTarihi: new Date('2024-03-31'),
+    renk: '#667eea',
+    sira: 1
+  },
+  {
+    id: 'K2',
+    baslik: '👗 Yeni Sezon Koleksiyonu',
+    aciklama: 'En yeni trendler şimdi mağazamızda',
+    resim: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=400&fit=crop',
+    link: '/kategori/Elbise',
+    aktif: true,
+    baslangicTarihi: new Date('2024-03-01'),
+    bitisTarihi: new Date('2024-04-30'),
+    renk: '#e74c3c',
+    sira: 2
+  },
+  {
+    id: 'K3',
+    baslik: '🚚 Ücretsiz Kargo',
+    aciklama: '200 TL ve üzeri alışverişlerde kargo bedava',
+    resim: 'https://images.unsplash.com/photo-1558769132-cb1aea3c8565?w=1200&h=400&fit=crop',
+    link: '/kategori/Tümü',
+    aktif: true,
+    baslangicTarihi: new Date('2024-03-01'),
+    bitisTarihi: new Date('2024-12-31'),
+    renk: '#28a745',
+    sira: 3
+  }
+];
 
 // Başlangıç kuponları
 kuponlar.push(

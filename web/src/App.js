@@ -23,6 +23,13 @@ function App() {
   const [yeniYorum, setYeniYorum] = useState({ puan: 5, yorum: '' });
   const [kargoTakipNo, setKargoTakipNo] = useState('');
   const [secilenKategori, setSecilenKategori] = useState('Tümü');
+  const [kampanyalar, setKampanyalar] = useState([]);
+  const [adminKampanyalar, setAdminKampanyalar] = useState([]);
+  const [yeniKampanya, setYeniKampanya] = useState({
+    baslik: '', aciklama: '', resim: '', link: '/kategori/Tümü', 
+    baslangicTarihi: '', bitisTarihi: '', renk: '#667eea'
+  });
+  const [aktifBanner, setAktifBanner] = useState(0);
   
   const kategoriler = [
     { id: 'Tümü', ad: 'Tümü', emoji: '🛍️' },
@@ -39,6 +46,12 @@ function App() {
     fetch(`${API_URL}/api/urunler`)
       .then(res => res.json())
       .then(data => setUrunler(data))
+      .catch(err => console.error(err));
+      
+    // Kampanyaları yükle
+    fetch(`${API_URL}/api/kampanyalar`)
+      .then(res => res.json())
+      .then(data => setKampanyalar(data))
       .catch(err => console.error(err));
       
     // Kullanıcıyı localStorage'dan yükle
@@ -311,6 +324,94 @@ function App() {
     ? urunler 
     : urunler.filter(urun => urun.kategori === secilenKategori);
 
+  // Banner otomatik geçiş
+  useEffect(() => {
+    if (kampanyalar.length > 1) {
+      const interval = setInterval(() => {
+        setAktifBanner((prev) => (prev + 1) % kampanyalar.length);
+      }, 5000); // 5 saniyede bir değişir
+      return () => clearInterval(interval);
+    }
+  }, [kampanyalar.length]);
+
+  const adminKampanyalariYukle = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/admin/kampanyalar`);
+      const data = await response.json();
+      setAdminKampanyalar(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const kampanyaEkle = async () => {
+    if (!yeniKampanya.baslik || !yeniKampanya.aciklama) {
+      alert('⚠️ Başlık ve açıklama zorunludur!');
+      return;
+    }
+    try {
+      const response = await fetch(`${API_URL}/api/admin/kampanya`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(yeniKampanya)
+      });
+      const sonuc = await response.json();
+      if (sonuc.basarili) {
+        alert('✅ Kampanya eklendi!');
+        setYeniKampanya({
+          baslik: '', aciklama: '', resim: '', link: '/kategori/Tümü',
+          baslangicTarihi: '', bitisTarihi: '', renk: '#667eea'
+        });
+        adminKampanyalariYukle();
+        // Müşteri kampanyalarını da güncelle
+        const kampanyaResponse = await fetch(`${API_URL}/api/kampanyalar`);
+        const kampanyaData = await kampanyaResponse.json();
+        setKampanyalar(kampanyaData);
+      }
+    } catch (error) {
+      alert('❌ Kampanya eklenemedi');
+    }
+  };
+
+  const kampanyaToggle = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/api/admin/kampanya/${id}/toggle`, {
+        method: 'PATCH'
+      });
+      const sonuc = await response.json();
+      if (sonuc.basarili) {
+        alert('✅ ' + sonuc.mesaj);
+        adminKampanyalariYukle();
+        // Müşteri kampanyalarını da güncelle
+        const kampanyaResponse = await fetch(`${API_URL}/api/kampanyalar`);
+        const kampanyaData = await kampanyaResponse.json();
+        setKampanyalar(kampanyaData);
+      }
+    } catch (error) {
+      alert('❌ İşlem başarısız');
+    }
+  };
+
+  const kampanyaSil = async (id) => {
+    if (!window.confirm('Bu kampanyayı silmek istediğinizden emin misiniz?')) return;
+    try {
+      const response = await fetch(`${API_URL}/api/admin/kampanya/${id}`, {
+        method: 'DELETE'
+      });
+      const sonuc = await response.json();
+      if (sonuc.basarili) {
+        alert('✅ Kampanya silindi!');
+        adminKampanyalariYukle();
+        // Müşteri kampanyalarını da güncelle
+        const kampanyaResponse = await fetch(`${API_URL}/api/kampanyalar`);
+        const kampanyaData = await kampanyaResponse.json();
+        setKampanyalar(kampanyaData);
+      }
+    } catch (error) {
+      alert('❌ Kampanya silinemedi');
+    }
+  };
+
   return (
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ background: 'white', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
@@ -335,6 +436,11 @@ function App() {
                 <button onClick={() => { setSecilenSayfa('siparislerim'); siparisleriYukle(); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>
                   📦 Siparişlerim
                 </button>
+                {kullanici && kullanici.email === 'admin@kiyafet.com' && (
+                  <button onClick={() => { setSecilenSayfa('admin'); adminKampanyalariYukle(); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: '#e74c3c', fontWeight: 'bold' }}>
+                    ⚙️ Admin
+                  </button>
+                )}
                 <button onClick={cikisYap} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>
                   🚪 Çıkış
                 </button>
@@ -467,6 +573,66 @@ function App() {
 
         {secilenSayfa === 'ana' && (
           <div>
+            {/* Kampanya Banner'ları */}
+            {kampanyalar.length > 0 && (
+              <div style={{ marginBottom: 30, position: 'relative', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                {kampanyalar.map((kampanya, index) => (
+                  <div
+                    key={kampanya.id}
+                    style={{
+                      display: index === aktifBanner ? 'block' : 'none',
+                      position: 'relative',
+                      height: 400,
+                      backgroundImage: `url(${kampanya.resim})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => {
+                      if (kampanya.link.includes('/kategori/')) {
+                        const kategori = kampanya.link.split('/kategori/')[1];
+                        setSecilenKategori(kategori);
+                      }
+                    }}
+                  >
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3))' }} />
+                    <div style={{ position: 'relative', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 60, color: 'white' }}>
+                      <h1 style={{ fontSize: 48, fontWeight: 'bold', margin: '0 0 20px 0', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+                        {kampanya.baslik}
+                      </h1>
+                      <p style={{ fontSize: 24, margin: '0 0 30px 0', maxWidth: 600, textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}>
+                        {kampanya.aciklama}
+                      </p>
+                      <button style={{ padding: '15px 40px', background: kampanya.renk, color: 'white', border: 'none', borderRadius: 8, fontSize: 18, fontWeight: 'bold', cursor: 'pointer', alignSelf: 'flex-start', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
+                        Şimdi Keşfet →
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Banner Navigasyon Noktaları */}
+                {kampanyalar.length > 1 && (
+                  <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 10, zIndex: 10 }}>
+                    {kampanyalar.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setAktifBanner(index)}
+                        style={{
+                          width: 12,
+                          height: 12,
+                          borderRadius: '50%',
+                          border: 'none',
+                          background: index === aktifBanner ? 'white' : 'rgba(255,255,255,0.5)',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease'
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Kategori Başlığı ve Ürün Sayısı */}
             <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h2 style={{ margin: 0, color: '#333' }}>
@@ -842,6 +1008,138 @@ function App() {
             <button onClick={odemeYap} style={{ width: '100%', padding: 15, background: '#28a745', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
               🎉 Ödemeyi Tamamla
             </button>
+          </div>
+        )}
+
+        {secilenSayfa === 'admin' && kullanici && kullanici.email === 'admin@kiyafet.com' && (
+          <div style={{ background: 'white', padding: 30, borderRadius: 12 }}>
+            <h2>⚙️ Admin Paneli - Kampanya Yönetimi</h2>
+            
+            {/* Yeni Kampanya Ekleme Formu */}
+            <div style={{ padding: 20, background: '#f8f9fa', borderRadius: 12, marginBottom: 30 }}>
+              <h3>➕ Yeni Kampanya Ekle</h3>
+              <div style={{ display: 'grid', gap: 15 }}>
+                <input
+                  type="text"
+                  placeholder="Kampanya Başlığı (örn: 🎉 Yaz İndirimi)"
+                  value={yeniKampanya.baslik}
+                  onChange={(e) => setYeniKampanya({...yeniKampanya, baslik: e.target.value})}
+                  style={{ padding: 12, border: '1px solid #ddd', borderRadius: 8 }}
+                />
+                <textarea
+                  placeholder="Kampanya Açıklaması"
+                  value={yeniKampanya.aciklama}
+                  onChange={(e) => setYeniKampanya({...yeniKampanya, aciklama: e.target.value})}
+                  style={{ padding: 12, border: '1px solid #ddd', borderRadius: 8, minHeight: 80, fontFamily: 'inherit' }}
+                />
+                <input
+                  type="text"
+                  placeholder="Resim URL (Unsplash veya başka)"
+                  value={yeniKampanya.resim}
+                  onChange={(e) => setYeniKampanya({...yeniKampanya, resim: e.target.value})}
+                  style={{ padding: 12, border: '1px solid #ddd', borderRadius: 8 }}
+                />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: 5, fontSize: 14, fontWeight: 'bold' }}>Başlangıç Tarihi:</label>
+                    <input
+                      type="date"
+                      value={yeniKampanya.baslangicTarihi}
+                      onChange={(e) => setYeniKampanya({...yeniKampanya, baslangicTarihi: e.target.value})}
+                      style={{ width: '100%', padding: 12, border: '1px solid #ddd', borderRadius: 8 }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: 5, fontSize: 14, fontWeight: 'bold' }}>Bitiş Tarihi:</label>
+                    <input
+                      type="date"
+                      value={yeniKampanya.bitisTarihi}
+                      onChange={(e) => setYeniKampanya({...yeniKampanya, bitisTarihi: e.target.value})}
+                      style={{ width: '100%', padding: 12, border: '1px solid #ddd', borderRadius: 8 }}
+                    />
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: 5, fontSize: 14, fontWeight: 'bold' }}>Renk:</label>
+                    <input
+                      type="color"
+                      value={yeniKampanya.renk}
+                      onChange={(e) => setYeniKampanya({...yeniKampanya, renk: e.target.value})}
+                      style={{ width: '100%', height: 45, border: '1px solid #ddd', borderRadius: 8, cursor: 'pointer' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: 5, fontSize: 14, fontWeight: 'bold' }}>Link (Kategori):</label>
+                    <select
+                      value={yeniKampanya.link}
+                      onChange={(e) => setYeniKampanya({...yeniKampanya, link: e.target.value})}
+                      style={{ width: '100%', padding: 12, border: '1px solid #ddd', borderRadius: 8 }}
+                    >
+                      <option value="/kategori/Tümü">Tümü</option>
+                      <option value="/kategori/Elbise">Elbise</option>
+                      <option value="/kategori/Pantolon">Pantolon</option>
+                      <option value="/kategori/Gömlek">Gömlek</option>
+                      <option value="/kategori/Ceket">Ceket</option>
+                      <option value="/kategori/Ayakkabı">Ayakkabı</option>
+                      <option value="/kategori/Aksesuar">Aksesuar</option>
+                      <option value="/kategori/Spor">Spor</option>
+                    </select>
+                  </div>
+                </div>
+                <button onClick={kampanyaEkle} style={{ padding: '15px 30px', background: '#28a745', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+                  ➕ Kampanya Ekle
+                </button>
+              </div>
+            </div>
+
+            {/* Mevcut Kampanyalar */}
+            <h3>📋 Mevcut Kampanyalar ({adminKampanyalar.length})</h3>
+            {adminKampanyalar.length === 0 ? (
+              <p style={{ textAlign: 'center', color: '#666', padding: 30 }}>Henüz kampanya eklenmemiş</p>
+            ) : (
+              <div style={{ display: 'grid', gap: 20 }}>
+                {adminKampanyalar.map(kampanya => (
+                  <div key={kampanya.id} style={{ padding: 20, border: '2px solid #eee', borderRadius: 12, display: 'grid', gridTemplateColumns: '200px 1fr auto', gap: 20, alignItems: 'center' }}>
+                    <img src={kampanya.resim} alt={kampanya.baslik} style={{ width: '100%', height: 120, objectFit: 'cover', borderRadius: 8 }} />
+                    <div>
+                      <h4 style={{ margin: '0 0 10px 0' }}>{kampanya.baslik}</h4>
+                      <p style={{ margin: '0 0 10px 0', color: '#666', fontSize: 14 }}>{kampanya.aciklama}</p>
+                      <div style={{ display: 'flex', gap: 15, fontSize: 13, color: '#999' }}>
+                        <span>📅 {new Date(kampanya.baslangicTarihi).toLocaleDateString('tr-TR')} - {new Date(kampanya.bitisTarihi).toLocaleDateString('tr-TR')}</span>
+                        <span>🎨 {kampanya.renk}</span>
+                        <span>🔗 {kampanya.link}</span>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      <button
+                        onClick={() => kampanyaToggle(kampanya.id)}
+                        style={{ padding: '10px 20px', background: kampanya.aktif ? '#28a745' : '#6c757d', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}
+                      >
+                        {kampanya.aktif ? '✅ Aktif' : '⏸️ Pasif'}
+                      </button>
+                      <button
+                        onClick={() => kampanyaSil(kampanya.id)}
+                        style={{ padding: '10px 20px', background: '#e74c3c', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}
+                      >
+                        🗑️ Sil
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{ marginTop: 30, padding: 20, background: '#fff3cd', borderRadius: 12 }}>
+              <h4 style={{ margin: '0 0 10px 0' }}>💡 İpuçları:</h4>
+              <ul style={{ margin: 0, paddingLeft: 20, fontSize: 14 }}>
+                <li>Resim URL için Unsplash kullanabilirsiniz: https://unsplash.com</li>
+                <li>Başlıkta emoji kullanarak daha çekici görünüm sağlayın</li>
+                <li>Banner'lar otomatik olarak 5 saniyede bir değişir</li>
+                <li>Pasif kampanyalar müşterilere gösterilmez</li>
+                <li>Kampanya sırası ID'ye göre otomatik belirlenir</li>
+              </ul>
+            </div>
           </div>
         )}
       </div>
