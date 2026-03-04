@@ -1341,5 +1341,296 @@ app.get('/api/ceviri/:dil', (req, res) => {
   res.json(ceviri);
 });
 
+// ============================================
+// 10. RESİM UPLOAD SİSTEMİ (Cloudinary Simülasyonu)
+// ============================================
+
+// Resim upload endpoint (Base64 simülasyonu)
+app.post('/api/admin/resim-yukle', (req, res) => {
+  const { resimBase64, dosyaAdi } = req.body;
+  
+  // Gerçek projede Cloudinary veya AWS S3 kullanılır
+  // Şimdilik base64'ü direkt döndürüyoruz
+  
+  const resimUrl = resimBase64; // Simülasyon
+  
+  res.json({
+    basarili: true,
+    mesaj: 'Resim yüklendi',
+    url: resimUrl,
+    // Gerçek projede Cloudinary URL'i döner:
+    // url: 'https://res.cloudinary.com/demo/image/upload/v1234567890/sample.jpg'
+  });
+});
+
+// Cloudinary config bilgisi (simülasyon)
+app.get('/api/admin/resim-config', (req, res) => {
+  res.json({
+    basarili: true,
+    mesaj: 'Resim upload için base64 kullanın veya Cloudinary entegre edin',
+    cloudinaryInfo: {
+      cloudName: 'your-cloud-name',
+      uploadPreset: 'your-upload-preset',
+      apiKey: 'your-api-key'
+    }
+  });
+});
+
+// ============================================
+// 11. SİPARİŞ DURUMU GÜNCELLEME
+// ============================================
+
+// Sipariş durumları
+const siparisDurumlari = [
+  'odeme-bekleniyor',
+  'hazirlaniyor',
+  'kargoya-verildi',
+  'kargoda',
+  'teslim-edildi',
+  'iptal-edildi'
+];
+
+// Sipariş durumu güncelle (geliştirilmiş)
+app.put('/api/admin/siparis/:id/durum', (req, res) => {
+  const { id } = req.params;
+  const { durum, kargoFirmasi, kargoTakipNo, aciklama } = req.body;
+  
+  const siparis = siparisler.find(s => s.id === id);
+  
+  if (!siparis) {
+    return res.status(404).json({ basarili: false, mesaj: 'Sipariş bulunamadı' });
+  }
+  
+  // Durum geçmişi
+  if (!siparis.durumGecmisi) {
+    siparis.durumGecmisi = [];
+  }
+  
+  siparis.durumGecmisi.push({
+    durum: siparis.durum,
+    tarih: new Date(),
+    aciklama: aciklama || ''
+  });
+  
+  // Yeni durum
+  siparis.durum = durum;
+  siparis.guncellemeTarihi = new Date();
+  
+  if (kargoFirmasi) siparis.kargoFirmasi = kargoFirmasi;
+  if (kargoTakipNo) siparis.kargoTakipNo = kargoTakipNo;
+  
+  // Email bildirimi gönder (simülasyon)
+  emailBildirimiGonder(siparis, durum);
+  
+  // SMS bildirimi gönder (simülasyon)
+  smsBildirimiGonder(siparis, durum);
+  
+  res.json({
+    basarili: true,
+    mesaj: 'Sipariş durumu güncellendi',
+    siparis
+  });
+});
+
+// Sipariş durumu geçmişi
+app.get('/api/admin/siparis/:id/gecmis', (req, res) => {
+  const { id } = req.params;
+  const siparis = siparisler.find(s => s.id === id);
+  
+  if (!siparis) {
+    return res.status(404).json({ basarili: false, mesaj: 'Sipariş bulunamadı' });
+  }
+  
+  res.json({
+    basarili: true,
+    gecmis: siparis.durumGecmisi || []
+  });
+});
+
+// ============================================
+// 12. EMAIL BİLDİRİMLERİ (Nodemailer Simülasyonu)
+// ============================================
+
+function emailBildirimiGonder(siparis, durum) {
+  const emailSablonlari = {
+    'hazirlaniyor': {
+      konu: 'Siparişiniz Hazırlanıyor',
+      icerik: `Merhaba,\n\nSipariş No: ${siparis.id}\nSiparişiniz hazırlanmaya başlandı.\n\nTeşekkür ederiz!`
+    },
+    'kargoya-verildi': {
+      konu: 'Siparişiniz Kargoya Verildi',
+      icerik: `Merhaba,\n\nSipariş No: ${siparis.id}\nKargo Firması: ${siparis.kargoFirmasi}\nTakip No: ${siparis.kargoTakipNo}\n\nSiparişiniz kargoya verildi.`
+    },
+    'teslim-edildi': {
+      konu: 'Siparişiniz Teslim Edildi',
+      icerik: `Merhaba,\n\nSipariş No: ${siparis.id}\nSiparişiniz teslim edildi.\n\nBizi tercih ettiğiniz için teşekkür ederiz!`
+    }
+  };
+  
+  const sablon = emailSablonlari[durum];
+  
+  if (sablon) {
+    console.log('📧 EMAIL GÖNDERİLDİ:');
+    console.log('Konu:', sablon.konu);
+    console.log('İçerik:', sablon.icerik);
+    console.log('---');
+  }
+  
+  // Gerçek projede Nodemailer kullanılır:
+  /*
+  const nodemailer = require('nodemailer');
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+  
+  transporter.sendMail({
+    from: 'noreply@kiyafetmagazasi.com',
+    to: siparis.kullanici.email,
+    subject: sablon.konu,
+    text: sablon.icerik
+  });
+  */
+}
+
+// Email gönder endpoint (manuel)
+app.post('/api/admin/email-gonder', (req, res) => {
+  const { alici, konu, icerik } = req.body;
+  
+  console.log('📧 EMAIL GÖNDERİLDİ:');
+  console.log('Alıcı:', alici);
+  console.log('Konu:', konu);
+  console.log('İçerik:', icerik);
+  
+  res.json({
+    basarili: true,
+    mesaj: 'Email gönderildi (simülasyon)',
+    emailId: 'E' + Date.now()
+  });
+});
+
+// ============================================
+// 13. SMS ENTEGRASYONU (Netgsm/İletimerkezi Simülasyonu)
+// ============================================
+
+function smsBildirimiGonder(siparis, durum) {
+  const smsSablonlari = {
+    'hazirlaniyor': `Siparişiniz hazırlanıyor. Sipariş No: ${siparis.id}`,
+    'kargoya-verildi': `Siparişiniz kargoya verildi. Takip No: ${siparis.kargoTakipNo}`,
+    'teslim-edildi': `Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkürler!`
+  };
+  
+  const mesaj = smsSablonlari[durum];
+  
+  if (mesaj && siparis.kullanici && siparis.kullanici.telefon) {
+    console.log('📱 SMS GÖNDERİLDİ:');
+    console.log('Telefon:', siparis.kullanici.telefon);
+    console.log('Mesaj:', mesaj);
+    console.log('---');
+  }
+  
+  // Gerçek projede Netgsm veya İletimerkezi API kullanılır:
+  /*
+  const axios = require('axios');
+  
+  // Netgsm örneği:
+  axios.post('https://api.netgsm.com.tr/sms/send/get', {
+    usercode: process.env.NETGSM_USER,
+    password: process.env.NETGSM_PASS,
+    gsmno: siparis.kullanici.telefon,
+    message: mesaj,
+    msgheader: 'KIYAFET'
+  });
+  
+  // İletimerkezi örneği:
+  axios.post('https://api.iletimerkezi.com/v1/send-sms', {
+    username: process.env.ILETIMERKEZI_USER,
+    password: process.env.ILETIMERKEZI_PASS,
+    text: mesaj,
+    receipents: [siparis.kullanici.telefon],
+    sender: 'KIYAFET'
+  });
+  */
+}
+
+// SMS gönder endpoint (manuel)
+app.post('/api/admin/sms-gonder', (req, res) => {
+  const { telefon, mesaj } = req.body;
+  
+  console.log('📱 SMS GÖNDERİLDİ:');
+  console.log('Telefon:', telefon);
+  console.log('Mesaj:', mesaj);
+  
+  res.json({
+    basarili: true,
+    mesaj: 'SMS gönderildi (simülasyon)',
+    smsId: 'S' + Date.now()
+  });
+});
+
+// SMS ayarları
+app.get('/api/admin/sms-ayarlar', (req, res) => {
+  res.json({
+    basarili: true,
+    mesaj: 'SMS entegrasyonu için Netgsm veya İletimerkezi kullanın',
+    providers: [
+      {
+        name: 'Netgsm',
+        website: 'https://www.netgsm.com.tr',
+        apiDoc: 'https://www.netgsm.com.tr/dokuman'
+      },
+      {
+        name: 'İletimerkezi',
+        website: 'https://www.iletimerkezi.com',
+        apiDoc: 'https://www.iletimerkezi.com/api-dokumantasyon'
+      }
+    ]
+  });
+});
+
+// ============================================
+// 14. BİLDİRİM GEÇMİŞİ
+// ============================================
+
+const bildirimGecmisi = [];
+
+// Bildirim kaydet
+function bildirimKaydet(tip, alici, icerik, durum) {
+  bildirimGecmisi.push({
+    id: 'B' + Date.now(),
+    tip, // 'email' veya 'sms'
+    alici,
+    icerik,
+    durum, // 'gonderildi', 'basarisiz'
+    tarih: new Date()
+  });
+}
+
+// Bildirim geçmişi
+app.get('/api/admin/bildirim-gecmisi', (req, res) => {
+  const { tip, limit } = req.query;
+  
+  let gecmis = [...bildirimGecmisi];
+  
+  if (tip) {
+    gecmis = gecmis.filter(b => b.tip === tip);
+  }
+  
+  if (limit) {
+    gecmis = gecmis.slice(0, parseInt(limit));
+  }
+  
+  res.json({
+    basarili: true,
+    bildirimler: gecmis.reverse()
+  });
+});
+
 console.log('✅ Tüm yeni özellikler yüklendi!');
 console.log('📦 Kupon kodları: HOSGELDIN, YENISEZON, 50TL');
+console.log('📧 Email bildirimleri: Aktif (simülasyon)');
+console.log('📱 SMS entegrasyonu: Aktif (simülasyon)');
+console.log('📸 Resim upload: Aktif (base64)');

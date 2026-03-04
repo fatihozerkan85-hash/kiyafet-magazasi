@@ -248,8 +248,16 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Resim URL</label>
-                            <input type="url" id="productImage" required placeholder="https://images.unsplash.com/...">
+                            <label>Resim URL veya Resim Yükle</label>
+                            <input type="url" id="productImage" placeholder="https://images.unsplash.com/...">
+                            <div style="margin-top: 10px;">
+                                <input type="file" id="productImageFile" accept="image/*" style="display: none;">
+                                <button type="button" onclick="document.getElementById('productImageFile').click()" class="btn btn-primary" style="background: #667eea;">
+                                    📸 Bilgisayardan Resim Seç
+                                </button>
+                                <span id="uploadStatus" style="margin-left: 10px; color: #666;"></span>
+                            </div>
+                            <div id="imagePreview" style="margin-top: 10px;"></div>
                         </div>
                         <div class="grid-2">
                             <div class="form-group">
@@ -299,6 +307,58 @@
                 <div class="card">
                     <h2>📦 Sipariş Listesi</h2>
                     <div id="orderList"></div>
+                </div>
+            </div>
+
+            <!-- Order Detail Modal -->
+            <div id="orderModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; padding: 20px; overflow-y: auto;">
+                <div style="max-width: 800px; margin: 50px auto; background: white; border-radius: 12px; padding: 30px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2>📦 Sipariş Detayı</h2>
+                        <button onclick="closeOrderModal()" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Kapat</button>
+                    </div>
+                    <div id="orderDetail"></div>
+                    
+                    <div class="card" style="margin-top: 20px;">
+                        <h3>🔄 Sipariş Durumu Güncelle</h3>
+                        <form id="orderStatusForm">
+                            <input type="hidden" id="orderIdToUpdate">
+                            <div class="form-group">
+                                <label>Yeni Durum</label>
+                                <select id="orderNewStatus" required>
+                                    <option value="odeme-bekleniyor">Ödeme Bekleniyor</option>
+                                    <option value="hazirlaniyor">Hazırlanıyor</option>
+                                    <option value="kargoya-verildi">Kargoya Verildi</option>
+                                    <option value="kargoda">Kargoda</option>
+                                    <option value="teslim-edildi">Teslim Edildi</option>
+                                    <option value="iptal-edildi">İptal Edildi</option>
+                                </select>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label>Kargo Firması</label>
+                                    <input type="text" id="orderCargoCompany" placeholder="Aras Kargo">
+                                </div>
+                                <div class="form-group">
+                                    <label>Takip Numarası</label>
+                                    <input type="text" id="orderTrackingNo" placeholder="1234567890">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Açıklama</label>
+                                <textarea id="orderStatusNote" placeholder="Opsiyonel not"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">🔄 Durumu Güncelle</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card" style="margin-top: 20px;">
+                        <h3>📧 Bildirim Gönder</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="sendEmailNotification()" class="btn btn-primary">📧 Email Gönder</button>
+                            <button onclick="sendSmsNotification()" class="btn btn-primary">📱 SMS Gönder</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -582,6 +642,60 @@
             }
         }
 
+        // Resim upload
+        document.getElementById('productImageFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Dosya boyutu kontrolü (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showAlert('❌ Resim boyutu 2MB\'dan küçük olmalı', 'error');
+                return;
+            }
+            
+            document.getElementById('uploadStatus').textContent = '⏳ Yükleniyor...';
+            
+            // Base64'e çevir
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                const base64 = event.target.result;
+                
+                try {
+                    const response = await fetch(`${API_URL}/api/admin/resim-yukle`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            resimBase64: base64,
+                            dosyaAdi: file.name
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    if (result.basarili) {
+                        document.getElementById('productImage').value = result.url;
+                        document.getElementById('uploadStatus').textContent = '✅ Yüklendi!';
+                        
+                        // Önizleme göster
+                        document.getElementById('imagePreview').innerHTML = `
+                            <img src="${result.url}" style="max-width: 200px; border-radius: 8px; margin-top: 10px;">
+                        `;
+                        
+                        setTimeout(() => {
+                            document.getElementById('uploadStatus').textContent = '';
+                        }, 3000);
+                    } else {
+                        showAlert('❌ Resim yüklenemedi', 'error');
+                        document.getElementById('uploadStatus').textContent = '';
+                    }
+                } catch (error) {
+                    showAlert('❌ Resim yüklenemedi', 'error');
+                    document.getElementById('uploadStatus').textContent = '';
+                }
+            };
+            
+            reader.readAsDataURL(file);
+        });
+
         document.getElementById('productForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -610,6 +724,7 @@
                 if (result.basarili) {
                     showAlert('✅ Ürün eklendi!', 'success');
                     document.getElementById('productForm').reset();
+                    document.getElementById('imagePreview').innerHTML = '';
                     loadProducts();
                 } else {
                     showAlert('❌ ' + result.mesaj, 'error');
@@ -742,6 +857,8 @@
         }
 
         // Orders
+        let currentOrder = null;
+
         async function loadOrders() {
             try {
                 const response = await fetch(`${API_URL}/api/admin/siparisler`);
@@ -761,15 +878,19 @@
                                 <th>Tarih</th>
                                 <th>Tutar</th>
                                 <th>Durum</th>
+                                <th>İşlemler</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${orders.map(o => `
                                 <tr>
-                                    <td>${o.id}</td>
+                                    <td><strong>${o.id}</strong></td>
                                     <td>${new Date(o.olusturmaTarihi).toLocaleDateString('tr-TR')}</td>
                                     <td>${o.toplamTutar} ₺</td>
-                                    <td>${o.durum}</td>
+                                    <td>${getDurumBadge(o.durum)}</td>
+                                    <td>
+                                        <button class="btn btn-primary" onclick="showOrderDetail('${o.id}')">Detay</button>
+                                    </td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -777,6 +898,152 @@
                 `;
             } catch (error) {
                 showAlert('Siparişler yüklenemedi', 'error');
+            }
+        }
+
+        function getDurumBadge(durum) {
+            const durumlar = {
+                'odeme-bekleniyor': '⏳ Ödeme Bekleniyor',
+                'hazirlaniyor': '📦 Hazırlanıyor',
+                'kargoya-verildi': '🚚 Kargoya Verildi',
+                'kargoda': '🚛 Kargoda',
+                'teslim-edildi': '✅ Teslim Edildi',
+                'iptal-edildi': '❌ İptal Edildi'
+            };
+            return durumlar[durum] || durum;
+        }
+
+        async function showOrderDetail(orderId) {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/siparisler`);
+                const orders = await response.json();
+                const order = orders.find(o => o.id === orderId);
+                
+                if (!order) {
+                    showAlert('Sipariş bulunamadı', 'error');
+                    return;
+                }
+                
+                currentOrder = order;
+                
+                const detailDiv = document.getElementById('orderDetail');
+                detailDiv.innerHTML = `
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                        <h3>Sipariş Bilgileri</h3>
+                        <p><strong>Sipariş No:</strong> ${order.id}</p>
+                        <p><strong>Tarih:</strong> ${new Date(order.olusturmaTarihi).toLocaleString('tr-TR')}</p>
+                        <p><strong>Durum:</strong> ${getDurumBadge(order.durum)}</p>
+                        <p><strong>Toplam Tutar:</strong> ${order.toplamTutar} ₺</p>
+                        ${order.kargoFirmasi ? `<p><strong>Kargo:</strong> ${order.kargoFirmasi} - ${order.kargoTakipNo}</p>` : ''}
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                        <h3>Ürünler</h3>
+                        ${order.urunler.map(u => `
+                            <div style="display: flex; gap: 15px; padding: 10px; border-bottom: 1px solid #ddd;">
+                                <img src="${u.resimler[0]}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                <div>
+                                    <strong>${u.ad}</strong><br>
+                                    <span style="color: #666;">${u.fiyat} ₺</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                document.getElementById('orderIdToUpdate').value = orderId;
+                document.getElementById('orderNewStatus').value = order.durum;
+                document.getElementById('orderCargoCompany').value = order.kargoFirmasi || '';
+                document.getElementById('orderTrackingNo').value = order.kargoTakipNo || '';
+                
+                document.getElementById('orderModal').style.display = 'block';
+            } catch (error) {
+                showAlert('Sipariş detayı yüklenemedi', 'error');
+            }
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
+            currentOrder = null;
+        }
+
+        document.getElementById('orderStatusForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const orderId = document.getElementById('orderIdToUpdate').value;
+            const data = {
+                durum: document.getElementById('orderNewStatus').value,
+                kargoFirmasi: document.getElementById('orderCargoCompany').value,
+                kargoTakipNo: document.getElementById('orderTrackingNo').value,
+                aciklama: document.getElementById('orderStatusNote').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/siparis/${orderId}/durum`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Sipariş durumu güncellendi! Email ve SMS gönderildi.', 'success');
+                    closeOrderModal();
+                    loadOrders();
+                } else {
+                    showAlert('❌ ' + result.mesaj, 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Durum güncellenemedi', 'error');
+            }
+        });
+
+        async function sendEmailNotification() {
+            if (!currentOrder) return;
+            
+            const data = {
+                alici: currentOrder.kullanici?.email || 'musteri@example.com',
+                konu: `Sipariş Durumu: ${currentOrder.id}`,
+                icerik: `Siparişinizin durumu: ${getDurumBadge(currentOrder.durum)}`
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/email-gonder`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Email gönderildi!', 'success');
+                }
+            } catch (error) {
+                showAlert('❌ Email gönderilemedi', 'error');
+            }
+        }
+
+        async function sendSmsNotification() {
+            if (!currentOrder) return;
+            
+            const data = {
+                telefon: currentOrder.kullanici?.telefon || '5555555555',
+                mesaj: `Sipariş ${currentOrder.id}: ${getDurumBadge(currentOrder.durum)}`
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/sms-gonder`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ SMS gönderildi!', 'success');
+                }
+            } catch (error) {
+                showAlert('❌ SMS gönderilemedi', 'error');
             }
         }
 
