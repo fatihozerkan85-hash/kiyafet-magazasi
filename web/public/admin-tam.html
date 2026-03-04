@@ -205,6 +205,66 @@
             <!-- Products Tab -->
             <div id="products" class="tab-content">
                 <div class="card">
+                    <h2>➕ Yeni Ürün Ekle</h2>
+                    <form id="productForm">
+                        <div class="form-group">
+                            <label>Ürün Adı</label>
+                            <input type="text" id="productName" required placeholder="Çiçek Desenli Elbise">
+                        </div>
+                        <div class="form-group">
+                            <label>Açıklama</label>
+                            <textarea id="productDesc" required placeholder="Yazlık çiçek desenli şık elbise"></textarea>
+                        </div>
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Fiyat (₺)</label>
+                                <input type="number" id="productPrice" required placeholder="299.99" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Eski Fiyat (₺)</label>
+                                <input type="number" id="productOldPrice" placeholder="399.99" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>Stok Miktarı</label>
+                                <input type="number" id="productStock" required placeholder="50" min="0">
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Kategori</label>
+                                <select id="productCategory" required>
+                                    <option value="Elbise">Elbise</option>
+                                    <option value="Pantolon">Pantolon</option>
+                                    <option value="Gömlek">Gömlek</option>
+                                    <option value="Ceket">Ceket</option>
+                                    <option value="Ayakkabı">Ayakkabı</option>
+                                    <option value="Aksesuar">Aksesuar</option>
+                                    <option value="Spor">Spor</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Marka</label>
+                                <input type="text" id="productBrand" required placeholder="Moda Dünyası">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Resim URL</label>
+                            <input type="url" id="productImage" required placeholder="https://images.unsplash.com/...">
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Bedenler (virgülle ayırın)</label>
+                                <input type="text" id="productSizes" required placeholder="S, M, L, XL">
+                            </div>
+                            <div class="form-group">
+                                <label>Renkler (virgülle ayırın)</label>
+                                <input type="text" id="productColors" required placeholder="Mavi, Pembe, Beyaz">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">➕ Ürün Ekle</button>
+                    </form>
+                </div>
+                <div class="card">
                     <h2>🛍️ Ürün Listesi</h2>
                     <div id="productList"></div>
                 </div>
@@ -212,6 +272,22 @@
 
             <!-- Categories Tab -->
             <div id="categories" class="tab-content">
+                <div class="card">
+                    <h2>➕ Yeni Kategori Ekle</h2>
+                    <form id="categoryForm">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Kategori Adı</label>
+                                <input type="text" id="categoryName" required placeholder="Elbise">
+                            </div>
+                            <div class="form-group">
+                                <label>Emoji</label>
+                                <input type="text" id="categoryEmoji" required placeholder="👗" maxlength="2">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">➕ Kategori Ekle</button>
+                    </form>
+                </div>
                 <div class="card">
                     <h2>📁 Kategori Listesi</h2>
                     <div id="categoryList"></div>
@@ -236,6 +312,29 @@
 
             <!-- Coupons Tab -->
             <div id="coupons" class="tab-content">
+                <div class="card">
+                    <h2>➕ Yeni Kupon Oluştur</h2>
+                    <form id="couponForm">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Kupon Kodu</label>
+                                <input type="text" id="couponCode" required placeholder="YENISEZON" style="text-transform: uppercase;">
+                            </div>
+                            <div class="form-group">
+                                <label>İndirim Tipi</label>
+                                <select id="couponType" required>
+                                    <option value="yuzde">Yüzde (%)</option>
+                                    <option value="sabit">Sabit Tutar (₺)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>İndirim Miktarı</label>
+                            <input type="number" id="couponAmount" required placeholder="10" min="1">
+                        </div>
+                        <button type="submit" class="btn btn-success">➕ Kupon Oluştur</button>
+                    </form>
+                </div>
                 <div class="card">
                     <h2>🎟️ Kupon Listesi</h2>
                     <div id="couponList"></div>
@@ -459,6 +558,7 @@
                                 <th>Kategori</th>
                                 <th>Fiyat</th>
                                 <th>Stok</th>
+                                <th>İşlemler</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -469,6 +569,9 @@
                                     <td>${p.kategori}</td>
                                     <td>${p.fiyat} ₺</td>
                                     <td>${p.stokMiktari || 0} adet</td>
+                                    <td>
+                                        <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">Sil</button>
+                                    </td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -476,6 +579,62 @@
                 `;
             } catch (error) {
                 showAlert('Ürünler yüklenemedi', 'error');
+            }
+        }
+
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                ad: document.getElementById('productName').value,
+                aciklama: document.getElementById('productDesc').value,
+                fiyat: parseFloat(document.getElementById('productPrice').value),
+                eskiFiyat: document.getElementById('productOldPrice').value ? parseFloat(document.getElementById('productOldPrice').value) : undefined,
+                kategori: document.getElementById('productCategory').value,
+                marka: document.getElementById('productBrand').value,
+                resimler: [document.getElementById('productImage').value],
+                beden: document.getElementById('productSizes').value.split(',').map(s => s.trim()),
+                renk: document.getElementById('productColors').value.split(',').map(c => c.trim()),
+                stokMiktari: parseInt(document.getElementById('productStock').value),
+                stokDurumu: parseInt(document.getElementById('productStock').value) > 0
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/urun`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Ürün eklendi!', 'success');
+                    document.getElementById('productForm').reset();
+                    loadProducts();
+                } else {
+                    showAlert('❌ ' + result.mesaj, 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Ürün eklenemedi', 'error');
+            }
+        });
+
+        async function deleteProduct(id) {
+            if (!confirm('Bu ürünü silmek istediğinizden emin misiniz?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/urun/${id}`, {
+                    method: 'DELETE'
+                });
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Ürün silindi', 'success');
+                    loadProducts();
+                } else {
+                    showAlert('❌ ' + result.mesaj, 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Ürün silinemedi', 'error');
             }
         }
 
@@ -494,6 +653,7 @@
                                 <th>Kategori Adı</th>
                                 <th>Sıra</th>
                                 <th>Durum</th>
+                                <th>İşlemler</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -503,6 +663,12 @@
                                     <td>${c.ad}</td>
                                     <td>${c.sira}</td>
                                     <td>${c.aktif ? '✅ Aktif' : '⏸️ Pasif'}</td>
+                                    <td>
+                                        <button class="btn btn-warning" onclick="toggleCategory('${c.id}')">
+                                            ${c.aktif ? 'Pasif Yap' : 'Aktif Yap'}
+                                        </button>
+                                        ${c.ad !== 'Tümü' ? `<button class="btn btn-danger" onclick="deleteCategory('${c.id}')">Sil</button>` : ''}
+                                    </td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -510,6 +676,68 @@
                 `;
             } catch (error) {
                 showAlert('Kategoriler yüklenemedi', 'error');
+            }
+        }
+
+        document.getElementById('categoryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                ad: document.getElementById('categoryName').value,
+                emoji: document.getElementById('categoryEmoji').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kategori`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Kategori eklendi!', 'success');
+                    document.getElementById('categoryForm').reset();
+                    loadCategories();
+                } else {
+                    showAlert('❌ ' + result.mesaj, 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Kategori eklenemedi', 'error');
+            }
+        });
+
+        async function toggleCategory(id) {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kategori/${id}/toggle`, {
+                    method: 'PATCH'
+                });
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Kategori güncellendi', 'success');
+                    loadCategories();
+                }
+            } catch (error) {
+                showAlert('❌ İşlem başarısız', 'error');
+            }
+        }
+
+        async function deleteCategory(id) {
+            if (!confirm('Bu kategoriyi silmek istediğinizden emin misiniz?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kategori/${id}`, {
+                    method: 'DELETE'
+                });
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Kategori silindi', 'success');
+                    loadCategories();
+                } else {
+                    showAlert('❌ ' + result.mesaj, 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Kategori silinemedi', 'error');
             }
         }
 
@@ -564,6 +792,11 @@
                 const coupons = await response.json();
                 
                 const listDiv = document.getElementById('couponList');
+                if (coupons.length === 0) {
+                    listDiv.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Henüz kupon yok</p>';
+                    return;
+                }
+                
                 listDiv.innerHTML = `
                     <table>
                         <thead>
@@ -592,6 +825,35 @@
                 showAlert('Kuponlar yüklenemedi', 'error');
             }
         }
+
+        document.getElementById('couponForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                kod: document.getElementById('couponCode').value.toUpperCase(),
+                indirimTipi: document.getElementById('couponType').value,
+                indirimMiktari: parseFloat(document.getElementById('couponAmount').value)
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kupon`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Kupon oluşturuldu!', 'success');
+                    document.getElementById('couponForm').reset();
+                    loadCoupons();
+                } else {
+                    showAlert('❌ ' + result.mesaj, 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Kupon oluşturulamadı', 'error');
+            }
+        });
 
         // Alert
         function showAlert(message, type) {
