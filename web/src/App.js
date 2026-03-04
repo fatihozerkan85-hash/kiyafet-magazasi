@@ -2,7 +2,10 @@ import { useState, useEffect } from 'react';
 
 const API_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:5000' 
-  : '';
+  : 'https://kiyafet-magazasi-backend.vercel.app';
+
+console.log('🔧 API_URL:', API_URL);
+console.log('🌐 Hostname:', window.location.hostname);
 
 function App() {
   const [urunler, setUrunler] = useState([]);
