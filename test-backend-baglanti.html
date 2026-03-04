@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Bağlantı Testi</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; }
+        h1 { color: #667eea; }
+        button { padding: 15px 30px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; margin: 10px 5px; }
+        button:hover { background: #5568d3; }
+        .result { margin-top: 20px; padding: 15px; border-radius: 8px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Backend Bağlantı Testi</h1>
+        
+        <div style="margin: 20px 0;">
+            <h3>Test Edilecek URL'ler:</h3>
+            <div class="info">
+                <strong>Backend URL:</strong> https://kiyafet-magazasi-backend.vercel.app<br>
+                <strong>Ürünler:</strong> /api/urunler<br>
+                <strong>Kampanyalar:</strong> /api/kampanyalar
+            </div>
+        </div>
+
+        <div>
+            <button onclick="testBackend()">🧪 Backend Testi Yap</button>
+            <button onclick="testUrunler()">📦 Ürünleri Test Et</button>
+            <button onclick="testKampanyalar()">🎉 Kampanyaları Test Et</button>
+            <button onclick="testAll()">🚀 Hepsini Test Et</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'https://kiyafet-magazasi-backend.vercel.app';
+        
+        function showResult(message, type = 'info') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<div class="result ${type}">${message}</div>`;
+        }
+
+        async function testBackend() {
+            showResult('⏳ Backend bağlantısı test ediliyor...', 'info');
+            
+            try {
+                const response = await fetch(BACKEND_URL);
+                if (response.ok) {
+                    showResult('✅ Backend çalışıyor!', 'success');
+                } else {
+                    showResult(`❌ Backend yanıt verdi ama hata: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Backend'e ulaşılamıyor: ${error.message}`, 'error');
+            }
+        }
+
+        async function testUrunler() {
+            showResult('⏳ Ürünler yükleniyor...', 'info');
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/urunler`);
+                const data = await response.json();
+                
+                if (Array.isArray(data) && data.length > 0) {
+                    showResult(`
+                        ✅ Ürünler başarıyla yüklendi!<br>
+                        <strong>Toplam Ürün:</strong> ${data.length}<br>
+                        <strong>İlk Ürün:</strong> ${data[0].ad}<br>
+                        <pre>${JSON.stringify(data[0], null, 2)}</pre>
+                    `, 'success');
+                } else {
+                    showResult('⚠️ Ürün listesi boş', 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Ürünler yüklenemedi: ${error.message}`, 'error');
+            }
+        }
+
+        async function testKampanyalar() {
+            showResult('⏳ Kampanyalar yükleniyor...', 'info');
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/kampanyalar`);
+                const data = await response.json();
+                
+                if (Array.isArray(data) && data.length > 0) {
+                    showResult(`
+                        ✅ Kampanyalar başarıyla yüklendi!<br>
+                        <strong>Toplam Kampanya:</strong> ${data.length}<br>
+                        <strong>Kampanyalar:</strong><br>
+                        ${data.map(k => `- ${k.baslik}`).join('<br>')}
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `, 'success');
+                } else {
+                    showResult('⚠️ Kampanya listesi boş', 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Kampanyalar yüklenemedi: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAll() {
+            showResult('⏳ Tüm testler çalıştırılıyor...', 'info');
+            
+            let results = '<h3>Test Sonuçları:</h3>';
+            
+            // Backend testi
+            try {
+                const backendResponse = await fetch(BACKEND_URL);
+                results += backendResponse.ok 
+                    ? '✅ Backend çalışıyor<br>' 
+                    : `❌ Backend hata: ${backendResponse.status}<br>`;
+            } catch (error) {
+                results += `❌ Backend'e ulaşılamıyor: ${error.message}<br>`;
+            }
+            
+            // Ürünler testi
+            try {
+                const urunResponse = await fetch(`${BACKEND_URL}/api/urunler`);
+                const urunData = await urunResponse.json();
+                results += Array.isArray(urunData) && urunData.length > 0
+                    ? `✅ Ürünler yüklendi (${urunData.length} adet)<br>`
+                    : '❌ Ürünler yüklenemedi<br>';
+            } catch (error) {
+                results += `❌ Ürünler hatası: ${error.message}<br>`;
+            }
+            
+            // Kampanyalar testi
+            try {
+                const kampanyaResponse = await fetch(`${BACKEND_URL}/api/kampanyalar`);
+                const kampanyaData = await kampanyaResponse.json();
+                results += Array.isArray(kampanyaData) && kampanyaData.length > 0
+                    ? `✅ Kampanyalar yüklendi (${kampanyaData.length} adet)<br>`
+                    : '❌ Kampanyalar yüklenemedi<br>';
+            } catch (error) {
+                results += `❌ Kampanyalar hatası: ${error.message}<br>`;
+            }
+            
+            showResult(results, 'info');
+        }
+
+        // Sayfa yüklendiğinde otomatik test
+        window.onload = () => {
+            testAll();
+        };
+    </script>
+</body>
+</html>
