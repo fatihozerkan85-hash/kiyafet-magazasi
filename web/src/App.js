@@ -46,13 +46,16 @@ function App() {
     fetch(`${API_URL}/api/urunler`)
       .then(res => res.json())
       .then(data => setUrunler(data))
-      .catch(err => console.error(err));
+      .catch(err => console.error('Ürünler yüklenemedi:', err));
       
     // Kampanyaları yükle
     fetch(`${API_URL}/api/kampanyalar`)
       .then(res => res.json())
-      .then(data => setKampanyalar(data))
-      .catch(err => console.error(err));
+      .then(data => {
+        console.log('Kampanyalar yüklendi:', data);
+        setKampanyalar(data);
+      })
+      .catch(err => console.error('Kampanyalar yüklenemedi:', err));
       
     // Kullanıcıyı localStorage'dan yükle
     const kaydedilmisKullanici = localStorage.getItem('kullanici');
@@ -573,7 +576,14 @@ function App() {
 
         {secilenSayfa === 'ana' && (
           <div>
+            {/* Test Banner - Her zaman görünür */}
+            <div style={{ marginBottom: 20, padding: 20, background: '#667eea', color: 'white', borderRadius: 12, textAlign: 'center' }}>
+              <h3>🎉 Kampanya Sistemi Aktif - Toplam {kampanyalar.length} kampanya</h3>
+              {kampanyalar.length === 0 && <p>Kampanyalar yükleniyor...</p>}
+            </div>
+
             {/* Kampanya Banner'ları */}
+            {console.log('Ana sayfa render - Kampanya sayısı:', kampanyalar.length)}
             {kampanyalar.length > 0 && (
               <div style={{ marginBottom: 30, position: 'relative', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
                 {kampanyalar.map((kampanya, index) => (
