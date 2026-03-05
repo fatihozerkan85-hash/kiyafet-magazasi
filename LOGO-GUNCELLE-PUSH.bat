@@ -1,6 +1,6 @@
 @echo off
 echo ========================================
-echo LOGO BOYUTU GUNCELLEME VE PUSH
+echo LOGO DOSYASI GUNCELLEME VE PUSH
 echo ========================================
 echo.
 
@@ -9,7 +9,7 @@ git add .
 
 echo.
 echo [2/3] Git commit...
-git commit -m "Logo boyutu 290x100px olarak guncellendi"
+git commit -m "Logo dosyasi as.png olarak guncellendi"
 
 echo.
 echo [3/3] Git push...
