@@ -398,7 +398,7 @@ function App() {
       <header style={{ 
         background: 'white', 
         backgroundImage: 'url(/as.png)',
-        backgroundSize: '800px 600px',
+        backgroundSize: '900px 500px',
         backgroundPosition: 'left center',
         backgroundRepeat: 'no-repeat',
         padding: '20px', 
