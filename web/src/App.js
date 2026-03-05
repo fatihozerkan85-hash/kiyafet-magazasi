@@ -397,9 +397,16 @@ function App() {
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ background: 'white', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={{ margin: 0, color: '#000000', cursor: 'pointer' }} onClick={() => setSecilenSayfa('ana')}>
-            {t('site_title')}
-          </h1>
+          <div 
+            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }} 
+            onClick={() => setSecilenSayfa('ana')}
+          >
+            <img 
+              src="https://i.ibb.co/9ZGqYXK/asl-logo.png" 
+              alt="ASL Butique" 
+              style={{ height: 60, width: 'auto' }}
+            />
+          </div>
           <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
             {/* Dil Seçici */}
             <select 
