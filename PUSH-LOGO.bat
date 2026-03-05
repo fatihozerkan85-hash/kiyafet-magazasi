@@ -1,11 +1,11 @@
 @echo off
 echo ========================================
-echo LOGO BACKGROUND OLARAK GUNCELLEME
+echo LOGO COVER MODE - BUYUK GORUNUM
 echo ========================================
 echo.
 
 git add .
-git commit -m "Logo background olarak guncellendi - tam alan kaplama"
+git commit -m "Logo cover mode ile buyutuldu"
 git push origin main
 
 echo.
@@ -14,6 +14,6 @@ echo TAMAMLANDI!
 echo ========================================
 echo.
 echo Vercel 2-3 dakika icinde deploy edecek
-echo Logo artik header'in tamamini kaplayacak!
+echo Logo artik daha buyuk gorunecek!
 echo.
 pause

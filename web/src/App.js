@@ -401,7 +401,7 @@ function App() {
             style={{ 
               cursor: 'pointer', 
               backgroundImage: 'url(/as.png)',
-              backgroundSize: 'contain',
+              backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
               width: 1000,
