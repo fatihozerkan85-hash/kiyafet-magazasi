@@ -1,11 +1,11 @@
 @echo off
 echo ========================================
-echo LOGO BOYUTU DUZELTME - COVER MODE
+echo LOGO BACKGROUND OLARAK GUNCELLEME
 echo ========================================
 echo.
 
 git add .
-git commit -m "Logo boyutu duzeltildi - objectFit cover ile tam cerceve"
+git commit -m "Logo background olarak guncellendi - tam alan kaplama"
 git push origin main
 
 echo.
@@ -14,6 +14,6 @@ echo TAMAMLANDI!
 echo ========================================
 echo.
 echo Vercel 2-3 dakika icinde deploy edecek
-echo Logo artik kirmizi cerceveyi tam kaplayacak!
+echo Logo artik header'in tamamini kaplayacak!
 echo.
 pause

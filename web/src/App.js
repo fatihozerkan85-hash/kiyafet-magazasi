@@ -400,59 +400,17 @@ function App() {
           <div 
             style={{ 
               cursor: 'pointer', 
-              display: 'flex', 
-              alignItems: 'center',
-              width: 440,
-              height: 80
+              backgroundImage: 'url(/as.png)',
+              backgroundSize: 'contain',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              width: 1000,
+              height: 120,
+              flex: 1,
+              maxWidth: 1000
             }} 
             onClick={() => setSecilenSayfa('ana')}
           >
-            <img 
-              src="/as.png" 
-              alt="ASL Butique" 
-              style={{ 
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover'
-              }}
-              onError={(e) => {
-                // Eğer logo yüklenemezse, yedek logo göster
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'flex';
-              }}
-            />
-            {/* Yedek Logo (logo.png yüklenemezse) */}
-            <div style={{ 
-              display: 'none',
-              background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-              padding: '12px 25px',
-              borderRadius: 8,
-              boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}>
-              <div style={{ 
-                fontFamily: 'Brush Script MT, cursive, Georgia, serif',
-                fontSize: 32,
-                fontWeight: 'bold',
-                color: '#D4AF37',
-                letterSpacing: '3px',
-                textShadow: '0 0 15px rgba(212, 175, 55, 0.6)',
-                lineHeight: 1
-              }}>
-                ASL
-              </div>
-              <div style={{
-                fontFamily: 'Georgia, serif',
-                fontSize: 11,
-                color: '#D4AF37',
-                letterSpacing: '3px',
-                textTransform: 'uppercase',
-                marginTop: 3
-              }}>
-                BUTIQUE
-              </div>
-            </div>
           </div>
           <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
             {/* Dil Seçici */}
