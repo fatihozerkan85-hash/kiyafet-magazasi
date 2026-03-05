@@ -398,12 +398,12 @@ function App() {
       <header style={{ 
         background: 'white', 
         backgroundImage: 'url(/as.png)',
-        backgroundSize: '1000px 600px',
+        backgroundSize: '500px 200px',
         backgroundPosition: 'left center',
         backgroundRepeat: 'no-repeat',
         padding: '20px', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        minHeight: 600
+        minHeight: 200
       }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div 
