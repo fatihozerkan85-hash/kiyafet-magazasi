@@ -398,14 +398,36 @@ function App() {
       <header style={{ background: 'white', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div 
-            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }} 
+            style={{ 
+              cursor: 'pointer', 
+              display: 'flex', 
+              alignItems: 'center',
+              background: '#000',
+              padding: '10px 20px',
+              borderRadius: 8
+            }} 
             onClick={() => setSecilenSayfa('ana')}
           >
-            <img 
-              src="https://i.ibb.co/9ZGqYXK/asl-logo.png" 
-              alt="ASL Butique" 
-              style={{ height: 60, width: 'auto' }}
-            />
+            <div style={{ 
+              fontFamily: 'Georgia, serif',
+              fontSize: 32,
+              fontWeight: 'bold',
+              color: '#D4AF37',
+              letterSpacing: '3px',
+              textShadow: '0 0 10px rgba(212, 175, 55, 0.5)'
+            }}>
+              ASL
+            </div>
+            <div style={{
+              fontFamily: 'Georgia, serif',
+              fontSize: 16,
+              color: '#D4AF37',
+              marginLeft: 10,
+              letterSpacing: '2px',
+              textTransform: 'uppercase'
+            }}>
+              Butique
+            </div>
           </div>
           <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
             {/* Dil Seçici */}
