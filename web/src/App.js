@@ -401,7 +401,9 @@ function App() {
             style={{ 
               cursor: 'pointer', 
               display: 'flex', 
-              alignItems: 'center'
+              alignItems: 'center',
+              width: 440,
+              height: 80
             }} 
             onClick={() => setSecilenSayfa('ana')}
           >
@@ -409,9 +411,9 @@ function App() {
               src="/as.png" 
               alt="ASL Butique" 
               style={{ 
-                width: 440,
-                height: 80,
-                objectFit: 'contain'
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
               }}
               onError={(e) => {
                 // Eğer logo yüklenemezse, yedek logo göster
