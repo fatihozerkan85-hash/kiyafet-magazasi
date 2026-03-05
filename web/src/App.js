@@ -401,13 +401,13 @@ function App() {
             style={{ 
               cursor: 'pointer', 
               backgroundImage: 'url(/as.png)',
-              backgroundSize: 'cover',
+              backgroundSize: '100% 100%',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              width: 1000,
-              height: 120,
-              flex: 1,
-              maxWidth: 1000
+              width: 560,
+              height: 150,
+              minWidth: 560,
+              minHeight: 150
             }} 
             onClick={() => setSecilenSayfa('ana')}
           >
