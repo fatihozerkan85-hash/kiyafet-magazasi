@@ -1,11 +1,11 @@
 @echo off
 echo ========================================
-echo LOGO PUSH
+echo LOGO BOYUTU GUNCELLEME - 440x80px
 echo ========================================
 echo.
 
 git add .
-git commit -m "Logo guncellendi"
+git commit -m "Logo boyutu 440x80px olarak guncellendi - kirmizi cerceve tam"
 git push origin main
 
 echo.

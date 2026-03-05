@@ -409,9 +409,8 @@ function App() {
               src="/as.png" 
               alt="ASL Butique" 
               style={{ 
-                width: 290,
-                height: 'auto',
-                maxHeight: 100,
+                width: 440,
+                height: 80,
                 objectFit: 'contain'
               }}
               onError={(e) => {
