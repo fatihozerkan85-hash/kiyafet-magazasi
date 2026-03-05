@@ -409,7 +409,7 @@ function App() {
               src="/asl.png" 
               alt="ASL Butique" 
               style={{ 
-                height: 80,
+                height: 120,
                 width: 'auto',
                 objectFit: 'contain',
                 filter: 'brightness(1.1)'
