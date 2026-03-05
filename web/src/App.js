@@ -404,10 +404,9 @@ function App() {
               backgroundSize: '100% 100%',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              width: 560,
-              height: 150,
-              minWidth: 560,
-              minHeight: 150
+              width: '100%',
+              height: 140,
+              flex: 1
             }} 
             onClick={() => setSecilenSayfa('ana')}
           >
