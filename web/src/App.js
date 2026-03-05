@@ -397,20 +397,17 @@ function App() {
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ background: 'white', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div 
-            style={{ 
-              cursor: 'pointer', 
-              backgroundImage: 'url(/as.png)',
-              backgroundSize: '100% 100%',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              width: '100%',
-              height: 140,
-              flex: 1
-            }} 
+          <img 
+            src="/as.png" 
+            alt="ASL Butique"
             onClick={() => setSecilenSayfa('ana')}
-          >
-          </div>
+            style={{ 
+              cursor: 'pointer',
+              width: 800,
+              height: 120,
+              objectFit: 'contain'
+            }} 
+          />
           <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
             {/* Dil Seçici */}
             <select 
