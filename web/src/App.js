@@ -406,7 +406,7 @@ function App() {
             onClick={() => setSecilenSayfa('ana')}
           >
             <img 
-              src="/logo.png" 
+              src="/asl.png" 
               alt="ASL Butique" 
               style={{ 
                 height: 55,
