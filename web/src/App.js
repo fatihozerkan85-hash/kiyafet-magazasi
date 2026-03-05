@@ -409,10 +409,10 @@ function App() {
               src="/asl.png" 
               alt="ASL Butique" 
               style={{ 
-                height: 120,
-                width: 'auto',
-                objectFit: 'contain',
-                filter: 'brightness(1.1)'
+                width: 180,
+                height: 'auto',
+                maxHeight: 70,
+                objectFit: 'contain'
               }}
               onError={(e) => {
                 // Eğer logo yüklenemezse, yedek logo göster
