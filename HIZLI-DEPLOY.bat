@@ -1,38 +1,30 @@
 @echo off
 chcp 65001 >nul
-echo.
 echo ========================================
-echo   ADMIN GIRIS SISTEMI - DEPLOY
+echo 🚀 HIZLI DEPLOY
 echo ========================================
-echo.
-echo Yukleniyor...
 echo.
 
-git add -A
-git commit -m "Admin giris sistemi eklendi - sifre koruması (admin/admin123)"
-git push origin main
+echo 📝 Git durumu kontrol ediliyor...
+git status
 
 echo.
 echo ========================================
-echo   YUKLEME TAMAMLANDI!
+echo 💡 MANUEL ADIMLAR:
 echo ========================================
 echo.
-echo Vercel otomatik deploy basliyor...
-echo Bekleme suresi: 3-5 dakika
+echo 1. Aşağıdaki komutları sırayla çalıştırın:
 echo.
-echo Deploy tamamlandiginda:
+echo    git add .
+echo    (Sorulan soruya "A" yanıtını verin)
 echo.
-echo 1. Admin panelini acin:
-echo    https://kiyafet-magazasi.vercel.app/admin.html
+echo    git commit -m "Boyner tarzı kategori menüsü - sade tasarım"
 echo.
-echo 2. Ctrl + F5 ile yenileyin (hard refresh)
+echo    git push origin main
 echo.
-echo 3. Giris yapin:
-echo    Kullanici: admin
-echo    Sifre: admin123
+echo 2. Vercel otomatik deploy edecek (1-2 dakika)
 echo.
-echo 4. Kampanya yonetimini test edin!
-echo.
-echo ========================================
+echo 3. Sitenizi kontrol edin:
+echo    https://kiyafet-magazasi.vercel.app
 echo.
 pause

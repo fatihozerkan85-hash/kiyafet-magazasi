@@ -471,19 +471,29 @@ function App() {
                 onClick={() => { setSecilenKategori(kategori.id); setSecilenSayfa('ana'); }}
                 style={{
                   padding: '10px 20px',
-                  background: secilenKategori === kategori.id ? '#000000' : '#f8f9fa',
+                  background: secilenKategori === kategori.id ? '#000000' : 'transparent',
                   color: secilenKategori === kategori.id ? 'white' : '#333',
                   border: 'none',
-                  borderRadius: 25,
+                  borderRadius: 4,
                   cursor: 'pointer',
                   fontSize: 14,
                   fontWeight: secilenKategori === kategori.id ? 600 : 400,
                   whiteSpace: 'nowrap',
                   transition: 'all 0.3s ease',
-                  boxShadow: secilenKategori === kategori.id ? '0 2px 8px rgba(0,0,0,0.3)' : 'none'
+                  boxShadow: 'none'
+                }}
+                onMouseOver={(e) => {
+                  if (secilenKategori !== kategori.id) {
+                    e.target.style.color = '#000';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (secilenKategori !== kategori.id) {
+                    e.target.style.color = '#333';
+                  }
                 }}
               >
-                {kategori.emoji} {dil === 'en' ? kategori.adEn : kategori.ad}
+                {dil === 'en' ? kategori.adEn : kategori.ad}
               </button>
             ))}
           </div>
