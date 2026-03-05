@@ -403,9 +403,9 @@ function App() {
             onClick={() => setSecilenSayfa('ana')}
             style={{ 
               cursor: 'pointer',
-              width: 800,
-              height: 120,
-              objectFit: 'contain'
+              width: '100%',
+              height: 140,
+              objectFit: 'cover'
             }} 
           />
           <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
