@@ -401,127 +401,56 @@ function App() {
             style={{ 
               cursor: 'pointer', 
               display: 'flex', 
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-              padding: '15px 30px',
-              borderRadius: 12,
-              position: 'relative',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+              alignItems: 'center'
             }} 
             onClick={() => setSecilenSayfa('ana')}
           >
-            {/* Dekoratif çiçek - sol */}
-            <div style={{
-              position: 'absolute',
-              left: 10,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              fontSize: 20,
-              color: '#D4AF37',
-              opacity: 0.6
+            <img 
+              src="/logo.png" 
+              alt="ASL Butique" 
+              style={{ 
+                height: 55,
+                width: 'auto',
+                objectFit: 'contain'
+              }}
+              onError={(e) => {
+                // Eğer logo yüklenemezse, yedek logo göster
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
+            />
+            {/* Yedek Logo (logo.png yüklenemezse) */}
+            <div style={{ 
+              display: 'none',
+              background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
+              padding: '12px 25px',
+              borderRadius: 8,
+              boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+              flexDirection: 'column',
+              alignItems: 'center'
             }}>
-              ✨🌿
-            </div>
-            
-            {/* Ana Logo */}
-            <div style={{ textAlign: 'center' }}>
-              {/* ASL - Büyük harfler */}
               <div style={{ 
                 fontFamily: 'Brush Script MT, cursive, Georgia, serif',
-                fontSize: 42,
+                fontSize: 32,
                 fontWeight: 'bold',
                 color: '#D4AF37',
-                letterSpacing: '4px',
-                textShadow: '0 0 15px rgba(212, 175, 55, 0.6), 0 0 30px rgba(212, 175, 55, 0.3)',
-                lineHeight: 1,
-                marginBottom: 5,
-                background: 'linear-gradient(135deg, #D4AF37 0%, #F4E5B0 50%, #D4AF37 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
+                letterSpacing: '3px',
+                textShadow: '0 0 15px rgba(212, 175, 55, 0.6)',
+                lineHeight: 1
               }}>
                 ASL
               </div>
-              
-              {/* Alt çizgi dekoratif */}
-              <div style={{
-                width: 120,
-                height: 2,
-                background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)',
-                margin: '5px auto',
-                position: 'relative'
-              }}>
-                <div style={{
-                  position: 'absolute',
-                  left: '50%',
-                  top: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  fontSize: 12,
-                  color: '#D4AF37'
-                }}>✦</div>
-              </div>
-              
-              {/* BUTIQUE - Alt yazı */}
               <div style={{
                 fontFamily: 'Georgia, serif',
-                fontSize: 14,
+                fontSize: 11,
                 color: '#D4AF37',
-                letterSpacing: '4px',
+                letterSpacing: '3px',
                 textTransform: 'uppercase',
-                marginTop: 5,
-                textShadow: '0 0 10px rgba(212, 175, 55, 0.4)'
+                marginTop: 3
               }}>
                 BUTIQUE
               </div>
             </div>
-            
-            {/* Dekoratif çiçek - sağ */}
-            <div style={{
-              position: 'absolute',
-              right: 10,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              fontSize: 20,
-              color: '#D4AF37',
-              opacity: 0.6
-            }}>
-              🌿✨
-            </div>
-            
-            {/* Köşe yıldızları */}
-            <div style={{
-              position: 'absolute',
-              top: 5,
-              left: 5,
-              fontSize: 10,
-              color: '#D4AF37',
-              opacity: 0.8
-            }}>✦</div>
-            <div style={{
-              position: 'absolute',
-              top: 5,
-              right: 5,
-              fontSize: 10,
-              color: '#D4AF37',
-              opacity: 0.8
-            }}>✦</div>
-            <div style={{
-              position: 'absolute',
-              bottom: 5,
-              left: 5,
-              fontSize: 10,
-              color: '#D4AF37',
-              opacity: 0.8
-            }}>✦</div>
-            <div style={{
-              position: 'absolute',
-              bottom: 5,
-              right: 5,
-              fontSize: 10,
-              color: '#D4AF37',
-              opacity: 0.8
-            }}>✦</div>
           </div>
           <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
             {/* Dil Seçici */}
