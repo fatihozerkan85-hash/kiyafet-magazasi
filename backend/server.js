@@ -6,8 +6,12 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// MongoDB Bağlantısı
-mongoose.connect(process.env.MONGODB_URI)
+// MongoDB Bağlantısı - Vercel için optimize edilmiş ayarlar
+mongoose.connect(process.env.MONGODB_URI, {
+  serverSelectionTimeoutMS: 30000, // 30 saniye timeout
+  socketTimeoutMS: 45000,
+  family: 4 // IPv4 kullan (Vercel uyumluluğu için)
+})
   .then(() => console.log('✅ MongoDB Atlas\'a bağlandı!'))
   .catch(err => console.error('❌ MongoDB bağlantı hatası:', err));
 
