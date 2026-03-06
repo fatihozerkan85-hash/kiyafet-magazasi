@@ -399,7 +399,7 @@ function App() {
         background: 'white', 
         backgroundImage: 'url(/as.png)',
         backgroundSize: '1300px 250px',
-        backgroundPosition: '-300px center',
+        backgroundPosition: '-250px center',
         backgroundRepeat: 'no-repeat',
         padding: '20px', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
