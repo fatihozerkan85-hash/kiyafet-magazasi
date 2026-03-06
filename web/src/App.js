@@ -398,8 +398,8 @@ function App() {
       <header style={{ 
         background: 'white', 
         backgroundImage: 'url(/as.png)',
-        backgroundSize: '1000px 250px',
-        backgroundPosition: '-200px center',
+        backgroundSize: '1200px 250px',
+        backgroundPosition: '-100px center',
         backgroundRepeat: 'no-repeat',
         padding: '20px', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -421,7 +421,7 @@ function App() {
               placeholder={t('search')}
               value={aramaMetni}
               onChange={(e) => setAramaMetni(e.target.value)}
-              style={{ padding: '10px', borderRadius: 5, border: '1px solid #ddd', width: '680px' }}
+              style={{ padding: '10px', borderRadius: 5, border: '1px solid #ddd', width: '565px' }}
             />
             {kullanici ? (
               <>
@@ -447,7 +447,7 @@ function App() {
               </>
             )}
             <button onClick={() => setSecilenSayfa('sepet')} style={{ fontSize: 24, background: 'none', border: 'none', cursor: 'pointer' }}>
-              🛒 ({sepet.length})
+              🛒 <span style={{ fontSize: 16, fontWeight: 'normal' }}>({sepet.length})</span>
             </button>
             
             {/* Dil Seçici - En sağ üst köşe */}
