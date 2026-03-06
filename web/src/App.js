@@ -397,13 +397,14 @@ function App() {
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ 
         background: 'white', 
-        padding: '5px 20px', 
+        padding: '0', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        height: '100px'
       }}>
         {/* Üst Satır: Logo Ortada, İkonlar Sağda */}
-        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%', padding: '0 20px' }}>
           <div style={{ width: 150 }}></div>
           
           {/* Logo - Ortada */}
@@ -417,9 +418,7 @@ function App() {
               backgroundRepeat: 'no-repeat',
               width: 1300,
               height: 250,
-              flex: '0 0 auto',
-              transform: 'scale(0.35)',
-              transformOrigin: 'center'
+              flex: '0 0 auto'
             }}
           ></div>
           
