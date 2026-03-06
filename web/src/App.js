@@ -397,13 +397,14 @@ function App() {
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ 
         background: 'white', 
-        padding: '8px 20px', 
+        padding: '5px 20px', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden'
       }}>
         {/* Üst Satır: Logo Ortada, İkonlar Sağda */}
-        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <div style={{ width: 200 }}></div>
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+          <div style={{ width: 150 }}></div>
           
           {/* Logo - Ortada */}
           <div 
@@ -416,12 +417,14 @@ function App() {
               backgroundRepeat: 'no-repeat',
               width: 1300,
               height: 250,
-              flex: '0 0 auto'
+              flex: '0 0 auto',
+              transform: 'scale(0.35)',
+              transformOrigin: 'center'
             }}
           ></div>
           
           {/* İkonlar - Sağda */}
-          <div style={{ display: 'flex', gap: 15, alignItems: 'center', width: 200, justifyContent: 'flex-end' }}>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center', width: 150, justifyContent: 'flex-end' }}>
             {kullanici ? (
               <>
                 <button 
