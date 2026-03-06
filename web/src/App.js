@@ -397,12 +397,12 @@ function App() {
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ 
         background: 'white', 
-        padding: '10px 20px', 
+        padding: '8px 20px', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         position: 'relative'
       }}>
         {/* Üst Satır: Logo Ortada, İkonlar Sağda */}
-        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
           <div style={{ width: 200 }}></div>
           
           {/* Logo - Ortada */}
