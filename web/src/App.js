@@ -398,7 +398,7 @@ function App() {
       <header style={{ 
         background: 'white', 
         backgroundImage: 'url(/as.png)',
-        backgroundSize: '900px 300px',
+        backgroundSize: '1000px 250px',
         backgroundPosition: '-200px center',
         backgroundRepeat: 'no-repeat',
         padding: '20px', 
@@ -421,7 +421,7 @@ function App() {
               placeholder={t('search')}
               value={aramaMetni}
               onChange={(e) => setAramaMetni(e.target.value)}
-              style={{ padding: '10px', borderRadius: 5, border: '1px solid #ddd', width: '830px' }}
+              style={{ padding: '10px', borderRadius: 5, border: '1px solid #ddd', width: '680px' }}
             />
             {kullanici ? (
               <>
