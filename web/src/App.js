@@ -414,8 +414,8 @@ function App() {
               backgroundSize: 'contain',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              width: 200,
-              height: 80,
+              width: 1000,
+              height: 250,
               flex: '0 0 auto'
             }}
           ></div>
