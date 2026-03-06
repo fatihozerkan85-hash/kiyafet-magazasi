@@ -447,7 +447,7 @@ function App() {
               </>
             )}
             <button onClick={() => setSecilenSayfa('sepet')} style={{ fontSize: 24, background: 'none', border: 'none', cursor: 'pointer' }}>
-              🛒 <span style={{ fontSize: 16, fontWeight: 'normal' }}>({sepet.length})</span>
+              🛒 <span style={{ fontSize: 10, fontWeight: 'normal' }}>({sepet.length})</span>
             </button>
             
             {/* Dil Seçici - En sağ üst köşe */}
