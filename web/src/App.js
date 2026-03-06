@@ -390,7 +390,7 @@ function App() {
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
               width: 1300,
-              height: 250,
+              height: 200,
               flex: '0 0 auto'
             }}
           ></div>
