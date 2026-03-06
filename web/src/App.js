@@ -95,33 +95,6 @@ function App() {
     return dilMetinleri[key] || key;
   };
 
-  // Kategori renkleri
-  const getCategoryColor = (kategoriId) => {
-    const colors = {
-      'Elbise': '#FFE5E5',
-      'Pantolon': '#E5F3FF',
-      'Gömlek': '#FFF5E5',
-      'Ceket': '#F0E5FF',
-      'Ayakkabı': '#E5FFF0',
-      'Aksesuar': '#FFE5F5',
-      'Spor': '#E5FFFF'
-    };
-    return colors[kategoriId] || '#F5F5F5';
-  };
-
-  const getCategoryColorDark = (kategoriId) => {
-    const colors = {
-      'Elbise': '#FFD0D0',
-      'Pantolon': '#D0E8FF',
-      'Gömlek': '#FFE8D0',
-      'Ceket': '#E0D0FF',
-      'Ayakkabı': '#D0FFE0',
-      'Aksesuar': '#FFD0E8',
-      'Spor': '#D0FFFF'
-    };
-    return colors[kategoriId] || '#E0E0E0';
-  };
-
   const girisYap = async () => {
     try {
       const response = await fetch(`${API_URL}/api/giris`, {
