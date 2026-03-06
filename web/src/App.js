@@ -399,11 +399,12 @@ function App() {
         background: 'white', 
         backgroundImage: 'url(/as.png)',
         backgroundSize: '900px 300px',
-        backgroundPosition: '0 center',
+        backgroundPosition: '-200px center',
         backgroundRepeat: 'no-repeat',
         padding: '20px', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        minHeight: 150
+        minHeight: 150,
+        position: 'relative'
       }}>
         <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div 
@@ -414,36 +415,13 @@ function App() {
               height: 100
             }}
           ></div>
-          <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
-            {/* Dil Seçici */}
-            <select 
-              value={dil} 
-              onChange={(e) => dilDegistir(e.target.value)}
-              style={{ 
-                padding: '10px 15px', 
-                borderRadius: 8, 
-                border: '2px solid #ddd', 
-                cursor: 'pointer', 
-                background: 'white',
-                fontSize: 15,
-                fontWeight: 600,
-                color: '#333',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseOver={(e) => e.target.style.borderColor = '#000000'}
-              onMouseOut={(e) => e.target.style.borderColor = '#ddd'}
-            >
-              <option value="tr">🇹🇷 Türkçe</option>
-              <option value="en">🇬🇧 English</option>
-            </select>
-            
+          <div style={{ display: 'flex', gap: 15, alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
             <input
               type="text"
               placeholder={t('search')}
               value={aramaMetni}
               onChange={(e) => setAramaMetni(e.target.value)}
-              style={{ padding: '10px', borderRadius: 5, border: '1px solid #ddd' }}
+              style={{ padding: '10px', borderRadius: 5, border: '1px solid #ddd', width: '830px' }}
             />
             {kullanici ? (
               <>
@@ -471,6 +449,29 @@ function App() {
             <button onClick={() => setSecilenSayfa('sepet')} style={{ fontSize: 24, background: 'none', border: 'none', cursor: 'pointer' }}>
               🛒 ({sepet.length})
             </button>
+            
+            {/* Dil Seçici - En sağ üst köşe */}
+            <select 
+              value={dil} 
+              onChange={(e) => dilDegistir(e.target.value)}
+              style={{ 
+                padding: '10px 15px', 
+                borderRadius: 8, 
+                border: '2px solid #ddd', 
+                cursor: 'pointer', 
+                background: 'white',
+                fontSize: 15,
+                fontWeight: 600,
+                color: '#333',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseOver={(e) => e.target.style.borderColor = '#000000'}
+              onMouseOut={(e) => e.target.style.borderColor = '#ddd'}
+            >
+              <option value="tr">🇹🇷 Türkçe</option>
+              <option value="en">🇬🇧 English</option>
+            </select>
           </div>
         </div>
       </header>
