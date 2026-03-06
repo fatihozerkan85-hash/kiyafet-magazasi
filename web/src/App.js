@@ -424,38 +424,45 @@ function App() {
           <div style={{ display: 'flex', gap: 15, alignItems: 'center', width: 200, justifyContent: 'flex-end' }}>
             {kullanici ? (
               <>
-                <span style={{ fontSize: 13, color: '#666', marginRight: 5 }}>{kullanici.ad}</span>
                 <button 
                   onClick={() => { setSecilenSayfa('favorilerim'); favorileriYukle(kullanici.id); }} 
                   style={{ 
                     background: 'none', 
                     border: 'none', 
                     cursor: 'pointer', 
-                    fontSize: 22,
-                    color: '#333',
-                    padding: '5px 8px',
+                    padding: '8px 12px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 4,
                     position: 'relative',
-                    transition: 'color 0.2s'
+                    transition: 'all 0.2s'
                   }}
-                  onMouseOver={(e) => e.currentTarget.style.color = '#000'}
-                  onMouseOut={(e) => e.currentTarget.style.color = '#333'}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.color = '#D4AF37';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.color = '#333';
+                  }}
                 >
-                  ♡
+                  <span style={{ fontSize: 24 }}>♡</span>
+                  <span style={{ fontSize: 11, color: 'inherit' }}>Favorilerim</span>
                   {favoriler.length > 0 && (
                     <span style={{ 
                       position: 'absolute', 
-                      top: 0, 
-                      right: 0, 
-                      background: '#000', 
+                      top: 4, 
+                      right: 8, 
+                      background: '#D4AF37', 
                       color: 'white', 
-                      borderRadius: '50%', 
-                      width: 16, 
-                      height: 16, 
+                      borderRadius: '10px', 
+                      minWidth: 18,
+                      height: 18, 
                       fontSize: 10, 
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'center',
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
+                      padding: '0 5px'
                     }}>
                       {favoriler.length}
                     </span>
@@ -467,15 +474,19 @@ function App() {
                     background: 'none', 
                     border: 'none', 
                     cursor: 'pointer', 
-                    fontSize: 13,
-                    color: '#333',
-                    padding: '5px 10px',
-                    transition: 'color 0.2s'
+                    padding: '8px 12px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 4,
+                    transition: 'all 0.2s',
+                    color: '#333'
                   }}
-                  onMouseOver={(e) => e.currentTarget.style.color = '#000'}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
-                  {t('my_orders')}
+                  <span style={{ fontSize: 24 }}>📦</span>
+                  <span style={{ fontSize: 11, color: 'inherit' }}>{t('my_orders')}</span>
                 </button>
                 <button 
                   onClick={cikisYap} 
@@ -483,12 +494,12 @@ function App() {
                     background: 'none', 
                     border: 'none', 
                     cursor: 'pointer', 
-                    fontSize: 13,
+                    padding: '8px 12px',
+                    fontSize: 12,
                     color: '#333',
-                    padding: '5px 10px',
                     transition: 'color 0.2s'
                   }}
-                  onMouseOver={(e) => e.currentTarget.style.color = '#000'}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
                   {t('logout')}
@@ -502,16 +513,19 @@ function App() {
                     background: 'none', 
                     border: 'none', 
                     cursor: 'pointer', 
-                    fontSize: 22,
-                    color: '#333',
-                    padding: '5px 8px',
-                    transition: 'color 0.2s'
+                    padding: '8px 12px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 4,
+                    transition: 'all 0.2s',
+                    color: '#333'
                   }}
-                  onMouseOver={(e) => e.currentTarget.style.color = '#000'}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
-                  title={t('login')}
                 >
-                  ⚲
+                  <span style={{ fontSize: 24 }}>👤</span>
+                  <span style={{ fontSize: 11, color: 'inherit' }}>{t('login')}</span>
                 </button>
                 <button 
                   onClick={() => setSecilenSayfa('kayit')} 
@@ -519,15 +533,19 @@ function App() {
                     background: 'none', 
                     border: 'none', 
                     cursor: 'pointer', 
-                    fontSize: 13,
-                    color: '#333',
-                    padding: '5px 10px',
-                    transition: 'color 0.2s'
+                    padding: '8px 12px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 4,
+                    transition: 'all 0.2s',
+                    color: '#333'
                   }}
-                  onMouseOver={(e) => e.currentTarget.style.color = '#000'}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
-                  {t('register')}
+                  <span style={{ fontSize: 24 }}>✎</span>
+                  <span style={{ fontSize: 11, color: 'inherit' }}>Kayıt Ol</span>
                 </button>
               </>
             )}
@@ -537,31 +555,36 @@ function App() {
                 background: 'none', 
                 border: 'none', 
                 cursor: 'pointer', 
-                fontSize: 22,
-                color: '#333',
-                padding: '5px 8px',
+                padding: '8px 12px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 4,
                 position: 'relative',
-                transition: 'color 0.2s'
+                transition: 'all 0.2s',
+                color: '#333'
               }}
-              onMouseOver={(e) => e.currentTarget.style.color = '#000'}
+              onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
               onMouseOut={(e) => e.currentTarget.style.color = '#333'}
             >
-              ⛁
+              <span style={{ fontSize: 24 }}>🛒</span>
+              <span style={{ fontSize: 11, color: 'inherit' }}>Sepetim</span>
               {sepet.length > 0 && (
                 <span style={{ 
                   position: 'absolute', 
-                  top: 0, 
-                  right: 0, 
-                  background: '#000', 
+                  top: 4, 
+                  right: 8, 
+                  background: '#D4AF37', 
                   color: 'white', 
-                  borderRadius: '50%', 
-                  width: 16, 
-                  height: 16, 
+                  borderRadius: '10px', 
+                  minWidth: 18,
+                  height: 18, 
                   fontSize: 10, 
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  padding: '0 5px'
                 }}>
                   {sepet.length}
                 </span>
