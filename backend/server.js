@@ -373,13 +373,14 @@ app.get('/api/admin/kategoriler', (req, res) => {
 
 // Kategori Ekle (Admin)
 app.post('/api/admin/kategori', (req, res) => {
-  const { ad, adEn, emoji } = req.body;
+  const { ad, adEn, emoji, resim } = req.body;
   
   const yeniKategori = {
     id: 'K' + Date.now(),
     ad,
     adEn: adEn || ad,
     emoji: emoji || '📦',
+    resim: resim || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&h=300&fit=crop',
     sira: kategoriler.length + 1,
     aktif: true
   };
@@ -391,7 +392,7 @@ app.post('/api/admin/kategori', (req, res) => {
 // Kategori Güncelle (Admin)
 app.put('/api/admin/kategori/:id', (req, res) => {
   const { id } = req.params;
-  const { ad, adEn, emoji, sira, aktif } = req.body;
+  const { ad, adEn, emoji, resim, sira, aktif } = req.body;
   
   const kategori = kategoriler.find(k => k.id === id);
   
@@ -402,6 +403,7 @@ app.put('/api/admin/kategori/:id', (req, res) => {
   if (ad) kategori.ad = ad;
   if (adEn) kategori.adEn = adEn;
   if (emoji) kategori.emoji = emoji;
+  if (resim) kategori.resim = resim;
   if (sira !== undefined) kategori.sira = sira;
   if (aktif !== undefined) kategori.aktif = aktif;
   
