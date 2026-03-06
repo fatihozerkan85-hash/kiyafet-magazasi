@@ -397,32 +397,31 @@ function App() {
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ 
         background: 'white', 
-        backgroundImage: 'url(/as.png)',
-        backgroundSize: '1300px 250px',
-        backgroundPosition: '-550px center',
-        backgroundRepeat: 'no-repeat',
-        padding: '20px', 
+        padding: '15px 20px', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        minHeight: 150,
         position: 'relative'
       }}>
-        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {/* Üst Satır: Logo Ortada, İkonlar Sağda */}
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
+          <div style={{ width: 200 }}></div>
+          
+          {/* Logo - Ortada */}
           <div 
             onClick={() => setSecilenSayfa('ana')}
             style={{ 
               cursor: 'pointer',
+              backgroundImage: 'url(/as.png)',
+              backgroundSize: 'contain',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
               width: 200,
-              height: 100
+              height: 80,
+              flex: '0 0 auto'
             }}
           ></div>
-          <div style={{ display: 'flex', gap: 15, alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
-            <input
-              type="text"
-              placeholder={t('search')}
-              value={aramaMetni}
-              onChange={(e) => setAramaMetni(e.target.value)}
-              style={{ padding: '10px', borderRadius: 5, border: '1px solid #ddd', width: '565px' }}
-            />
+          
+          {/* İkonlar - Sağda */}
+          <div style={{ display: 'flex', gap: 15, alignItems: 'center', width: 200, justifyContent: 'flex-end' }}>
             {kullanici ? (
               <>
                 <span style={{ fontSize: 13, color: '#666', marginRight: 5 }}>{kullanici.ad}</span>
@@ -569,7 +568,7 @@ function App() {
               )}
             </button>
             
-            {/* Dil Seçici - En sağ üst köşe */}
+            {/* Dil Seçici */}
             <select 
               value={dil} 
               onChange={(e) => dilDegistir(e.target.value)}
@@ -598,6 +597,27 @@ function App() {
               <option value="en">🇬🇧 EN</option>
             </select>
           </div>
+        </div>
+
+        {/* Alt Satır: Search Bar - Ortada */}
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'center', paddingTop: 10 }}>
+          <input
+            type="text"
+            placeholder={t('search')}
+            value={aramaMetni}
+            onChange={(e) => setAramaMetni(e.target.value)}
+            style={{ 
+              padding: '12px 20px', 
+              borderRadius: 25, 
+              border: '1px solid #ddd', 
+              width: '600px',
+              fontSize: 14,
+              outline: 'none',
+              transition: 'border-color 0.2s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#999'}
+            onBlur={(e) => e.target.style.borderColor = '#ddd'}
+          />
         </div>
       </header>
 
