@@ -11,7 +11,11 @@ app.use(cors({
     // İzin verilen origin'ler
     const allowedOrigins = [
       'http://localhost:3000',
-      'https://kiyafet-magazasi.vercel.app'
+      'https://kiyafet-magazasi.vercel.app',
+      'https://www.aslbutique.com.tr',
+      'https://aslbutique.com.tr',
+      'http://www.aslbutique.com.tr',
+      'http://aslbutique.com.tr'
     ];
     
     // Vercel domain'lerini kontrol et
