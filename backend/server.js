@@ -930,14 +930,14 @@ const kampanyalar = [
 
 // Kategoriler
 const kategoriler = [
-  { id: 'K1', ad: 'Tümü', adEn: 'All', emoji: '🛍️', sira: 1, aktif: true },
-  { id: 'K2', ad: 'Elbise', adEn: 'Dress', emoji: '👗', sira: 2, aktif: true },
-  { id: 'K3', ad: 'Pantolon', adEn: 'Pants', emoji: '👖', sira: 3, aktif: true },
-  { id: 'K4', ad: 'Gömlek', adEn: 'Shirt', emoji: '👔', sira: 4, aktif: true },
-  { id: 'K5', ad: 'Ceket', adEn: 'Jacket', emoji: '🧥', sira: 5, aktif: true },
-  { id: 'K6', ad: 'Ayakkabı', adEn: 'Shoes', emoji: '👟', sira: 6, aktif: true },
-  { id: 'K7', ad: 'Aksesuar', adEn: 'Accessories', emoji: '👜', sira: 7, aktif: true },
-  { id: 'K8', ad: 'Spor', adEn: 'Sports', emoji: '🏃', sira: 8, aktif: true }
+  { id: 'K1', ad: 'Tümü', adEn: 'All', emoji: '🛍️', resim: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&h=300&fit=crop', sira: 1, aktif: true },
+  { id: 'K2', ad: 'Elbise', adEn: 'Dress', emoji: '👗', resim: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=300&fit=crop', sira: 2, aktif: true },
+  { id: 'K3', ad: 'Pantolon', adEn: 'Pants', emoji: '👖', resim: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=300&h=300&fit=crop', sira: 3, aktif: true },
+  { id: 'K4', ad: 'Gömlek', adEn: 'Shirt', emoji: '👔', resim: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=300&h=300&fit=crop', sira: 4, aktif: true },
+  { id: 'K5', ad: 'Ceket', adEn: 'Jacket', emoji: '🧥', resim: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300&h=300&fit=crop', sira: 5, aktif: true },
+  { id: 'K6', ad: 'Ayakkabı', adEn: 'Shoes', emoji: '👟', resim: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop', sira: 6, aktif: true },
+  { id: 'K7', ad: 'Aksesuar', adEn: 'Accessories', emoji: '👜', resim: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=300&h=300&fit=crop', sira: 7, aktif: true },
+  { id: 'K8', ad: 'Spor', adEn: 'Sports', emoji: '🏃', resim: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=300&h=300&fit=crop', sira: 8, aktif: true }
 ];
 
 // Başlangıç kuponları

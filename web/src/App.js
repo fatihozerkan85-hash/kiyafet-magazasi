@@ -648,7 +648,7 @@ function App() {
       </header>
 
       {/* Kategori Menüsü */}
-      <div style={{ background: 'white', borderBottom: '1px solid #eee', padding: '15px 0', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+      <div style={{ background: 'white', borderBottom: '1px solid #eee', padding: '20px 0', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}>
           <div style={{ display: 'flex', gap: 15, overflowX: 'auto', paddingBottom: 5 }}>
             {kategoriler.map(kategori => (
@@ -656,30 +656,48 @@ function App() {
                 key={kategori.id}
                 onClick={() => { setSecilenKategori(kategori.id); setSecilenSayfa('ana'); }}
                 style={{
-                  padding: '10px 20px',
-                  background: secilenKategori === kategori.id ? '#000000' : 'transparent',
-                  color: secilenKategori === kategori.id ? 'white' : '#333',
-                  border: 'none',
-                  borderRadius: 4,
+                  padding: 0,
+                  background: 'transparent',
+                  border: secilenKategori === kategori.id ? '2px solid #D4AF37' : '2px solid transparent',
+                  borderRadius: 8,
                   cursor: 'pointer',
-                  fontSize: 14,
-                  fontWeight: secilenKategori === kategori.id ? 600 : 400,
                   whiteSpace: 'nowrap',
                   transition: 'all 0.3s ease',
-                  boxShadow: 'none'
+                  overflow: 'hidden',
+                  minWidth: 120,
+                  boxShadow: secilenKategori === kategori.id ? '0 4px 12px rgba(212,175,55,0.3)' : '0 2px 8px rgba(0,0,0,0.1)'
                 }}
                 onMouseOver={(e) => {
-                  if (secilenKategori !== kategori.id) {
-                    e.target.style.color = '#000';
-                  }
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
                 }}
                 onMouseOut={(e) => {
-                  if (secilenKategori !== kategori.id) {
-                    e.target.style.color = '#333';
-                  }
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = secilenKategori === kategori.id ? '0 4px 12px rgba(212,175,55,0.3)' : '0 2px 8px rgba(0,0,0,0.1)';
                 }}
               >
-                {dil === 'en' ? kategori.adEn : kategori.ad}
+                <div style={{ position: 'relative' }}>
+                  <img 
+                    src={kategori.resim} 
+                    alt={dil === 'en' ? kategori.adEn : kategori.ad}
+                    style={{ 
+                      width: '100%', 
+                      height: 100, 
+                      objectFit: 'cover',
+                      display: 'block'
+                    }}
+                  />
+                  <div style={{ 
+                    padding: '8px 12px', 
+                    background: secilenKategori === kategori.id ? '#D4AF37' : 'rgba(0,0,0,0.7)',
+                    color: 'white',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textAlign: 'center'
+                  }}>
+                    {dil === 'en' ? kategori.adEn : kategori.ad}
+                  </div>
+                </div>
               </button>
             ))}
           </div>
