@@ -425,29 +425,148 @@ function App() {
             />
             {kullanici ? (
               <>
-                <span>{t('welcome')}, {kullanici.ad}</span>
-                <button onClick={() => { setSecilenSayfa('favorilerim'); favorileriYukle(kullanici.id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20 }}>
-                  ❤️ {favoriler.length > 0 && `(${favoriler.length})`}
+                <span style={{ fontSize: 13, color: '#666', marginRight: 5 }}>{kullanici.ad}</span>
+                <button 
+                  onClick={() => { setSecilenSayfa('favorilerim'); favorileriYukle(kullanici.id); }} 
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer', 
+                    fontSize: 22,
+                    color: '#333',
+                    padding: '5px 8px',
+                    position: 'relative',
+                    transition: 'color 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#000'}
+                  onMouseOut={(e) => e.currentTarget.style.color = '#333'}
+                >
+                  ♡
+                  {favoriler.length > 0 && (
+                    <span style={{ 
+                      position: 'absolute', 
+                      top: 0, 
+                      right: 0, 
+                      background: '#000', 
+                      color: 'white', 
+                      borderRadius: '50%', 
+                      width: 16, 
+                      height: 16, 
+                      fontSize: 10, 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      fontWeight: 'bold'
+                    }}>
+                      {favoriler.length}
+                    </span>
+                  )}
                 </button>
-                <button onClick={() => { setSecilenSayfa('siparislerim'); siparisleriYukle(); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>
-                  📦 {t('my_orders')}
+                <button 
+                  onClick={() => { setSecilenSayfa('siparislerim'); siparisleriYukle(); }} 
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer', 
+                    fontSize: 13,
+                    color: '#333',
+                    padding: '5px 10px',
+                    transition: 'color 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#000'}
+                  onMouseOut={(e) => e.currentTarget.style.color = '#333'}
+                >
+                  {t('my_orders')}
                 </button>
-                <button onClick={cikisYap} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}>
-                  🚪 {t('logout')}
+                <button 
+                  onClick={cikisYap} 
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer', 
+                    fontSize: 13,
+                    color: '#333',
+                    padding: '5px 10px',
+                    transition: 'color 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#000'}
+                  onMouseOut={(e) => e.currentTarget.style.color = '#333'}
+                >
+                  {t('logout')}
                 </button>
               </>
             ) : (
               <>
-                <button onClick={() => setSecilenSayfa('giris')} style={{ padding: '10px 20px', background: '#000000', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer' }}>
-                  🔐 {t('login')}
+                <button 
+                  onClick={() => setSecilenSayfa('giris')} 
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer', 
+                    fontSize: 22,
+                    color: '#333',
+                    padding: '5px 8px',
+                    transition: 'color 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#000'}
+                  onMouseOut={(e) => e.currentTarget.style.color = '#333'}
+                  title={t('login')}
+                >
+                  ⚲
                 </button>
-                <button onClick={() => setSecilenSayfa('kayit')} style={{ padding: '10px 20px', background: '#28a745', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer' }}>
-                  📝 {t('register')}
+                <button 
+                  onClick={() => setSecilenSayfa('kayit')} 
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer', 
+                    fontSize: 13,
+                    color: '#333',
+                    padding: '5px 10px',
+                    transition: 'color 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#000'}
+                  onMouseOut={(e) => e.currentTarget.style.color = '#333'}
+                >
+                  {t('register')}
                 </button>
               </>
             )}
-            <button onClick={() => setSecilenSayfa('sepet')} style={{ fontSize: 24, background: 'none', border: 'none', cursor: 'pointer' }}>
-              🛒 <span style={{ fontSize: 10, fontWeight: 'normal' }}>({sepet.length})</span>
+            <button 
+              onClick={() => setSecilenSayfa('sepet')} 
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                cursor: 'pointer', 
+                fontSize: 22,
+                color: '#333',
+                padding: '5px 8px',
+                position: 'relative',
+                transition: 'color 0.2s'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.color = '#000'}
+              onMouseOut={(e) => e.currentTarget.style.color = '#333'}
+            >
+              ⛁
+              {sepet.length > 0 && (
+                <span style={{ 
+                  position: 'absolute', 
+                  top: 0, 
+                  right: 0, 
+                  background: '#000', 
+                  color: 'white', 
+                  borderRadius: '50%', 
+                  width: 16, 
+                  height: 16, 
+                  fontSize: 10, 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  fontWeight: 'bold'
+                }}>
+                  {sepet.length}
+                </span>
+              )}
             </button>
             
             {/* Dil Seçici - En sağ üst köşe */}
