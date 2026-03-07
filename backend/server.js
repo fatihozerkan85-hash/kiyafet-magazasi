@@ -396,6 +396,26 @@ app.delete('/api/admin/kategori/:id', async (req, res) => {
   }
 });
 
+app.patch('/api/admin/kategori/:id/toggle', async (req, res) => {
+  try {
+    const { rows } = await sql`
+      UPDATE kategoriler 
+      SET aktif = NOT aktif, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${req.params.id}
+      RETURNING *
+    `;
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ basarili: false, mesaj: 'Kategori bulunamadı' });
+    }
+    
+    res.json({ basarili: true, mesaj: 'Kategori durumu değiştirildi', kategori: toCamelCase(rows[0]) });
+  } catch (error) {
+    console.error('Kategori toggle hatası:', error);
+    res.status(500).json({ basarili: false, mesaj: 'Kategori durumu değiştirilemedi', hata: error.message });
+  }
+});
+
 // ============================================
 // ADMIN ENDPOINTS - Kampanyalar
 // ============================================
