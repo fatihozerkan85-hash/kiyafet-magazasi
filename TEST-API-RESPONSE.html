@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>API Response Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #f5f5f5; }
+        .test { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        h2 { color: #667eea; }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 4px; overflow-x: auto; }
+        button { background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 API Response Test</h1>
+    
+    <div class="test">
+        <h2>1. Kategoriler API (Frontend)</h2>
+        <button onclick="testKategoriler()">Test</button>
+        <pre id="kategoriler-result">Bekliyor...</pre>
+    </div>
+
+    <div class="test">
+        <h2>2. Admin Kategoriler API</h2>
+        <button onclick="testAdminKategoriler()">Test</button>
+        <pre id="admin-kategoriler-result">Bekliyor...</pre>
+    </div>
+
+    <div class="test">
+        <h2>3. Kampanyalar API</h2>
+        <button onclick="testKampanyalar()">Test</button>
+        <pre id="kampanyalar-result">Bekliyor...</pre>
+    </div>
+
+    <script>
+        const API_URL = 'https://kiyafet-magazasi-backend.vercel.app';
+
+        async function testKategoriler() {
+            const resultDiv = document.getElementById('kategoriler-result');
+            resultDiv.textContent = 'Yükleniyor...';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/kategoriler`);
+                const data = await response.json();
+                
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+                
+                // Field kontrolü
+                if (data.length > 0) {
+                    const firstItem = data[0];
+                    console.log('Fields:', Object.keys(firstItem));
+                    
+                    if (firstItem.ad_en) {
+                        alert('❌ SORUN: snake_case (ad_en) kullanılıyor!');
+                    } else if (firstItem.adEn) {
+                        alert('✅ DOĞRU: camelCase (adEn) kullanılıyor!');
+                    }
+                }
+            } catch (error) {
+                resultDiv.textContent = 'HATA: ' + error.message;
+            }
+        }
+
+        async function testAdminKategoriler() {
+            const resultDiv = document.getElementById('admin-kategoriler-result');
+            resultDiv.textContent = 'Yükleniyor...';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kategoriler`);
+                const data = await response.json();
+                
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.textContent = 'HATA: ' + error.message;
+            }
+        }
+
+        async function testKampanyalar() {
+            const resultDiv = document.getElementById('kampanyalar-result');
+            resultDiv.textContent = 'Yükleniyor...';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/kampanyalar`);
+                const data = await response.json();
+                
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.textContent = 'HATA: ' + error.message;
+            }
+        }
+
+        // Otomatik test
+        window.onload = () => {
+            testKategoriler();
+        };
+    </script>
+</body>
+</html>

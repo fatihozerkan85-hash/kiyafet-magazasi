@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './responsive.css';
 
 const API_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:5000' 

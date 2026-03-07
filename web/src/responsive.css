@@ -1,0 +1,182 @@
+/* Mobil Responsive Tasarım - Sadece 768px ve altı için */
+
+@media (max-width: 768px) {
+  /* Header */
+  header {
+    padding: 10px 0 !important;
+    height: auto !important;
+  }
+
+  header > div:first-child {
+    flex-direction: column !important;
+    padding: 10px !important;
+    gap: 10px !important;
+  }
+
+  /* Logo */
+  header > div > div:nth-child(2) {
+    width: 100% !important;
+    height: 60px !important;
+    max-width: 300px !important;
+  }
+
+  /* Header spacer - gizle */
+  header > div > div:first-child {
+    display: none !important;
+  }
+
+  /* Header icons container */
+  header > div > div:last-child {
+    width: 100% !important;
+    justify-content: space-around !important;
+    flex-wrap: wrap !important;
+    gap: 5px !important;
+  }
+
+  /* Header icon buttons */
+  header button {
+    padding: 4px 6px !important;
+    gap: 2px !important;
+  }
+
+  header button span:first-child {
+    font-size: 18px !important;
+  }
+
+  header button span:last-child {
+    font-size: 9px !important;
+  }
+
+  /* Header badges */
+  header button > span:last-child {
+    top: 2px !important;
+    right: 4px !important;
+    min-width: 14px !important;
+    height: 14px !important;
+    font-size: 8px !important;
+  }
+
+  /* Dil seçici */
+  header select {
+    padding: 4px 6px !important;
+    font-size: 10px !important;
+  }
+
+  /* Search bar container */
+  header + div,
+  header > div:last-child {
+    padding: 10px !important;
+  }
+
+  /* Search input */
+  header input[type="text"] {
+    padding: 10px 15px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 13px !important;
+  }
+
+  /* Kategori menüsü */
+  .App > div:nth-child(2) {
+    padding: 10px 0 !important;
+  }
+
+  .App > div:nth-child(2) > div {
+    padding: 0 10px !important;
+  }
+
+  .App > div:nth-child(2) > div > div {
+    gap: 8px !important;
+  }
+
+  .App > div:nth-child(2) button {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+
+  /* Ana sayfa container */
+  .App > div:nth-child(3) {
+    padding: 10px !important;
+  }
+
+  /* Kampanya bannerları */
+  .App > div:nth-child(3) > div > div > div:first-child {
+    height: 250px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .App > div:nth-child(3) > div > div > div:first-child h1 {
+    font-size: 24px !important;
+    margin: 0 0 10px 0 !important;
+  }
+
+  .App > div:nth-child(3) > div > div > div:first-child p {
+    font-size: 14px !important;
+    margin: 0 0 20px 0 !important;
+  }
+
+  .App > div:nth-child(3) > div > div > div:first-child button {
+    padding: 12px 30px !important;
+    font-size: 13px !important;
+  }
+
+  /* Kategori grid */
+  .App > div:nth-child(3) > div > div:nth-child(2) {
+    padding: 30px 10px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(2) h2 {
+    font-size: 24px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(2) > div {
+    grid-template-columns: 1fr !important;
+    gap: 15px !important;
+    margin-bottom: 30px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(2) > div > div {
+    height: 200px !important;
+  }
+
+  /* Ürün listesi */
+  .App > div:nth-child(3) > div > div:nth-child(3) {
+    padding: 30px 0 !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(3) > div {
+    padding: 0 10px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(3) h2 {
+    font-size: 20px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(3) > div > div:last-child {
+    grid-template-columns: 1fr !important;
+    gap: 15px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(3) img {
+    height: 300px !important;
+  }
+
+  /* Form sayfaları */
+  .App > div:nth-child(3) > div[style*="maxWidth: 400"] {
+    margin: 20px auto !important;
+    padding: 20px !important;
+  }
+
+  /* Sepet */
+  .App > div:nth-child(3) > div > div[style*="display: flex"] {
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 15px !important;
+  }
+
+  .App > div:nth-child(3) > div > div img {
+    width: 100% !important;
+    height: 200px !important;
+  }
+}
