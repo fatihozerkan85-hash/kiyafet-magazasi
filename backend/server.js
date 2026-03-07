@@ -15,6 +15,14 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// No-cache middleware for API endpoints
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
