@@ -347,20 +347,37 @@ app.post('/api/admin/kategori', async (req, res) => {
 app.put('/api/admin/kategori/:id', async (req, res) => {
   try {
     const { ad, adEn, emoji, resim, aktif, sira } = req.body;
+    
+    // Önce mevcut kategoriyi al
+    const { rows: currentRows } = await sql`SELECT * FROM kategoriler WHERE id = ${req.params.id}`;
+    if (currentRows.length === 0) {
+      return res.status(404).json({ basarili: false, mesaj: 'Kategori bulunamadı' });
+    }
+    
+    const current = currentRows[0];
+    
+    // Undefined değerleri mevcut değerlerle doldur
+    const updatedData = {
+      ad: ad || current.ad,
+      adEn: adEn || current.ad_en,
+      emoji: emoji || current.emoji,
+      resim: resim || current.resim,
+      aktif: aktif !== undefined ? aktif : current.aktif,
+      sira: sira !== undefined ? sira : current.sira
+    };
+    
     const { rows } = await sql`
       UPDATE kategoriler 
-      SET ad = ${ad}, ad_en = ${adEn}, emoji = ${emoji}, resim = ${resim}, 
-          aktif = ${aktif}, sira = ${sira}, updated_at = CURRENT_TIMESTAMP
+      SET ad = ${updatedData.ad}, ad_en = ${updatedData.adEn}, emoji = ${updatedData.emoji}, 
+          resim = ${updatedData.resim}, aktif = ${updatedData.aktif}, sira = ${updatedData.sira}, 
+          updated_at = CURRENT_TIMESTAMP
       WHERE id = ${req.params.id}
       RETURNING *
     `;
     
-    if (rows.length === 0) {
-      return res.status(404).json({ basarili: false, mesaj: 'Kategori bulunamadı' });
-    }
-    
     res.json({ basarili: true, mesaj: 'Kategori güncellendi', kategori: toCamelCase(rows[0]) });
   } catch (error) {
+    console.error('Kategori güncelleme hatası:', error);
     res.status(500).json({ basarili: false, mesaj: 'Kategori güncellenemedi', hata: error.message });
   }
 });
