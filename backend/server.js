@@ -16,6 +16,27 @@ app.use(cors({
 app.use(express.json());
 
 // ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+// PostgreSQL snake_case'i camelCase'e çevir
+function toCamelCase(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map(item => toCamelCase(item));
+  }
+  
+  if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((result, key) => {
+      const camelKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+      result[camelKey] = toCamelCase(obj[key]);
+      return result;
+    }, {});
+  }
+  
+  return obj;
+}
+
+// ============================================
 // DATABASE INITIALIZATION
 // ============================================
 async function initDatabase() {
@@ -265,7 +286,7 @@ app.get('/api/urunler/:id', async (req, res) => {
 app.get('/api/kategoriler', async (req, res) => {
   try {
     const { rows } = await sql`SELECT * FROM kategoriler WHERE aktif = true ORDER BY sira`;
-    res.json(rows);
+    res.json(toCamelCase(rows));
   } catch (error) {
     res.status(500).json({ mesaj: 'Kategoriler getirilemedi', hata: error.message });
   }
@@ -291,7 +312,7 @@ app.get('/api/kampanyalar', async (req, res) => {
 app.get('/api/admin/kategoriler', async (req, res) => {
   try {
     const { rows } = await sql`SELECT * FROM kategoriler ORDER BY sira`;
-    res.json(rows);
+    res.json(toCamelCase(rows));
   } catch (error) {
     res.status(500).json({ mesaj: 'Kategoriler getirilemedi', hata: error.message });
   }
@@ -309,7 +330,7 @@ app.post('/api/admin/kategori', async (req, res) => {
       RETURNING *
     `;
     
-    res.json({ basarili: true, mesaj: 'Kategori eklendi', kategori: rows[0] });
+    res.json({ basarili: true, mesaj: 'Kategori eklendi', kategori: toCamelCase(rows[0]) });
   } catch (error) {
     res.status(500).json({ basarili: false, mesaj: 'Kategori eklenemedi', hata: error.message });
   }
@@ -330,7 +351,7 @@ app.put('/api/admin/kategori/:id', async (req, res) => {
       return res.status(404).json({ basarili: false, mesaj: 'Kategori bulunamadı' });
     }
     
-    res.json({ basarili: true, mesaj: 'Kategori güncellendi', kategori: rows[0] });
+    res.json({ basarili: true, mesaj: 'Kategori güncellendi', kategori: toCamelCase(rows[0]) });
   } catch (error) {
     res.status(500).json({ basarili: false, mesaj: 'Kategori güncellenemedi', hata: error.message });
   }
