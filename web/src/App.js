@@ -32,19 +32,19 @@ function App() {
   const [aktifBanner, setAktifBanner] = useState(0);
   const [dil, setDil] = useState('tr');
   const [dilMetinleri, setDilMetinleri] = useState({});
-  
-  const kategoriler = [
-    { id: 'Tümü', ad: 'Tümü', adEn: 'All', emoji: '🛍️' },
-    { id: 'Elbise', ad: 'Elbise', adEn: 'Dress', emoji: '👗' },
-    { id: 'Pantolon', ad: 'Pantolon', adEn: 'Pants', emoji: '👖' },
-    { id: 'Gömlek', ad: 'Gömlek', adEn: 'Shirt', emoji: '👔' },
-    { id: 'Ceket', ad: 'Ceket', adEn: 'Jacket', emoji: '🧥' },
-    { id: 'Ayakkabı', ad: 'Ayakkabı', adEn: 'Shoes', emoji: '👟' },
-    { id: 'Aksesuar', ad: 'Aksesuar', adEn: 'Accessories', emoji: '👜' },
-    { id: 'Spor', ad: 'Spor Giyim', adEn: 'Sports', emoji: '🏃' }
-  ];
+  const [kategoriler, setKategoriler] = useState([]);
 
   useEffect(() => {
+    // Kategorileri yükle
+    fetch(`${API_URL}/api/kategoriler`)
+      .then(res => res.json())
+      .then(data => {
+        setKategoriler(data);
+        console.log('✅ Kategoriler yüklendi:', data);
+      })
+      .catch(err => console.error('❌ Kategori yükleme hatası:', err));
+    
+    // Ürünleri yükle
     fetch(`${API_URL}/api/urunler`)
       .then(res => res.json())
       .then(data => setUrunler(data))
@@ -626,16 +626,16 @@ function App() {
             {kategoriler.map(kategori => (
               <button
                 key={kategori.id}
-                onClick={() => { setSecilenKategori(kategori.id); setSecilenSayfa('ana'); }}
+                onClick={() => { setSecilenKategori(kategori.ad); setSecilenSayfa('ana'); }}
                 style={{
                   padding: '10px 20px',
-                  background: secilenKategori === kategori.id ? '#000000' : 'transparent',
-                  color: secilenKategori === kategori.id ? 'white' : '#333',
+                  background: secilenKategori === kategori.ad ? '#000000' : 'transparent',
+                  color: secilenKategori === kategori.ad ? 'white' : '#333',
                   border: 'none',
                   borderRadius: 4,
                   cursor: 'pointer',
                   fontSize: 14,
-                  fontWeight: secilenKategori === kategori.id ? 600 : 400,
+                  fontWeight: secilenKategori === kategori.ad ? 600 : 400,
                   whiteSpace: 'nowrap',
                   transition: 'all 0.3s ease'
                 }}
@@ -829,10 +829,10 @@ function App() {
                 gap: 20,
                 marginBottom: 60
               }}>
-                {kategoriler.filter(k => k.id !== 'Tümü').map(kategori => (
+                {kategoriler.filter(k => k.ad !== 'Tümü').map(kategori => (
                   <div
                     key={kategori.id}
-                    onClick={() => { setSecilenKategori(kategori.id); window.scrollTo(0, 0); }}
+                    onClick={() => { setSecilenKategori(kategori.ad); window.scrollTo(0, 0); }}
                     style={{
                       position: 'relative',
                       height: 350,
