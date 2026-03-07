@@ -6,24 +6,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS ayarları
+// CORS ayarları - Tüm origin'lere izin ver (local HTML files için)
 app.use(cors({
-  origin: function(origin, callback) {
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'https://kiyafet-magazasi.vercel.app',
-      'https://www.aslbutique.com.tr',
-      'https://aslbutique.com.tr',
-      'http://www.aslbutique.com.tr',
-      'http://aslbutique.com.tr'
-    ];
-    
-    if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.includes('.vercel.app')) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS policy violation'));
-    }
-  },
+  origin: true, // Tüm origin'lere izin ver
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
