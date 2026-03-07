@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Data Trigger</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #000;
+            border-bottom: 3px solid #D4AF37;
+            padding-bottom: 10px;
+        }
+        button {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 10px 0;
+            width: 100%;
+        }
+        button:hover {
+            background: #D4AF37;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            display: none;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            color: #17a2b8;
+            margin: 10px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Seed Data Trigger</h1>
+        
+        <div class="warning">
+            <strong>⚠️ UYARI:</strong> Bu işlem tüm mevcut verileri silip başlangıç verilerini yeniden ekleyecek!
+            <br><br>
+            Silinecekler:
+            <ul>
+                <li>Tüm kategoriler</li>
+                <li>Tüm kampanyalar</li>
+                <li>Tüm ürünler</li>
+                <li>Tüm kuponlar</li>
+            </ul>
+            Eklenecekler:
+            <ul>
+                <li>8 kategori (Tümü, Elbise, Pantolon, vb.)</li>
+                <li>3 kampanya banner</li>
+                <li>5 örnek ürün</li>
+                <li>3 kupon kodu</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <strong>Backend URL:</strong> https://kiyafet-magazasi-backend.vercel.app
+        </div>
+
+        <button id="triggerBtn" onclick="triggerSeedData()">
+            🚀 SEED DATA'YI ÇALIŞTIR
+        </button>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://kiyafet-magazasi-backend.vercel.app';
+
+        async function triggerSeedData() {
+            const btn = document.getElementById('triggerBtn');
+            const resultDiv = document.getElementById('result');
+            
+            btn.disabled = true;
+            btn.textContent = '⏳ İşlem yapılıyor...';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<span class="info">Seed data çalıştırılıyor...</span>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/seed-data`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.basarili) {
+                    resultDiv.innerHTML = `
+<span class="success">✅ BAŞARILI!</span>
+
+${data.mesaj}
+
+Eklenen Veriler:
+- Kategoriler: ${data.counts.kategoriler}
+- Kampanyalar: ${data.counts.kampanyalar}
+- Ürünler: ${data.counts.urunler}
+
+Şimdi test edin:
+1. https://aslbutique.com.tr (kampanyalar ve kategoriler görünmeli)
+2. Admin panel: https://aslbutique.com.tr/admin-tam.html
+
+Response:
+${JSON.stringify(data, null, 2)}
+                    `;
+                    
+                    btn.textContent = '✅ TAMAMLANDI';
+                    btn.style.background = '#28a745';
+                    
+                    // 3 saniye sonra sayfayı yenile
+                    setTimeout(() => {
+                        if (confirm('Seed data başarıyla eklendi! Frontend\'i test etmek ister misiniz?')) {
+                            window.open('https://aslbutique.com.tr', '_blank');
+                        }
+                    }, 2000);
+                } else {
+                    resultDiv.innerHTML = `
+<span class="error">❌ HATA!</span>
+
+${data.mesaj}
+
+Hata Detayı:
+${data.hata}
+
+Response:
+${JSON.stringify(data, null, 2)}
+                    `;
+                    
+                    btn.disabled = false;
+                    btn.textContent = '🔄 TEKRAR DENE';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+<span class="error">❌ BAĞLANTI HATASI!</span>
+
+${error.message}
+
+Olası Nedenler:
+1. Backend henüz deploy olmadı (1-2 dakika bekleyin)
+2. CORS hatası (backend CORS ayarlarını kontrol edin)
+3. Network hatası (internet bağlantınızı kontrol edin)
+
+Çözüm:
+- Vercel Dashboard'da deployment tamamlandı mı kontrol edin
+- 1-2 dakika bekleyip tekrar deneyin
+                `;
+                
+                btn.disabled = false;
+                btn.textContent = '🔄 TEKRAR DENE';
+            }
+        }
+
+        // Sayfa yüklendiğinde health check yap
+        window.onload = async () => {
+            try {
+                const response = await fetch(`${API_URL}/api/health`);
+                const data = await response.json();
+                
+                if (data.database === 'bağlı (PostgreSQL)') {
+                    console.log('✅ Backend bağlantısı OK');
+                    console.log('Mevcut veri sayıları:', data.data);
+                    
+                    if (data.data && (data.data.kategoriler === 0 || data.data.kampanyalar === 0)) {
+                        alert('⚠️ Veritabanında veri yok! Seed data çalıştırmanız gerekiyor.');
+                    }
+                } else {
+                    alert('❌ Backend bağlantısı yok! Deployment tamamlanmadı.');
+                }
+            } catch (error) {
+                alert('❌ Backend\'e bağlanılamıyor! Deployment tamamlanana kadar bekleyin.');
+            }
+        };
+    </script>
+</body>
+</html>

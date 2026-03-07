@@ -580,16 +580,69 @@ app.post('/api/siparis', async (req, res) => {
 });
 
 // ============================================
+// MANUAL SEED ENDPOINT (Emergency Data Reset)
+// ============================================
+
+app.post('/api/admin/seed-data', async (req, res) => {
+  try {
+    console.log('🔄 Manuel seed data başlatıldı...');
+    
+    // Önce tüm verileri temizle
+    await sql`DELETE FROM siparis_urunler`;
+    await sql`DELETE FROM siparisler`;
+    await sql`DELETE FROM urunler`;
+    await sql`DELETE FROM kampanyalar`;
+    await sql`DELETE FROM kategoriler`;
+    await sql`DELETE FROM kuponlar`;
+    
+    // Seed data'yı çalıştır
+    await seedData();
+    
+    // Kontrol et
+    const { rows: kategoriler } = await sql`SELECT COUNT(*) as count FROM kategoriler`;
+    const { rows: kampanyalar } = await sql`SELECT COUNT(*) as count FROM kampanyalar`;
+    const { rows: urunler } = await sql`SELECT COUNT(*) as count FROM urunler`;
+    
+    res.json({
+      basarili: true,
+      mesaj: 'Seed data başarıyla eklendi',
+      counts: {
+        kategoriler: parseInt(kategoriler[0].count),
+        kampanyalar: parseInt(kampanyalar[0].count),
+        urunler: parseInt(urunler[0].count)
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      basarili: false,
+      mesaj: 'Seed data eklenemedi',
+      hata: error.message
+    });
+  }
+});
+
+// ============================================
 // HEALTH CHECK & ROOT
 // ============================================
 
 app.get('/api/health', async (req, res) => {
   try {
     await sql`SELECT 1`;
+    
+    // Veri sayılarını da göster
+    const { rows: kategoriler } = await sql`SELECT COUNT(*) as count FROM kategoriler`;
+    const { rows: kampanyalar } = await sql`SELECT COUNT(*) as count FROM kampanyalar`;
+    const { rows: urunler } = await sql`SELECT COUNT(*) as count FROM urunler`;
+    
     res.json({ 
       durum: 'çalışıyor', 
       zaman: new Date().toISOString(),
-      database: 'bağlı (PostgreSQL)'
+      database: 'bağlı (PostgreSQL)',
+      data: {
+        kategoriler: parseInt(kategoriler[0].count),
+        kampanyalar: parseInt(kampanyalar[0].count),
+        urunler: parseInt(urunler[0].count)
+      }
     });
   } catch (error) {
     res.json({ 
