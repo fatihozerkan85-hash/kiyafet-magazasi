@@ -16,8 +16,8 @@
   /* Logo */
   header > div > div:nth-child(2) {
     width: 100% !important;
-    height: 100px !important;
-    max-width: 400px !important;
+    height: 150px !important;
+    max-width: 600px !important;
   }
 
   /* Header spacer - gizle */
