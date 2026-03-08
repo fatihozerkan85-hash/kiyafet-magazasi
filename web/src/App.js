@@ -374,8 +374,8 @@ function App() {
         padding: '0', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         position: 'relative',
-        overflow: 'hidden',
-        height: '100px'
+        overflow: 'visible',
+        height: '120px'
       }}>
         {/* Üst Satır: Logo Ortada, İkonlar Sağda */}
         <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%', padding: '0 20px' }}>
@@ -388,10 +388,10 @@ function App() {
               cursor: 'pointer',
               backgroundImage: 'url(/as.png)',
               backgroundSize: 'contain',
-              backgroundPosition: 'center top',
+              backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              width: 1600,
-              height: 250,
+              width: 1000,
+              height: 120,
               flex: '0 0 auto',
               margin: '0 auto'
             }}
