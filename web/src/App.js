@@ -502,7 +502,7 @@ function App() {
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
                   <span style={{ fontSize: 24 }}>👤</span>
-                  <span style={{ fontSize: 11, color: 'inherit' }}>{t('login')}</span>
+                  <span style={{ fontSize: 11, color: 'inherit' }}>Giriş Yap</span>
                 </button>
                 <button 
                   onClick={() => setSecilenSayfa('kayit')} 
