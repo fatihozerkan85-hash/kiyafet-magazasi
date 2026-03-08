@@ -684,11 +684,6 @@ function App() {
             <div style={{ textAlign: 'center', marginTop: 15, fontSize: 14 }}>
               Hesabınız yok mu? <button onClick={() => setSecilenSayfa('kayit')} style={{ background: 'none', border: 'none', color: '#000000', cursor: 'pointer', textDecoration: 'underline' }}>Kayıt Ol</button>
             </div>
-            <div style={{ marginTop: 20, padding: 15, background: '#fff3cd', borderRadius: 8, fontSize: 13 }}>
-              <strong>Test Hesabı:</strong><br/>
-              Email: admin@kiyafet.com<br/>
-              Şifre: admin123
-            </div>
           </div>
         )}
 
