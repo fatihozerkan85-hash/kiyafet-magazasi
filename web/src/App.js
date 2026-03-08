@@ -371,7 +371,7 @@ function App() {
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ 
         background: 'white', 
-        padding: '10px 0', 
+        padding: '0', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         position: 'relative',
         overflow: 'hidden',
@@ -393,7 +393,7 @@ function App() {
               width: 1350,
               height: 250,
               flex: '0 0 auto',
-              margin: '0 auto'
+              margin: '10px auto 0 auto'
             }}
           ></div>
           
