@@ -388,11 +388,12 @@ function App() {
               cursor: 'pointer',
               backgroundImage: 'url(/as.png)',
               backgroundSize: 'contain',
-              backgroundPosition: 'center',
+              backgroundPosition: 'center top',
               backgroundRepeat: 'no-repeat',
               width: 1600,
               height: 250,
-              flex: '0 0 auto'
+              flex: '0 0 auto',
+              margin: '0 auto'
             }}
           ></div>
           
