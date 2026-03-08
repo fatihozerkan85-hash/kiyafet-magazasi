@@ -631,7 +631,7 @@ function App() {
                 onClick={() => { setSecilenKategori(kategori.ad); setSecilenSayfa('ana'); }}
                 style={{
                   padding: '10px 20px',
-                  background: secilenKategori === kategori.ad ? '#000000' : 'transparent',
+                  background: secilenKategori === kategori.ad ? '#C85A8E' : 'transparent',
                   color: secilenKategori === kategori.ad ? 'white' : '#333',
                   border: 'none',
                   borderRadius: 4,
@@ -642,12 +642,12 @@ function App() {
                   transition: 'all 0.3s ease'
                 }}
                 onMouseOver={(e) => {
-                  if (secilenKategori !== kategori.id) {
-                    e.target.style.color = '#000';
+                  if (secilenKategori !== kategori.ad) {
+                    e.target.style.color = '#C85A8E';
                   }
                 }}
                 onMouseOut={(e) => {
-                  if (secilenKategori !== kategori.id) {
+                  if (secilenKategori !== kategori.ad) {
                     e.target.style.color = '#333';
                   }
                 }}
