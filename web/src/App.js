@@ -420,7 +420,7 @@ function App() {
           style={{ 
             cursor: 'pointer',
             backgroundImage: 'url(/as.svg)',
-            backgroundSize: 'contain',
+            backgroundSize: '1450px 300px',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             width: '100%',
