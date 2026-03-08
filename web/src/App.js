@@ -398,7 +398,7 @@ function App() {
           ></div>
           
           {/* İkonlar - Sağda */}
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center', width: 150, justifyContent: 'flex-end' }}>
+          <div style={{ display: 'flex', gap: 15, alignItems: 'center', justifyContent: 'flex-start', flex: 1, maxWidth: 600 }}>
             {kullanici ? (
               <>
                 <button 
@@ -463,7 +463,7 @@ function App() {
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
                   <span style={{ fontSize: 24 }}>📦</span>
-                  <span style={{ fontSize: 11, color: 'inherit' }}>{t('my_orders')}</span>
+                  <span style={{ fontSize: 11, color: 'inherit' }}>Siparişlerim</span>
                 </button>
                 <button 
                   onClick={cikisYap} 
@@ -472,14 +472,18 @@ function App() {
                     border: 'none', 
                     cursor: 'pointer', 
                     padding: '8px 12px',
-                    fontSize: 12,
-                    color: '#333',
-                    transition: 'color 0.2s'
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 4,
+                    transition: 'all 0.2s',
+                    color: '#333'
                   }}
                   onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
-                  {t('logout')}
+                  <span style={{ fontSize: 24 }}>🚪</span>
+                  <span style={{ fontSize: 11, color: 'inherit' }}>Çıkış Yap</span>
                 </button>
               </>
             ) : (
