@@ -371,7 +371,7 @@ function App() {
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ 
         background: 'white', 
-        padding: '0', 
+        padding: '10px 0', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         position: 'relative',
         overflow: 'hidden',
@@ -390,7 +390,7 @@ function App() {
               backgroundSize: 'contain',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              width: 1300,
+              width: 1350,
               height: 250,
               flex: '0 0 auto',
               margin: '0 auto'
