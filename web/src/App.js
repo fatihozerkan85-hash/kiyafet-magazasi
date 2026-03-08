@@ -374,7 +374,7 @@ function App() {
         padding: '0', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         position: 'relative',
-        overflow: 'visible',
+        overflow: 'hidden',
         height: '120px'
       }}>
         {/* Üst Satır: Logo Ortada, İkonlar Sağda */}
@@ -390,8 +390,8 @@ function App() {
               backgroundSize: 'contain',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              width: 1000,
-              height: 120,
+              width: 1300,
+              height: 250,
               flex: '0 0 auto',
               margin: '0 auto'
             }}
