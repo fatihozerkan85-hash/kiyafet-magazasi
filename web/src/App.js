@@ -734,7 +734,7 @@ function App() {
               onKeyDown={(e) => e.key === 'Enter' && girisYap()}
               style={{ width: '100%', padding: 12, marginBottom: 20, border: '1px solid #ddd', borderRadius: 8 }}
             />
-            <button onClick={girisYap} style={{ width: '100%', padding: 15, background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+            <button onClick={girisYap} style={{ width: '100%', padding: 15, background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
               Giriş Yap
             </button>
             <div style={{ textAlign: 'center', marginTop: 15, fontSize: 14 }}>
@@ -813,7 +813,7 @@ function App() {
               onChange={(e) => setKayitFormu({...kayitFormu, sifre: e.target.value})}
               style={{ width: '100%', padding: 12, marginBottom: 20, border: '1px solid #ddd', borderRadius: 8 }}
             />
-            <button onClick={kayitOl} style={{ width: '100%', padding: 15, background: '#28a745', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+            <button onClick={kayitOl} style={{ width: '100%', padding: 15, background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
               Kayıt Ol
             </button>
             <div style={{ textAlign: 'center', marginTop: 15, fontSize: 14 }}>
@@ -1096,7 +1096,7 @@ function App() {
             {sepet.length === 0 ? (
               <div style={{ textAlign: 'center', padding: 50 }}>
                 <p style={{ fontSize: 18, color: '#666' }}>Sepetiniz boş</p>
-                <button onClick={() => setSecilenSayfa('ana')} style={{ padding: '12px 30px', background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginTop: 20 }}>
+                <button onClick={() => setSecilenSayfa('ana')} style={{ padding: '12px 30px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginTop: 20 }}>
                   Alışverişe Başla
                 </button>
               </div>
@@ -1123,7 +1123,7 @@ function App() {
                       onChange={(e) => setKuponKodu(e.target.value)}
                       style={{ flex: 1, padding: 12, border: '1px solid #ddd', borderRadius: 8 }}
                     />
-                    <button onClick={kuponUygula} style={{ padding: '12px 30px', background: '#28a745', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+                    <button onClick={kuponUygula} style={{ padding: '12px 30px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
                       Uygula
                     </button>
                   </div>
@@ -1135,7 +1135,7 @@ function App() {
                   <div style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'right', marginBottom: 20 }}>
                     Toplam: <span style={{ color: '#000000' }}>{indirimliToplam.toFixed(2)} ₺</span>
                   </div>
-                  <button onClick={() => setSecilenSayfa('odeme')} style={{ width: '100%', padding: 15, background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+                  <button onClick={() => setSecilenSayfa('odeme')} style={{ width: '100%', padding: 15, background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
                     Ödemeye Geç
                   </button>
                 </div>
@@ -1160,7 +1160,7 @@ function App() {
                       <div style={{ padding: 15 }}>
                         <h3>{urun.ad}</h3>
                         <p style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>{urun.fiyat} ₺</p>
-                        <button onClick={() => sepeteEkle(urun)} style={{ width: '100%', padding: 12, background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginBottom: 10 }}>
+                        <button onClick={() => sepeteEkle(urun)} style={{ width: '100%', padding: 12, background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginBottom: 10 }}>
                           Sepete Ekle
                         </button>
                         <button onClick={() => favoriToggle(urun.id)} style={{ width: '100%', padding: 12, background: '#e74c3c', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
@@ -1185,7 +1185,7 @@ function App() {
                 <div key={siparis.id} style={{ padding: 20, borderBottom: '1px solid #eee', marginBottom: 20 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                     <strong>Sipariş No: {siparis.id}</strong>
-                    <span style={{ padding: '5px 15px', background: '#000000', color: 'white', borderRadius: 5, fontSize: 14 }}>
+                    <span style={{ padding: '5px 15px', background: '#C85A8E', color: 'white', borderRadius: 5, fontSize: 14 }}>
                       {siparis.durum}
                     </span>
                   </div>
@@ -1198,7 +1198,7 @@ function App() {
                       <strong>📦 Kargo Takip No:</strong> {siparis.kargoTakipNo}
                       <button 
                         onClick={() => { setKargoTakipNo(siparis.kargoTakipNo); kargoTakipSorgula(); }}
-                        style={{ marginLeft: 15, padding: '8px 15px', background: '#000000', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer', fontSize: 13 }}
+                        style={{ marginLeft: 15, padding: '8px 15px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer', fontSize: 13 }}
                       >
                         🔍 Takip Et
                       </button>
@@ -1217,7 +1217,7 @@ function App() {
                   onChange={(e) => setKargoTakipNo(e.target.value)}
                   style={{ flex: 1, padding: 12, border: '1px solid #ddd', borderRadius: 8 }}
                 />
-                <button onClick={kargoTakipSorgula} style={{ padding: '12px 30px', background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+                <button onClick={kargoTakipSorgula} style={{ padding: '12px 30px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
                   Sorgula
                 </button>
               </div>
@@ -1324,7 +1324,7 @@ function App() {
                     onChange={(e) => setYeniYorum({...yeniYorum, yorum: e.target.value})}
                     style={{ width: '100%', padding: 15, border: '1px solid #ddd', borderRadius: 8, minHeight: 100, fontSize: 14, fontFamily: 'inherit' }}
                   />
-                  <button onClick={yorumEkle} style={{ marginTop: 15, padding: '12px 30px', background: '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                  <button onClick={yorumEkle} style={{ marginTop: 15, padding: '12px 30px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
                     📝 Yorum Gönder
                   </button>
                 </div>
@@ -1394,7 +1394,7 @@ function App() {
               </div>
             </div>
 
-            <button onClick={odemeYap} style={{ width: '100%', padding: 15, background: '#28a745', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+            <button onClick={odemeYap} style={{ width: '100%', padding: 15, background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
               🎉 Ödemeyi Tamamla
             </button>
           </div>
