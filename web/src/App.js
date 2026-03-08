@@ -414,35 +414,45 @@ function App() {
         overflow: 'hidden',
         height: '120px'
       }}>
-        {/* Üst Satır: Logo Ortada, İkonlar Sağda */}
-        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%', padding: '0 20px' }}>
-          <div style={{ width: 150 }}></div>
-          
-          {/* Logo - Ortada */}
-          <div 
-            onClick={() => setSecilenSayfa('ana')}
-            style={{ 
-              cursor: 'pointer',
-              backgroundImage: 'url(/as.svg)',
-              backgroundSize: 'contain',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              width: 1400,
-              height: 300,
-              flex: '0 0 auto',
-              margin: '0 auto'
-            }}
-          ></div>
-          
-          {/* İkonlar - Sağda */}
-          <div style={{ display: 'flex', gap: 15, alignItems: 'center', justifyContent: 'flex-start', flex: 1, maxWidth: 600 }}>
+        {/* Logo - Arka Plan */}
+        <div 
+          onClick={() => setSecilenSayfa('ana')}
+          style={{ 
+            cursor: 'pointer',
+            backgroundImage: 'url(/as.svg)',
+            backgroundSize: 'contain',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 1
+          }}
+        ></div>
+        
+        {/* Butonlar - Üstte */}
+        <div style={{ 
+          position: 'relative', 
+          zIndex: 2, 
+          maxWidth: 1400, 
+          margin: '0 auto', 
+          height: '100%', 
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          alignItems: 'center', 
+          padding: '0 20px' 
+        }}>
+          <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
             {kullanici ? (
               <>
                 <button 
                   onClick={() => { setSecilenSayfa('favorilerim'); favorileriYukle(kullanici.id); }} 
                   style={{ 
-                    background: 'none', 
-                    border: 'none', 
+                    background: 'rgba(255, 255, 255, 0.9)', 
+                    border: '1px solid #ddd', 
+                    borderRadius: '8px',
                     cursor: 'pointer', 
                     padding: '8px 12px',
                     display: 'flex',
@@ -485,8 +495,9 @@ function App() {
                 <button 
                   onClick={() => { setSecilenSayfa('siparislerim'); siparisleriYukle(); }} 
                   style={{ 
-                    background: 'none', 
-                    border: 'none', 
+                    background: 'rgba(255, 255, 255, 0.9)', 
+                    border: '1px solid #ddd', 
+                    borderRadius: '8px',
                     cursor: 'pointer', 
                     padding: '8px 12px',
                     display: 'flex',
@@ -505,8 +516,9 @@ function App() {
                 <button 
                   onClick={cikisYap} 
                   style={{ 
-                    background: 'none', 
-                    border: 'none', 
+                    background: 'rgba(255, 255, 255, 0.9)', 
+                    border: '1px solid #ddd', 
+                    borderRadius: '8px',
                     cursor: 'pointer', 
                     padding: '8px 12px',
                     display: 'flex',
@@ -528,8 +540,9 @@ function App() {
                 <button 
                   onClick={() => setSecilenSayfa('giris')} 
                   style={{ 
-                    background: 'none', 
-                    border: 'none', 
+                    background: 'rgba(255, 255, 255, 0.9)', 
+                    border: '1px solid #ddd', 
+                    borderRadius: '8px',
                     cursor: 'pointer', 
                     padding: '8px 12px',
                     display: 'flex',
@@ -548,8 +561,9 @@ function App() {
                 <button 
                   onClick={() => setSecilenSayfa('kayit')} 
                   style={{ 
-                    background: 'none', 
-                    border: 'none', 
+                    background: 'rgba(255, 255, 255, 0.9)', 
+                    border: '1px solid #ddd', 
+                    borderRadius: '8px',
                     cursor: 'pointer', 
                     padding: '8px 12px',
                     display: 'flex',
@@ -570,8 +584,9 @@ function App() {
             <button 
               onClick={() => setSecilenSayfa('sepet')} 
               style={{ 
-                background: 'none', 
-                border: 'none', 
+                background: 'rgba(255, 255, 255, 0.9)', 
+                border: '1px solid #ddd', 
+                borderRadius: '8px',
                 cursor: 'pointer', 
                 padding: '8px 12px',
                 display: 'flex',
