@@ -37,18 +37,20 @@
 
   /* Header icon buttons */
   header button {
-    padding: 6px 10px !important;
-    gap: 2px !important;
+    padding: 6px 8px !important;
+    gap: 3px !important;
     flex-shrink: 0 !important;
     white-space: nowrap !important;
+    min-width: fit-content !important;
   }
 
   header button span:first-child {
-    font-size: 18px !important;
+    font-size: 20px !important;
   }
 
   header button span:last-child {
-    font-size: 9px !important;
+    font-size: 10px !important;
+    white-space: nowrap !important;
   }
 
   /* Header badges */
