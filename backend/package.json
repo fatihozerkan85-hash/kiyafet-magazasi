@@ -11,7 +11,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "iyzipay": "^1.0.51"
+    "iyzipay": "^1.0.51",
+    "nodemailer": "^6.10.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

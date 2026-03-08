@@ -1,10 +1,20 @@
 const express = require('express');
 const cors = require('cors');
 const { sql } = require('@vercel/postgres');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Email transporter yapılandırması
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
 // CORS ayarları - Tüm origin'lere izin ver (local HTML files için)
 app.use(cors({
@@ -42,6 +52,52 @@ function toCamelCase(obj) {
   }
   
   return obj;
+}
+
+// 6 haneli doğrulama kodu oluştur
+function generateVerificationCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// Email gönderme fonksiyonu
+async function sendVerificationEmail(email, code) {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM || 'ASL BUTIQUE <noreply@aslbutique.com>',
+    to: email,
+    subject: 'Email Doğrulama Kodu - ASL BUTIQUE',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
+        <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+          <h1 style="color: #C85A8E; text-align: center; margin-bottom: 20px;">ASL BUTIQUE</h1>
+          <h2 style="color: #333; text-align: center;">Email Doğrulama</h2>
+          <p style="color: #666; font-size: 16px; line-height: 1.6;">
+            Merhaba,
+          </p>
+          <p style="color: #666; font-size: 16px; line-height: 1.6;">
+            ASL BUTIQUE'e hoş geldiniz! Hesabınızı oluşturmak için aşağıdaki doğrulama kodunu kullanın:
+          </p>
+          <div style="background-color: #f8f8f8; padding: 20px; border-radius: 8px; text-align: center; margin: 30px 0;">
+            <h1 style="color: #C85A8E; font-size: 36px; letter-spacing: 8px; margin: 0;">${code}</h1>
+          </div>
+          <p style="color: #666; font-size: 14px; line-height: 1.6;">
+            Bu kod 10 dakika geçerlidir. Eğer bu işlemi siz yapmadıysanız, bu emaili görmezden gelebilirsiniz.
+          </p>
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+          <p style="color: #999; font-size: 12px; text-align: center;">
+            © 2024 ASL BUTIQUE. Tüm hakları saklıdır.
+          </p>
+        </div>
+      </div>
+    `
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    return true;
+  } catch (error) {
+    console.error('Email gönderme hatası:', error);
+    return false;
+  }
 }
 
 // ============================================
@@ -134,8 +190,20 @@ async function initDatabase() {
         telefon VARCHAR(20),
         adres TEXT,
         rol VARCHAR(20) DEFAULT 'musteri',
+        email_verified BOOLEAN DEFAULT false,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+
+    // Email doğrulama kodları tablosu
+    await sql`
+      CREATE TABLE IF NOT EXISTS email_verifications (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(200) NOT NULL,
+        code VARCHAR(6) NOT NULL,
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
 
@@ -311,9 +379,10 @@ app.post('/api/giris', async (req, res) => {
   }
 });
 
-app.post('/api/kayit', async (req, res) => {
+// Email doğrulama kodu gönder
+app.post('/api/kayit/dogrulama-kodu-gonder', async (req, res) => {
   try {
-    const { email, sifre, ad, soyad, telefon } = req.body;
+    const { email } = req.body;
     
     // Email kontrolü
     const { rows: existingUser } = await sql`
@@ -324,12 +393,67 @@ app.post('/api/kayit', async (req, res) => {
       return res.status(400).json({ basarili: false, mesaj: 'Bu email adresi zaten kayıtlı' });
     }
     
-    // Yeni kullanıcı oluştur
+    // Doğrulama kodu oluştur
+    const code = generateVerificationCode();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 dakika
+    
+    // Eski kodları sil
+    await sql`DELETE FROM email_verifications WHERE email = ${email}`;
+    
+    // Yeni kodu kaydet
+    await sql`
+      INSERT INTO email_verifications (email, code, expires_at)
+      VALUES (${email}, ${code}, ${expiresAt})
+    `;
+    
+    // Email gönder
+    const emailSent = await sendVerificationEmail(email, code);
+    
+    if (emailSent) {
+      res.json({ basarili: true, mesaj: 'Doğrulama kodu email adresinize gönderildi' });
+    } else {
+      res.status(500).json({ basarili: false, mesaj: 'Email gönderilemedi. Lütfen tekrar deneyin.' });
+    }
+  } catch (error) {
+    res.status(500).json({ basarili: false, mesaj: 'Bir hata oluştu', hata: error.message });
+  }
+});
+
+// Kayıt - Doğrulama kodu ile
+app.post('/api/kayit', async (req, res) => {
+  try {
+    const { email, sifre, ad, soyad, telefon, dogrulamaKodu } = req.body;
+    
+    // Email kontrolü
+    const { rows: existingUser } = await sql`
+      SELECT * FROM kullanicilar WHERE email = ${email}
+    `;
+    
+    if (existingUser.length > 0) {
+      return res.status(400).json({ basarili: false, mesaj: 'Bu email adresi zaten kayıtlı' });
+    }
+    
+    // Doğrulama kodunu kontrol et
+    const { rows: verifications } = await sql`
+      SELECT * FROM email_verifications 
+      WHERE email = ${email} AND code = ${dogrulamaKodu} AND expires_at > NOW()
+      ORDER BY created_at DESC
+      LIMIT 1
+    `;
+    
+    if (verifications.length === 0) {
+      return res.status(400).json({ basarili: false, mesaj: 'Geçersiz veya süresi dolmuş doğrulama kodu' });
+    }
+    
+    // Yeni kullanıcı oluştur (email_verified = true)
     const { rows } = await sql`
-      INSERT INTO kullanicilar (email, sifre, ad, soyad, telefon, rol)
-      VALUES (${email}, ${sifre}, ${ad}, ${soyad}, ${telefon || null}, 'musteri')
+      INSERT INTO kullanicilar (email, sifre, ad, soyad, telefon, rol, email_verified)
+      VALUES (${email}, ${sifre}, ${ad}, ${soyad}, ${telefon || null}, 'musteri', true)
       RETURNING *
     `;
+    
+    // Kullanılan doğrulama kodunu sil
+    await sql`DELETE FROM email_verifications WHERE email = ${email}`;
     
     const kullanici = toCamelCase(rows[0]);
     delete kullanici.sifre; // Şifreyi gönderme

@@ -15,7 +15,8 @@ function App() {
   const [kullanici, setKullanici] = useState(null);
   const [aramaMetni, setAramaMetni] = useState('');
   const [girisFormu, setGirisFormu] = useState({ email: '', sifre: '' });
-  const [kayitFormu, setKayitFormu] = useState({ email: '', sifre: '', ad: '', soyad: '', telefon: '' });
+  const [kayitFormu, setKayitFormu] = useState({ email: '', sifre: '', ad: '', soyad: '', telefon: '', dogrulamaKodu: '' });
+  const [emailDogrulamaGonderildi, setEmailDogrulamaGonderildi] = useState(false);
   const [favoriler, setFavoriler] = useState([]);
   const [siparisler, setSiparisler] = useState([]);
   const [kuponKodu, setKuponKodu] = useState('');
@@ -118,7 +119,41 @@ function App() {
     }
   };
 
+  const dogrulamaKoduGonder = async () => {
+    if (!kayitFormu.email) {
+      alert('⚠️ Lütfen email adresinizi girin');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API_URL}/api/kayit/dogrulama-kodu-gonder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: kayitFormu.email })
+      });
+      const sonuc = await response.json();
+      if (sonuc.basarili) {
+        setEmailDogrulamaGonderildi(true);
+        alert('✅ Doğrulama kodu email adresinize gönderildi!');
+      } else {
+        alert('❌ ' + sonuc.mesaj);
+      }
+    } catch (error) {
+      alert('❌ Doğrulama kodu gönderilemedi');
+    }
+  };
+
   const kayitOl = async () => {
+    if (!emailDogrulamaGonderildi) {
+      alert('⚠️ Lütfen önce email doğrulama kodunu alın');
+      return;
+    }
+    
+    if (!kayitFormu.dogrulamaKodu) {
+      alert('⚠️ Lütfen doğrulama kodunu girin');
+      return;
+    }
+    
     try {
       const response = await fetch(`${API_URL}/api/kayit`, {
         method: 'POST',
@@ -130,6 +165,8 @@ function App() {
         setKullanici(sonuc.kullanici);
         localStorage.setItem('kullanici', JSON.stringify(sonuc.kullanici));
         alert('✅ Kayıt başarılı!');
+        setEmailDogrulamaGonderildi(false);
+        setKayitFormu({ email: '', sifre: '', ad: '', soyad: '', telefon: '', dogrulamaKodu: '' });
         setSecilenSayfa('ana');
       } else {
         alert('❌ ' + sonuc.mesaj);
@@ -708,13 +745,45 @@ function App() {
               onChange={(e) => setKayitFormu({...kayitFormu, soyad: e.target.value})}
               style={{ width: '100%', padding: 12, marginBottom: 15, border: '1px solid #ddd', borderRadius: 8 }}
             />
-            <input
-              type="email"
-              placeholder="Email"
-              value={kayitFormu.email}
-              onChange={(e) => setKayitFormu({...kayitFormu, email: e.target.value})}
-              style={{ width: '100%', padding: 12, marginBottom: 15, border: '1px solid #ddd', borderRadius: 8 }}
-            />
+            <div style={{ position: 'relative', marginBottom: 15 }}>
+              <input
+                type="email"
+                placeholder="Email"
+                value={kayitFormu.email}
+                onChange={(e) => setKayitFormu({...kayitFormu, email: e.target.value})}
+                disabled={emailDogrulamaGonderildi}
+                style={{ width: '100%', padding: 12, border: '1px solid #ddd', borderRadius: 8, paddingRight: 120 }}
+              />
+              <button 
+                onClick={dogrulamaKoduGonder}
+                disabled={emailDogrulamaGonderildi}
+                style={{ 
+                  position: 'absolute', 
+                  right: 5, 
+                  top: 5, 
+                  padding: '8px 15px', 
+                  background: emailDogrulamaGonderildi ? '#28a745' : '#C85A8E', 
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: 6, 
+                  cursor: emailDogrulamaGonderildi ? 'not-allowed' : 'pointer', 
+                  fontSize: 12,
+                  fontWeight: 600
+                }}
+              >
+                {emailDogrulamaGonderildi ? '✓ Gönderildi' : 'Kod Gönder'}
+              </button>
+            </div>
+            {emailDogrulamaGonderildi && (
+              <input
+                type="text"
+                placeholder="6 Haneli Doğrulama Kodu"
+                value={kayitFormu.dogrulamaKodu}
+                onChange={(e) => setKayitFormu({...kayitFormu, dogrulamaKodu: e.target.value})}
+                maxLength={6}
+                style={{ width: '100%', padding: 12, marginBottom: 15, border: '2px solid #C85A8E', borderRadius: 8, fontSize: 16, letterSpacing: 4, textAlign: 'center' }}
+              />
+            )}
             <input
               type="tel"
               placeholder="Telefon"
@@ -735,6 +804,11 @@ function App() {
             <div style={{ textAlign: 'center', marginTop: 15, fontSize: 14 }}>
               Zaten hesabınız var mı? <button onClick={() => setSecilenSayfa('giris')} style={{ background: 'none', border: 'none', color: '#000000', cursor: 'pointer', textDecoration: 'underline' }}>Giriş Yap</button>
             </div>
+            {emailDogrulamaGonderildi && (
+              <div style={{ marginTop: 20, padding: 15, background: '#e7f3ff', borderRadius: 8, fontSize: 13, color: '#0066cc' }}>
+                📧 Doğrulama kodu email adresinize gönderildi. Lütfen email kutunuzu kontrol edin (spam klasörünü de kontrol edin).
+              </div>
+            )}
           </div>
         )}
 
