@@ -288,6 +288,59 @@ app.get('/api/urunler/:id', async (req, res) => {
 });
 
 // ============================================
+// API ENDPOINTS - Kullanıcı (Giriş & Kayıt)
+// ============================================
+
+app.post('/api/giris', async (req, res) => {
+  try {
+    const { email, sifre } = req.body;
+    
+    const { rows } = await sql`
+      SELECT * FROM kullanicilar WHERE email = ${email} AND sifre = ${sifre}
+    `;
+    
+    if (rows.length > 0) {
+      const kullanici = toCamelCase(rows[0]);
+      delete kullanici.sifre; // Şifreyi gönderme
+      res.json({ basarili: true, mesaj: 'Giriş başarılı', kullanici });
+    } else {
+      res.status(401).json({ basarili: false, mesaj: 'Email veya şifre hatalı' });
+    }
+  } catch (error) {
+    res.status(500).json({ basarili: false, mesaj: 'Giriş yapılamadı', hata: error.message });
+  }
+});
+
+app.post('/api/kayit', async (req, res) => {
+  try {
+    const { email, sifre, ad, soyad, telefon } = req.body;
+    
+    // Email kontrolü
+    const { rows: existingUser } = await sql`
+      SELECT * FROM kullanicilar WHERE email = ${email}
+    `;
+    
+    if (existingUser.length > 0) {
+      return res.status(400).json({ basarili: false, mesaj: 'Bu email adresi zaten kayıtlı' });
+    }
+    
+    // Yeni kullanıcı oluştur
+    const { rows } = await sql`
+      INSERT INTO kullanicilar (email, sifre, ad, soyad, telefon, rol)
+      VALUES (${email}, ${sifre}, ${ad}, ${soyad}, ${telefon || null}, 'musteri')
+      RETURNING *
+    `;
+    
+    const kullanici = toCamelCase(rows[0]);
+    delete kullanici.sifre; // Şifreyi gönderme
+    
+    res.json({ basarili: true, mesaj: 'Kayıt başarılı', kullanici });
+  } catch (error) {
+    res.status(500).json({ basarili: false, mesaj: 'Kayıt yapılamadı', hata: error.message });
+  }
+});
+
+// ============================================
 // API ENDPOINTS - Kategoriler
 // ============================================
 
