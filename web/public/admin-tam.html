@@ -1139,15 +1139,20 @@
                                 <th>Rol</th>
                                 <th>Email Doğrulandı</th>
                                 <th>Kayıt Tarihi</th>
+                                <th>İşlemler</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${users.map(user => {
-                                const verifiedBadge = user.email_verified 
+                                const verifiedBadge = user.emailVerified 
                                     ? '<span style="color: green; font-weight: bold;">✓ Doğrulandı</span>' 
                                     : '<span style="color: red;">✗ Doğrulanmadı</span>';
                                 
-                                const date = new Date(user.created_at).toLocaleString('tr-TR');
+                                const date = new Date(user.createdAt).toLocaleString('tr-TR');
+                                
+                                const deleteBtn = user.rol === 'admin' 
+                                    ? '<span style="color: #999;">Admin silinemez</span>'
+                                    : `<button class="btn btn-danger" onclick="deleteUser(${user.id}, '${user.email}')" style="padding: 6px 12px; font-size: 12px;">🗑️ Sil</button>`;
                                 
                                 return `
                                     <tr>
@@ -1155,9 +1160,10 @@
                                         <td>${user.email}</td>
                                         <td>${user.ad || ''} ${user.soyad || ''}</td>
                                         <td>${user.telefon || '-'}</td>
-                                        <td>${user.rol}</td>
+                                        <td><span style="background: ${user.rol === 'admin' ? '#667eea' : '#28a745'}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px;">${user.rol}</span></td>
                                         <td>${verifiedBadge}</td>
                                         <td>${date}</td>
+                                        <td>${deleteBtn}</td>
                                     </tr>
                                 `;
                             }).join('')}
@@ -1168,6 +1174,30 @@
             } catch (error) {
                 console.error('Kullanıcı listesi yüklenemedi:', error);
                 showAlert('❌ Kullanıcı listesi yüklenemedi', 'error');
+            }
+        }
+
+        async function deleteUser(userId, userEmail) {
+            if (!confirm(`${userEmail} kullanıcısını silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kullanici/${userId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.basarili) {
+                    showAlert('✅ ' + result.mesaj, 'success');
+                    loadUsers(); // Listeyi yenile
+                } else {
+                    showAlert('❌ ' + result.mesaj, 'error');
+                }
+            } catch (error) {
+                console.error('Kullanıcı silme hatası:', error);
+                showAlert('❌ Kullanıcı silinemedi', 'error');
             }
         }
 

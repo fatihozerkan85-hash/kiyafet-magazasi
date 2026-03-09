@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Silme Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #C85A8E;
+            text-align: center;
+        }
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .controls input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+            width: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #C85A8E;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button.danger {
+            background: #e74c3c;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #C85A8E;
+            color: white;
+        }
+        .verified {
+            color: green;
+            font-weight: bold;
+        }
+        .not-verified {
+            color: red;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: white;
+        }
+        .badge-admin {
+            background: #667eea;
+        }
+        .badge-user {
+            background: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <h1>🗑️ Kullanıcı Silme Test</h1>
+    
+    <div class="controls">
+        <h3>Kullanıcı Sil</h3>
+        <input type="number" id="deleteUserId" placeholder="Kullanıcı ID">
+        <button class="danger" onclick="deleteUser()">🗑️ Kullanıcıyı Sil</button>
+        <button onclick="loadUsers()">🔄 Listeyi Yenile</button>
+    </div>
+    
+    <div id="result"></div>
+
+    <script>
+        const API_URL = 'https://kiyafet-magazasi-backend.vercel.app';
+
+        async function loadUsers() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '⏳ Yükleniyor...';
+
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kullanicilar`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const users = await response.json();
+                
+                if (users.length === 0) {
+                    resultDiv.innerHTML = '<p>Henüz kayıtlı kullanıcı yok.</p>';
+                    return;
+                }
+
+                let html = '<table>';
+                html += '<tr><th>ID</th><th>Email</th><th>Ad Soyad</th><th>Telefon</th><th>Rol</th><th>Email Doğrulandı</th><th>Kayıt Tarihi</th><th>İşlem</th></tr>';
+                
+                users.forEach(user => {
+                    const verifiedBadge = user.emailVerified 
+                        ? '<span class="verified">✓ Doğrulandı</span>' 
+                        : '<span class="not-verified">✗ Doğrulanmadı</span>';
+                    
+                    const date = new Date(user.createdAt).toLocaleString('tr-TR');
+                    
+                    const roleBadge = user.rol === 'admin' 
+                        ? '<span class="badge badge-admin">admin</span>'
+                        : '<span class="badge badge-user">user</span>';
+                    
+                    const deleteBtn = user.rol === 'admin'
+                        ? '<span style="color: #999;">Admin silinemez</span>'
+                        : `<button class="danger" onclick="deleteUserById(${user.id}, '${user.email}')">🗑️ Sil</button>`;
+                    
+                    html += `<tr>
+                        <td>${user.id}</td>
+                        <td>${user.email}</td>
+                        <td>${user.ad || ''} ${user.soyad || ''}</td>
+                        <td>${user.telefon || '-'}</td>
+                        <td>${roleBadge}</td>
+                        <td>${verifiedBadge}</td>
+                        <td>${date}</td>
+                        <td>${deleteBtn}</td>
+                    </tr>`;
+                });
+                
+                html += '</table>';
+                html += `<p style="margin-top: 20px; text-align: center;">Toplam ${users.length} kullanıcı</p>`;
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Hata</h3>
+                        <p>${error.message}</p>
+                        <p><strong>API URL:</strong> ${API_URL}/api/admin/kullanicilar</p>
+                    </div>
+                `;
+                console.error('Kullanıcı yükleme hatası:', error);
+            }
+        }
+
+        async function deleteUser() {
+            const userId = document.getElementById('deleteUserId').value;
+            
+            if (!userId) {
+                alert('Lütfen kullanıcı ID girin');
+                return;
+            }
+            
+            await deleteUserById(parseInt(userId));
+        }
+
+        async function deleteUserById(userId, userEmail = '') {
+            const confirmMsg = userEmail 
+                ? `${userEmail} kullanıcısını silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!`
+                : `ID: ${userId} kullanıcısını silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!`;
+            
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '⏳ Siliniyor...';
+
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kullanici/${userId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.basarili) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Başarılı</h3>
+                            <p>${result.mesaj}</p>
+                        </div>
+                    `;
+                    
+                    // 2 saniye sonra listeyi yenile
+                    setTimeout(loadUsers, 2000);
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h3>❌ Hata</h3>
+                            <p>${result.mesaj}</p>
+                        </div>
+                    `;
+                    
+                    // 2 saniye sonra listeyi yenile
+                    setTimeout(loadUsers, 2000);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Hata</h3>
+                        <p>${error.message}</p>
+                        <p><strong>API URL:</strong> ${API_URL}/api/admin/kullanici/${userId}</p>
+                    </div>
+                `;
+                console.error('Kullanıcı silme hatası:', error);
+                
+                // 2 saniye sonra listeyi yenile
+                setTimeout(loadUsers, 2000);
+            }
+        }
+
+        // Sayfa yüklendiğinde otomatik yükle
+        window.onload = loadUsers;
+    </script>
+</body>
+</html>

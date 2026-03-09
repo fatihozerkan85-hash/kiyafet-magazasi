@@ -553,6 +553,37 @@ app.get('/api/admin/kullanicilar', async (req, res) => {
   }
 });
 
+app.delete('/api/admin/kullanici/:id', async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    
+    // Kullanıcıyı kontrol et
+    const { rows: userCheck } = await sql`
+      SELECT id, email, rol FROM kullanicilar WHERE id = ${userId}
+    `;
+    
+    if (userCheck.length === 0) {
+      return res.status(404).json({ basarili: false, mesaj: 'Kullanıcı bulunamadı' });
+    }
+    
+    // Admin kullanıcısını silmeyi engelle
+    if (userCheck[0].rol === 'admin') {
+      return res.status(403).json({ basarili: false, mesaj: 'Admin kullanıcısı silinemez' });
+    }
+    
+    // Kullanıcıyı sil
+    await sql`DELETE FROM kullanicilar WHERE id = ${userId}`;
+    
+    res.json({ 
+      basarili: true, 
+      mesaj: `${userCheck[0].email} kullanıcısı silindi` 
+    });
+  } catch (error) {
+    console.error('Kullanıcı silme hatası:', error);
+    res.status(500).json({ basarili: false, mesaj: 'Kullanıcı silinemedi', hata: error.message });
+  }
+});
+
 // ============================================
 // ADMIN ENDPOINTS - Kategoriler
 // ============================================
