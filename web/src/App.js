@@ -155,12 +155,16 @@ function App() {
     }
     
     try {
+      console.log('📝 Kayıt isteği gönderiliyor:', { ...kayitFormu, sifre: '***' });
       const response = await fetch(`${API_URL}/api/kayit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(kayitFormu)
       });
+      console.log('📡 Response status:', response.status);
       const sonuc = await response.json();
+      console.log('📦 Response data:', sonuc);
+      
       if (sonuc.basarili) {
         setKullanici(sonuc.kullanici);
         localStorage.setItem('kullanici', JSON.stringify(sonuc.kullanici));
@@ -172,7 +176,8 @@ function App() {
         alert('❌ ' + sonuc.mesaj);
       }
     } catch (error) {
-      alert('❌ Kayıt yapılamadı');
+      console.error('❌ Kayıt hatası:', error);
+      alert('❌ Kayıt yapılamadı: ' + error.message);
     }
   };
 
