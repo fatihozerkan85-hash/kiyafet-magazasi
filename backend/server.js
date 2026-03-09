@@ -537,6 +537,23 @@ app.get('/api/kampanyalar', async (req, res) => {
 });
 
 // ============================================
+// ADMIN ENDPOINTS - Kullanıcılar
+// ============================================
+
+app.get('/api/admin/kullanicilar', async (req, res) => {
+  try {
+    const { rows } = await sql`
+      SELECT id, email, ad, soyad, telefon, rol, email_verified, created_at 
+      FROM kullanicilar 
+      ORDER BY created_at DESC
+    `;
+    res.json(toCamelCase(rows));
+  } catch (error) {
+    res.status(500).json({ mesaj: 'Kullanıcılar getirilemedi', hata: error.message });
+  }
+});
+
+// ============================================
 // ADMIN ENDPOINTS - Kategoriler
 // ============================================
 
