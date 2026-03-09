@@ -92,10 +92,17 @@ async function sendVerificationEmail(email, code) {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    console.log('📧 Email gönderiliyor:', email);
+    console.log('🔑 EMAIL_USER:', process.env.EMAIL_USER ? 'Tanımlı' : 'Tanımsız');
+    console.log('🔑 EMAIL_PASS:', process.env.EMAIL_PASS ? 'Tanımlı' : 'Tanımsız');
+    console.log('🔑 EMAIL_FROM:', process.env.EMAIL_FROM || 'Varsayılan');
+    
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Email gönderildi:', info.messageId);
     return true;
   } catch (error) {
-    console.error('Email gönderme hatası:', error);
+    console.error('❌ Email gönderme hatası:', error.message);
+    console.error('❌ Hata detayı:', error);
     return false;
   }
 }
@@ -877,6 +884,38 @@ app.get('/api/health', async (req, res) => {
       durum: 'çalışıyor', 
       zaman: new Date().toISOString(),
       database: 'bağlı değil',
+      hata: error.message
+    });
+  }
+});
+
+// Email test endpoint
+app.get('/api/test-email', async (req, res) => {
+  try {
+    console.log('🧪 Email test başlatıldı');
+    console.log('📧 EMAIL_USER:', process.env.EMAIL_USER);
+    console.log('🔑 EMAIL_PASS:', process.env.EMAIL_PASS ? '***' + process.env.EMAIL_PASS.slice(-4) : 'YOK');
+    console.log('📨 EMAIL_FROM:', process.env.EMAIL_FROM);
+    
+    // Test email gönder
+    const testCode = '123456';
+    const testEmail = process.env.EMAIL_USER; // Kendine gönder
+    
+    const result = await sendVerificationEmail(testEmail, testCode);
+    
+    res.json({
+      basarili: result,
+      mesaj: result ? 'Test email gönderildi!' : 'Email gönderilemedi',
+      config: {
+        emailUser: process.env.EMAIL_USER ? 'Tanımlı' : 'Tanımsız',
+        emailPass: process.env.EMAIL_PASS ? 'Tanımlı' : 'Tanımsız',
+        emailFrom: process.env.EMAIL_FROM || 'Varsayılan'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      basarili: false,
+      mesaj: 'Test hatası',
       hata: error.message
     });
   }
