@@ -532,13 +532,24 @@
         // Dashboard
         async function loadDashboard() {
             try {
-                const response = await fetch(`${API_URL}/api/admin/istatistikler`);
-                const stats = await response.json();
+                // Ürünleri yükle
+                const productsRes = await fetch(`${API_URL}/api/urunler`);
+                const products = await productsRes.json();
+                document.getElementById('statProducts').textContent = products.length || 0;
                 
-                document.getElementById('statProducts').textContent = stats.toplamUrun || 0;
-                document.getElementById('statOrders').textContent = stats.toplamSiparis || 0;
-                document.getElementById('statUsers').textContent = stats.toplamKullanici || 0;
-                document.getElementById('statRevenue').textContent = (stats.toplamGelir || 0) + ' ₺';
+                // Siparişleri yükle
+                const ordersRes = await fetch(`${API_URL}/api/admin/siparisler`);
+                const orders = await ordersRes.json();
+                document.getElementById('statOrders').textContent = orders.length || 0;
+                
+                // Kullanıcıları yükle
+                const usersRes = await fetch(`${API_URL}/api/admin/kullanicilar`);
+                const users = await usersRes.json();
+                document.getElementById('statUsers').textContent = users.length || 0;
+                
+                // Toplam geliri hesapla
+                const totalRevenue = orders.reduce((sum, order) => sum + (order.toplam_tutar || 0), 0);
+                document.getElementById('statRevenue').textContent = totalRevenue.toFixed(2) + ' ₺';
             } catch (error) {
                 console.error('Dashboard yüklenemedi:', error);
             }
@@ -1104,109 +1115,59 @@
             }
         }
 
-        // Users with Segmentation
-        let currentSegment = 'vip';
-
+        // Users
         async function loadUsers() {
             try {
-                const response = await fetch(`${API_URL}/api/admin/musteri-segmentleri`);
-                const result = await response.json();
+                const response = await fetch(`${API_URL}/api/admin/kullanicilar`);
+                const users = await response.json();
                 
-                if (!result.basarili) {
-                    showAlert('Müşteri segmentleri yüklenemedi', 'error');
+                const listDiv = document.getElementById('userList');
+                
+                if (users.length === 0) {
+                    listDiv.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Henüz kayıtlı kullanıcı yok</p>';
                     return;
                 }
                 
-                const segments = result.segmentler;
-                
-                const listDiv = document.getElementById('userList');
                 listDiv.innerHTML = `
-                    <div style="margin-bottom: 20px;">
-                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                            <button class="btn ${currentSegment === 'vip' ? 'btn-primary' : ''}" onclick="showSegment('vip', ${JSON.stringify(segments).replace(/"/g, '&quot;')})">
-                                👑 VIP (${segments.vip.adet})
-                            </button>
-                            <button class="btn ${currentSegment === 'sadik' ? 'btn-primary' : ''}" onclick="showSegment('sadik', ${JSON.stringify(segments).replace(/"/g, '&quot;')})">
-                                ⭐ Sadık (${segments.sadik.adet})
-                            </button>
-                            <button class="btn ${currentSegment === 'yeni' ? 'btn-primary' : ''}" onclick="showSegment('yeni', ${JSON.stringify(segments).replace(/"/g, '&quot;')})">
-                                🆕 Yeni (${segments.yeni.adet})
-                            </button>
-                            <button class="btn ${currentSegment === 'pasif' ? 'btn-primary' : ''}" onclick="showSegment('pasif', ${JSON.stringify(segments).replace(/"/g, '&quot;')})">
-                                😴 Pasif (${segments.pasif.adet})
-                            </button>
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn btn-success" onclick="sendSegmentNotification('email')">📧 Segment'e Email Gönder</button>
-                            <button class="btn btn-success" onclick="sendSegmentNotification('sms')">📱 Segment'e SMS Gönder</button>
-                        </div>
-                    </div>
-                    <div id="segmentContent"></div>
-                `;
-                
-                showSegment(currentSegment, segments);
-            } catch (error) {
-                showAlert('Müşteri segmentleri yüklenemedi', 'error');
-            }
-        }
-
-        function showSegment(segment, segments) {
-            currentSegment = segment;
-            const customers = segments[segment].musteriler;
-            
-            const contentDiv = document.getElementById('segmentContent');
-            if (customers.length === 0) {
-                contentDiv.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Bu segmentte müşteri yok</p>';
-                return;
-            }
-            
-            contentDiv.innerHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Ad Soyad</th>
-                            <th>Email</th>
-                            <th>Sipariş Sayısı</th>
-                            <th>Toplam Harcama</th>
-                            <th>Son Sipariş</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${customers.map(c => `
+                    <table>
+                        <thead>
                             <tr>
-                                <td>${c.ad} ${c.soyad}</td>
-                                <td>${c.email}</td>
-                                <td>${c.siparisSayisi}</td>
-                                <td>${c.toplamHarcama} ₺</td>
-                                <td>${c.sonSiparisTarihi ? new Date(c.sonSiparisTarihi).toLocaleDateString('tr-TR') : 'Yok'}</td>
+                                <th>ID</th>
+                                <th>Email</th>
+                                <th>Ad Soyad</th>
+                                <th>Telefon</th>
+                                <th>Rol</th>
+                                <th>Email Doğrulandı</th>
+                                <th>Kayıt Tarihi</th>
                             </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        async function sendSegmentNotification(type) {
-            const message = prompt(`${currentSegment} segmentine gönderilecek mesajı yazın:`);
-            if (!message) return;
-            
-            try {
-                const response = await fetch(`${API_URL}/api/admin/segment-bildirim`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        segment: currentSegment,
-                        tip: type,
-                        mesaj: message
-                    })
-                });
-                
-                const result = await response.json();
-                if (result.basarili) {
-                    showAlert(`✅ ${currentSegment} segmentine ${type} gönderildi!`, 'success');
-                }
+                        </thead>
+                        <tbody>
+                            ${users.map(user => {
+                                const verifiedBadge = user.email_verified 
+                                    ? '<span style="color: green; font-weight: bold;">✓ Doğrulandı</span>' 
+                                    : '<span style="color: red;">✗ Doğrulanmadı</span>';
+                                
+                                const date = new Date(user.created_at).toLocaleString('tr-TR');
+                                
+                                return `
+                                    <tr>
+                                        <td>${user.id}</td>
+                                        <td>${user.email}</td>
+                                        <td>${user.ad || ''} ${user.soyad || ''}</td>
+                                        <td>${user.telefon || '-'}</td>
+                                        <td>${user.rol}</td>
+                                        <td>${verifiedBadge}</td>
+                                        <td>${date}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 20px; text-align: center; color: #666;">Toplam ${users.length} kullanıcı</p>
+                `;
             } catch (error) {
-                showAlert('❌ Bildirim gönderilemedi', 'error');
+                console.error('Kullanıcı listesi yüklenemedi:', error);
+                showAlert('❌ Kullanıcı listesi yüklenemedi', 'error');
             }
         }
 
