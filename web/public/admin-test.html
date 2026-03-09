@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Giriş Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+        }
+        .login-box { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); 
+            max-width: 400px; 
+            width: 100%; 
+        }
+        h1 { color: #667eea; margin-bottom: 30px; text-align: center; }
+        input { 
+            width: 100%; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border: 2px solid #ddd; 
+            border-radius: 8px; 
+            font-size: 16px; 
+        }
+        input:focus { outline: none; border-color: #667eea; }
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            background: #667eea; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+        }
+        button:hover { background: #5568d3; }
+        .error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            display: none; 
+        }
+        .info { 
+            margin-top: 20px; 
+            padding: 15px; 
+            background: #d1ecf1; 
+            border-radius: 8px; 
+            font-size: 13px; 
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>🔒 Admin Girişi</h1>
+        <div id="error" class="error"></div>
+        <div id="content">
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Kullanıcı Adı" required>
+                <input type="password" id="password" placeholder="Şifre" required>
+                <button type="submit">Giriş Yap</button>
+            </form>
+            <div class="info">
+                <strong>Test Hesabı:</strong><br>
+                Kullanıcı: admin<br>
+                Şifre: admin123
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            console.log('Giriş denemesi:', username, password);
+            
+            if (username === 'admin' && password === 'admin123') {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('content').innerHTML = `
+                    <div class="success">
+                        <h2>✅ Giriş Başarılı!</h2>
+                        <p style="margin-top: 15px;">Admin paneline yönlendiriliyorsunuz...</p>
+                    </div>
+                `;
+                setTimeout(() => {
+                    window.location.href = '/admin-tam.html';
+                }, 2000);
+            } else {
+                const errorDiv = document.getElementById('error');
+                errorDiv.textContent = '❌ Kullanıcı adı veya şifre hatalı!';
+                errorDiv.style.display = 'block';
+                setTimeout(() => errorDiv.style.display = 'none', 3000);
+            }
+        });
+        
+        // Sayfa yüklendiğinde kontrol et
+        window.onload = () => {
+            console.log('Sayfa yüklendi');
+            const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+            console.log('Login durumu:', isLoggedIn);
+            
+            if (isLoggedIn === 'true') {
+                console.log('Zaten giriş yapılmış, yönlendiriliyor...');
+                window.location.href = '/admin-tam.html';
+            }
+        };
+    </script>
+</body>
+</html>

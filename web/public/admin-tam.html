@@ -454,6 +454,8 @@
     </div>
 
     <script>
+        console.log('🚀 Admin panel script yüklendi');
+        
         const API_URL = window.location.hostname === 'localhost' 
             ? 'http://localhost:5000' 
             : 'https://kiyafet-magazasi-backend.vercel.app';
@@ -462,27 +464,35 @@
 
         // Auth
         function checkAuth() {
+            console.log('🔐 checkAuth çağrıldı');
             const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+            console.log('Login durumu:', isLoggedIn);
             if (isLoggedIn === 'true') {
+                console.log('✅ Giriş yapılmış, panel gösteriliyor');
                 showAdminPanel();
                 loadDashboard();
                 loadCampaigns();
             } else {
+                console.log('❌ Giriş yapılmamış, login sayfası gösteriliyor');
                 showLoginPage();
             }
         }
 
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
+            console.log('📝 Login form submit edildi');
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            console.log('Kullanıcı adı:', username);
             
             if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                console.log('✅ Giriş başarılı!');
                 sessionStorage.setItem('adminLoggedIn', 'true');
                 showAdminPanel();
                 loadDashboard();
                 loadCampaigns();
             } else {
+                console.log('❌ Giriş başarısız!');
                 showLoginError('❌ Kullanıcı adı veya şifre hatalı!');
             }
         });
