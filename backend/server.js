@@ -871,6 +871,90 @@ app.post('/api/kupon/kontrol', async (req, res) => {
 });
 
 // ============================================
+// ADMIN ENDPOINTS - Kuponlar
+// ============================================
+
+app.get('/api/admin/kuponlar', async (req, res) => {
+  try {
+    const { rows } = await sql`
+      SELECT * FROM kuponlar 
+      ORDER BY created_at DESC
+    `;
+    res.json(toCamelCase(rows));
+  } catch (error) {
+    res.status(500).json({ mesaj: 'Kuponlar getirilemedi', hata: error.message });
+  }
+});
+
+app.post('/api/admin/kupon', async (req, res) => {
+  try {
+    const { kod, indirimTipi, indirimMiktari, minSepetTutari, maxKullanim, baslangicTarihi, bitisTarihi } = req.body;
+    
+    // Kupon kodunu büyük harfe çevir
+    const kuponKodu = kod.toUpperCase();
+    
+    // Aynı kodda kupon var mı kontrol et
+    const { rows: existing } = await sql`
+      SELECT id FROM kuponlar WHERE UPPER(kod) = ${kuponKodu}
+    `;
+    
+    if (existing.length > 0) {
+      return res.status(400).json({ basarili: false, mesaj: 'Bu kupon kodu zaten mevcut' });
+    }
+    
+    const { rows } = await sql`
+      INSERT INTO kuponlar (
+        kod, indirim_tipi, indirim_miktari, min_sepet_tutari, 
+        max_kullanim, baslangic_tarihi, bitis_tarihi, aktif
+      )
+      VALUES (
+        ${kuponKodu}, ${indirimTipi}, ${indirimMiktari}, ${minSepetTutari || null},
+        ${maxKullanim || null}, ${baslangicTarihi || null}, ${bitisTarihi || null}, true
+      )
+      RETURNING *
+    `;
+    
+    res.json({ basarili: true, mesaj: 'Kupon oluşturuldu', kupon: toCamelCase(rows[0]) });
+  } catch (error) {
+    console.error('Kupon oluşturma hatası:', error);
+    res.status(500).json({ basarili: false, mesaj: 'Kupon oluşturulamadı', hata: error.message });
+  }
+});
+
+app.delete('/api/admin/kupon/:id', async (req, res) => {
+  try {
+    const { rows } = await sql`DELETE FROM kuponlar WHERE id = ${req.params.id} RETURNING *`;
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ basarili: false, mesaj: 'Kupon bulunamadı' });
+    }
+    
+    res.json({ basarili: true, mesaj: 'Kupon silindi' });
+  } catch (error) {
+    res.status(500).json({ basarili: false, mesaj: 'Kupon silinemedi', hata: error.message });
+  }
+});
+
+app.patch('/api/admin/kupon/:id/toggle', async (req, res) => {
+  try {
+    const { rows } = await sql`
+      UPDATE kuponlar 
+      SET aktif = NOT aktif, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${req.params.id}
+      RETURNING *
+    `;
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ basarili: false, mesaj: 'Kupon bulunamadı' });
+    }
+    
+    res.json({ basarili: true, mesaj: 'Kupon durumu güncellendi', kupon: toCamelCase(rows[0]) });
+  } catch (error) {
+    res.status(500).json({ basarili: false, mesaj: 'Kupon güncellenemedi', hata: error.message });
+  }
+});
+
+// ============================================
 // SİPARİŞ ENDPOINTS
 // ============================================
 
