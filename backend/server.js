@@ -483,8 +483,15 @@ app.post('/api/kayit', async (req, res) => {
       VALUES (${email}, ${sifre}, ${ad}, ${soyad}, ${telefon || null}, 'musteri', true)
       RETURNING *
     `.catch(err => {
-      console.error('❌ Kullanıcı oluşturma hatası:', err);
-      throw new Error('Kullanıcı oluşturulamadı');
+      console.error('❌ Kullanıcı oluşturma DETAYLI hatası:', {
+        message: err.message,
+        code: err.code,
+        detail: err.detail,
+        hint: err.hint,
+        position: err.position,
+        stack: err.stack
+      });
+      throw err; // Orijinal hatayı fırlat
     });
     
     // Kullanılan doğrulama kodunu sil
