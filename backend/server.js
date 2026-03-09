@@ -7,6 +7,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Database connection cache
+let dbInitialized = false;
+
 // Email transporter yapılandırması
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -317,7 +320,13 @@ async function seedData() {
 }
 
 // Uygulama başladığında veritabanını başlat
-// initDatabase(); // Devre dışı - Tablolar zaten mevcut
+if (!dbInitialized) {
+  initDatabase().then(() => {
+    dbInitialized = true;
+  }).catch(err => {
+    console.error('❌ Database initialization failed:', err);
+  });
+}
 
 // ============================================
 // API ENDPOINTS - Ürünler
@@ -435,12 +444,18 @@ app.post('/api/kayit', async (req, res) => {
   try {
     const { email, sifre, ad, soyad, telefon, dogrulamaKodu } = req.body;
     
+    console.log('📝 Kayıt isteği alındı:', { email, ad, soyad });
+    
     // Email kontrolü
     const { rows: existingUser } = await sql`
       SELECT * FROM kullanicilar WHERE email = ${email}
-    `;
+    `.catch(err => {
+      console.error('❌ Email kontrol hatası:', err);
+      throw new Error('Veritabanı bağlantı hatası');
+    });
     
     if (existingUser.length > 0) {
+      console.log('⚠️ Email zaten kayıtlı:', email);
       return res.status(400).json({ basarili: false, mesaj: 'Bu email adresi zaten kayıtlı' });
     }
     
@@ -450,28 +465,41 @@ app.post('/api/kayit', async (req, res) => {
       WHERE email = ${email} AND code = ${dogrulamaKodu} AND expires_at > NOW()
       ORDER BY created_at DESC
       LIMIT 1
-    `;
+    `.catch(err => {
+      console.error('❌ Doğrulama kodu kontrol hatası:', err);
+      throw new Error('Veritabanı bağlantı hatası');
+    });
     
     if (verifications.length === 0) {
+      console.log('⚠️ Geçersiz doğrulama kodu:', { email, kod: dogrulamaKodu });
       return res.status(400).json({ basarili: false, mesaj: 'Geçersiz veya süresi dolmuş doğrulama kodu' });
     }
+    
+    console.log('✅ Doğrulama kodu geçerli, kullanıcı oluşturuluyor...');
     
     // Yeni kullanıcı oluştur (email_verified = true)
     const { rows } = await sql`
       INSERT INTO kullanicilar (email, sifre, ad, soyad, telefon, rol, email_verified)
       VALUES (${email}, ${sifre}, ${ad}, ${soyad}, ${telefon || null}, 'musteri', true)
       RETURNING *
-    `;
+    `.catch(err => {
+      console.error('❌ Kullanıcı oluşturma hatası:', err);
+      throw new Error('Kullanıcı oluşturulamadı');
+    });
     
     // Kullanılan doğrulama kodunu sil
-    await sql`DELETE FROM email_verifications WHERE email = ${email}`;
+    await sql`DELETE FROM email_verifications WHERE email = ${email}`.catch(err => {
+      console.warn('⚠️ Doğrulama kodu silinemedi:', err);
+    });
     
     const kullanici = toCamelCase(rows[0]);
     delete kullanici.sifre; // Şifreyi gönderme
     
+    console.log('✅ Kayıt başarılı:', kullanici.email);
     res.json({ basarili: true, mesaj: 'Kayıt başarılı', kullanici });
   } catch (error) {
-    res.status(500).json({ basarili: false, mesaj: 'Kayıt yapılamadı', hata: error.message });
+    console.error('❌ Kayıt endpoint hatası:', error);
+    res.status(500).json({ basarili: false, mesaj: error.message || 'Kayıt yapılamadı', hata: error.message });
   }
 });
 
