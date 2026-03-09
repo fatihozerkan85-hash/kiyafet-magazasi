@@ -924,8 +924,9 @@ app.get('/api/test-email', async (req, res) => {
 app.get('/', (req, res) => {
   res.json({ 
     mesaj: 'Kıyafet Mağazası Backend API',
-    version: '3.0.0',
-    database: 'Vercel Postgres (Neon)'
+    version: '3.0.1',
+    database: 'Vercel Postgres (Neon)',
+    emailSystem: 'Gmail SMTP Active'
   });
 });
 
