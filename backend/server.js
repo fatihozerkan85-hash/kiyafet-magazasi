@@ -986,6 +986,85 @@ app.post('/api/siparis', async (req, res) => {
 });
 
 // ============================================
+// ADMIN ENDPOINTS - Siparişler
+// ============================================
+
+app.get('/api/admin/siparisler', async (req, res) => {
+  try {
+    const { rows } = await sql`
+      SELECT 
+        s.*,
+        k.email as kullanici_email,
+        k.ad as kullanici_ad,
+        k.soyad as kullanici_soyad
+      FROM siparisler s
+      LEFT JOIN kullanicilar k ON s.kullanici_id = k.id
+      ORDER BY s.created_at DESC
+    `;
+    res.json(toCamelCase(rows));
+  } catch (error) {
+    res.status(500).json({ mesaj: 'Siparişler getirilemedi', hata: error.message });
+  }
+});
+
+app.get('/api/admin/siparis/:id', async (req, res) => {
+  try {
+    // Sipariş bilgisi
+    const { rows: siparisRows } = await sql`
+      SELECT 
+        s.*,
+        k.email as kullanici_email,
+        k.ad as kullanici_ad,
+        k.soyad as kullanici_soyad,
+        k.telefon as kullanici_telefon
+      FROM siparisler s
+      LEFT JOIN kullanicilar k ON s.kullanici_id = k.id
+      WHERE s.id = ${req.params.id}
+    `;
+    
+    if (siparisRows.length === 0) {
+      return res.status(404).json({ mesaj: 'Sipariş bulunamadı' });
+    }
+    
+    // Sipariş ürünleri
+    const { rows: urunRows } = await sql`
+      SELECT * FROM siparis_urunler WHERE siparis_id = ${req.params.id}
+    `;
+    
+    const siparis = toCamelCase(siparisRows[0]);
+    siparis.urunler = toCamelCase(urunRows);
+    
+    res.json(siparis);
+  } catch (error) {
+    res.status(500).json({ mesaj: 'Sipariş detayı getirilemedi', hata: error.message });
+  }
+});
+
+app.patch('/api/admin/siparis/:id/durum', async (req, res) => {
+  try {
+    const { durum, kargoFirmasi, takipNo, aciklama } = req.body;
+    
+    const { rows } = await sql`
+      UPDATE siparisler 
+      SET durum = ${durum},
+          kargo_firmasi = ${kargoFirmasi || null},
+          takip_no = ${takipNo || null},
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${req.params.id}
+      RETURNING *
+    `;
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ basarili: false, mesaj: 'Sipariş bulunamadı' });
+    }
+    
+    res.json({ basarili: true, mesaj: 'Sipariş durumu güncellendi', siparis: toCamelCase(rows[0]) });
+  } catch (error) {
+    res.status(500).json({ basarili: false, mesaj: 'Sipariş güncellenemedi', hata: error.message });
+  }
+});
+
+// ============================================
 // MANUAL SEED ENDPOINT (Emergency Data Reset)
 // ============================================
 

@@ -943,6 +943,7 @@
                         <thead>
                             <tr>
                                 <th>Sipariş No</th>
+                                <th>Müşteri</th>
                                 <th>Tarih</th>
                                 <th>Tutar</th>
                                 <th>Durum</th>
@@ -952,12 +953,13 @@
                         <tbody>
                             ${orders.map(o => `
                                 <tr>
-                                    <td><strong>${o.id}</strong></td>
-                                    <td>${new Date(o.olusturmaTarihi).toLocaleDateString('tr-TR')}</td>
-                                    <td>${o.toplamTutar} ₺</td>
+                                    <td><strong>#${o.id}</strong></td>
+                                    <td>${o.kullaniciEmail || 'Misafir'}</td>
+                                    <td>${new Date(o.createdAt).toLocaleDateString('tr-TR')}</td>
+                                    <td>${parseFloat(o.toplamTutar).toFixed(2)} ₺</td>
                                     <td>${getDurumBadge(o.durum)}</td>
                                     <td>
-                                        <button class="btn btn-primary" onclick="showOrderDetail('${o.id}')">Detay</button>
+                                        <button class="btn btn-primary" onclick="showOrderDetail(${o.id})" style="padding: 6px 12px; font-size: 12px;">📋 Detay</button>
                                     </td>
                                 </tr>
                             `).join('')}
@@ -965,7 +967,8 @@
                     </table>
                 `;
             } catch (error) {
-                showAlert('Siparişler yüklenemedi', 'error');
+                console.error('Sipariş yükleme hatası:', error);
+                showAlert('❌ Siparişler yüklenemedi', 'error');
             }
         }
 
@@ -983,9 +986,8 @@
 
         async function showOrderDetail(orderId) {
             try {
-                const response = await fetch(`${API_URL}/api/admin/siparisler`);
-                const orders = await response.json();
-                const order = orders.find(o => o.id === orderId);
+                const response = await fetch(`${API_URL}/api/admin/siparis/${orderId}`);
+                const order = await response.json();
                 
                 if (!order) {
                     showAlert('Sipariş bulunamadı', 'error');
@@ -998,35 +1000,47 @@
                 detailDiv.innerHTML = `
                     <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                         <h3>Sipariş Bilgileri</h3>
-                        <p><strong>Sipariş No:</strong> ${order.id}</p>
-                        <p><strong>Tarih:</strong> ${new Date(order.olusturmaTarihi).toLocaleString('tr-TR')}</p>
+                        <p><strong>Sipariş No:</strong> #${order.id}</p>
+                        <p><strong>Tarih:</strong> ${new Date(order.createdAt).toLocaleString('tr-TR')}</p>
+                        <p><strong>Müşteri:</strong> ${order.kullaniciEmail || 'Misafir'}</p>
+                        ${order.kullaniciAd ? `<p><strong>Ad Soyad:</strong> ${order.kullaniciAd} ${order.kullaniciSoyad || ''}</p>` : ''}
+                        <p><strong>Telefon:</strong> ${order.telefon || order.kullaniciTelefon || '-'}</p>
+                        <p><strong>Adres:</strong> ${order.adres || '-'}</p>
                         <p><strong>Durum:</strong> ${getDurumBadge(order.durum)}</p>
-                        <p><strong>Toplam Tutar:</strong> ${order.toplamTutar} ₺</p>
-                        ${order.kargoFirmasi ? `<p><strong>Kargo:</strong> ${order.kargoFirmasi} - ${order.kargoTakipNo}</p>` : ''}
+                        <p><strong>Ödeme Tipi:</strong> ${order.odemeTipi || 'Kapıda Ödeme'}</p>
+                        ${order.kuponKodu ? `<p><strong>Kupon:</strong> ${order.kuponKodu} (-${order.indirimTutari} ₺)</p>` : ''}
+                        <p><strong>Toplam Tutar:</strong> ${parseFloat(order.toplamTutar).toFixed(2)} ₺</p>
+                        ${order.kargoFirmasi ? `<p><strong>Kargo:</strong> ${order.kargoFirmasi} - ${order.takipNo}</p>` : ''}
                     </div>
                     
                     <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
                         <h3>Ürünler</h3>
-                        ${order.urunler.map(u => `
+                        ${order.urunler && order.urunler.length > 0 ? order.urunler.map(u => `
                             <div style="display: flex; gap: 15px; padding: 10px; border-bottom: 1px solid #ddd;">
-                                <img src="${u.resimler[0]}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
-                                <div>
+                                <div style="flex: 1;">
                                     <strong>${u.ad}</strong><br>
-                                    <span style="color: #666;">${u.fiyat} ₺</span>
+                                    <span style="color: #666;">Fiyat: ${parseFloat(u.fiyat).toFixed(2)} ₺</span><br>
+                                    <span style="color: #666;">Adet: ${u.adet}</span><br>
+                                    ${u.beden ? `<span style="color: #666;">Beden: ${u.beden}</span><br>` : ''}
+                                    ${u.renk ? `<span style="color: #666;">Renk: ${u.renk}</span>` : ''}
+                                </div>
+                                <div style="text-align: right;">
+                                    <strong>${(parseFloat(u.fiyat) * u.adet).toFixed(2)} ₺</strong>
                                 </div>
                             </div>
-                        `).join('')}
+                        `).join('') : '<p>Ürün bilgisi yok</p>'}
                     </div>
                 `;
                 
                 document.getElementById('orderIdToUpdate').value = orderId;
                 document.getElementById('orderNewStatus').value = order.durum;
                 document.getElementById('orderCargoCompany').value = order.kargoFirmasi || '';
-                document.getElementById('orderTrackingNo').value = order.kargoTakipNo || '';
+                document.getElementById('orderTrackingNo').value = order.takipNo || '';
                 
                 document.getElementById('orderModal').style.display = 'block';
             } catch (error) {
-                showAlert('Sipariş detayı yüklenemedi', 'error');
+                console.error('Sipariş detay hatası:', error);
+                showAlert('❌ Sipariş detayı yüklenemedi', 'error');
             }
         }
 
@@ -1042,26 +1056,27 @@
             const data = {
                 durum: document.getElementById('orderNewStatus').value,
                 kargoFirmasi: document.getElementById('orderCargoCompany').value,
-                kargoTakipNo: document.getElementById('orderTrackingNo').value,
+                takipNo: document.getElementById('orderTrackingNo').value,
                 aciklama: document.getElementById('orderStatusNote').value
             };
             
             try {
                 const response = await fetch(`${API_URL}/api/admin/siparis/${orderId}/durum`, {
-                    method: 'PUT',
+                    method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
                 
                 const result = await response.json();
                 if (result.basarili) {
-                    showAlert('✅ Sipariş durumu güncellendi! Email ve SMS gönderildi.', 'success');
+                    showAlert('✅ Sipariş durumu güncellendi!', 'success');
                     closeOrderModal();
                     loadOrders();
                 } else {
                     showAlert('❌ ' + result.mesaj, 'error');
                 }
             } catch (error) {
+                console.error('Durum güncelleme hatası:', error);
                 showAlert('❌ Durum güncellenemedi', 'error');
             }
         });
@@ -1222,6 +1237,7 @@
                                 <th>İndirim Miktarı</th>
                                 <th>Kullanım</th>
                                 <th>Durum</th>
+                                <th>İşlemler</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1232,6 +1248,14 @@
                                     <td>${c.indirimMiktari}${c.indirimTipi === 'yuzde' ? '%' : ' ₺'}</td>
                                     <td>${c.kullanimSayisi || 0} kez</td>
                                     <td>${c.aktif ? '✅ Aktif' : '⏸️ Pasif'}</td>
+                                    <td>
+                                        <button class="btn btn-warning" onclick="toggleCoupon(${c.id})" style="padding: 6px 12px; font-size: 12px; margin-right: 5px;">
+                                            ${c.aktif ? '⏸️ Pasif Yap' : '▶️ Aktif Yap'}
+                                        </button>
+                                        <button class="btn btn-danger" onclick="deleteCoupon(${c.id}, '${c.kod}')" style="padding: 6px 12px; font-size: 12px;">
+                                            🗑️ Sil
+                                        </button>
+                                    </td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -1239,6 +1263,46 @@
                 `;
             } catch (error) {
                 showAlert('Kuponlar yüklenemedi', 'error');
+            }
+        }
+
+        async function toggleCoupon(couponId) {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kupon/${couponId}/toggle`, {
+                    method: 'PATCH'
+                });
+                
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ ' + result.mesaj, 'success');
+                    loadCoupons();
+                } else {
+                    showAlert('❌ ' + result.mesaj, 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Kupon durumu değiştirilemedi', 'error');
+            }
+        }
+
+        async function deleteCoupon(couponId, couponCode) {
+            if (!confirm(`${couponCode} kuponunu silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/kupon/${couponId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ ' + result.mesaj, 'success');
+                    loadCoupons();
+                } else {
+                    showAlert('❌ ' + result.mesaj, 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Kupon silinemedi', 'error');
             }
         }
 
@@ -1280,110 +1344,127 @@
 
         // Reports
         async function loadReports() {
-            await loadSalesReport('aylik');
-            await loadBestSellers();
-            await loadCategorySales();
-            await loadRevenueChart();
+            await loadSimpleReports();
         }
 
-        async function loadSalesReport(period) {
+        async function loadSimpleReports() {
             try {
-                const response = await fetch(`${API_URL}/api/admin/rapor/satis?period=${period}`);
-                const result = await response.json();
+                // Siparişleri al
+                const ordersRes = await fetch(`${API_URL}/api/admin/siparisler`);
+                const orders = await ordersRes.json();
                 
-                if (!result.basarili) {
-                    showAlert('Satış raporu yüklenemedi', 'error');
-                    return;
-                }
+                // Ürünleri al
+                const productsRes = await fetch(`${API_URL}/api/urunler`);
+                const products = await productsRes.json();
                 
-                const reportDiv = document.getElementById('salesReport');
-                reportDiv.innerHTML = `
-                    <div class="stats" style="margin-bottom: 20px;">
+                // Kullanıcıları al
+                const usersRes = await fetch(`${API_URL}/api/admin/kullanicilar`);
+                const users = await usersRes.json();
+                
+                // İstatistikleri hesapla
+                const totalOrders = orders.length;
+                const totalRevenue = orders.reduce((sum, o) => sum + parseFloat(o.toplamTutar || 0), 0);
+                const avgOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+                
+                // Durum bazlı sipariş sayıları
+                const statusCounts = orders.reduce((acc, o) => {
+                    acc[o.durum] = (acc[o.durum] || 0) + 1;
+                    return acc;
+                }, {});
+                
+                // Raporu göster
+                document.getElementById('salesReport').innerHTML = `
+                    <div class="stats">
                         <div class="stat-card">
-                            <div class="stat-label">Toplam Satış</div>
-                            <div class="stat-value">${result.toplamSatis}</div>
+                            <div class="stat-label">Toplam Sipariş</div>
+                            <div class="stat-value">${totalOrders}</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-label">Toplam Gelir</div>
-                            <div class="stat-value">${result.toplamGelir} ₺</div>
+                            <div class="stat-value">${totalRevenue.toFixed(2)} ₺</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-label">Ortalama Sepet</div>
-                            <div class="stat-value">${result.ortalamaSepet} ₺</div>
+                            <div class="stat-label">Ortalama Sipariş</div>
+                            <div class="stat-value">${avgOrder.toFixed(2)} ₺</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Toplam Ürün</div>
+                            <div class="stat-value">${products.length}</div>
                         </div>
                     </div>
-                    <h3>Günlük Dağılım</h3>
+                `;
+                
+                document.getElementById('bestSellers').innerHTML = `
+                    <h3>Sipariş Durumları</h3>
                     <table>
                         <thead>
                             <tr>
+                                <th>Durum</th>
+                                <th>Adet</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.entries(statusCounts).map(([durum, adet]) => `
+                                <tr>
+                                    <td>${getDurumBadge(durum)}</td>
+                                    <td><strong>${adet}</strong></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                
+                document.getElementById('categorySales').innerHTML = `
+                    <h3>Kullanıcı İstatistikleri</h3>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-label">Toplam Kullanıcı</div>
+                            <div class="stat-value">${users.length}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Email Doğrulanmış</div>
+                            <div class="stat-value">${users.filter(u => u.emailVerified).length}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Email Doğrulanmamış</div>
+                            <div class="stat-value">${users.filter(u => !u.emailVerified).length}</div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('revenueChart').innerHTML = `
+                    <h3>Son Siparişler</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sipariş No</th>
                                 <th>Tarih</th>
-                                <th>Sipariş Adedi</th>
-                                <th>Gelir</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${Object.entries(result.gunlukDagilim).map(([tarih, data]) => `
+                            ${orders.slice(0, 10).map(o => `
                                 <tr>
-                                    <td>${tarih}</td>
-                                    <td>${data.adet}</td>
-                                    <td>${data.tutar.toFixed(2)} ₺</td>
+                                    <td><strong>#${o.id}</strong></td>
+                                    <td>${new Date(o.createdAt).toLocaleDateString('tr-TR')}</td>
+                                    <td>${parseFloat(o.toplamTutar).toFixed(2)} ₺</td>
+                                    <td>${getDurumBadge(o.durum)}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
                     </table>
                 `;
             } catch (error) {
-                showAlert('Satış raporu yüklenemedi', 'error');
+                console.error('Rapor yükleme hatası:', error);
+                showAlert('❌ Raporlar yüklenemedi', 'error');
             }
         }
 
-        async function loadBestSellers() {
-            try {
-                const response = await fetch(`${API_URL}/api/admin/rapor/en-cok-satanlar?limit=10`);
-                const result = await response.json();
-                
-                if (!result.basarili) {
-                    showAlert('En çok satanlar yüklenemedi', 'error');
-                    return;
-                }
-                
-                const listDiv = document.getElementById('bestSellers');
-                if (result.enCokSatanlar.length === 0) {
-                    listDiv.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Henüz satış yok</p>';
-                    return;
-                }
-                
-                listDiv.innerHTML = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Sıra</th>
-                                <th>Ürün</th>
-                                <th>Satış Adedi</th>
-                                <th>Toplam Gelir</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${result.enCokSatanlar.map((item, index) => `
-                                <tr>
-                                    <td><strong>${index + 1}</strong></td>
-                                    <td>${item.urun.ad}</td>
-                                    <td>${item.adet}</td>
-                                    <td>${item.gelir.toFixed(2)} ₺</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
-            } catch (error) {
-                showAlert('En çok satanlar yüklenemedi', 'error');
-            }
+        function loadSalesReport(period) {
+            // Basitleştirilmiş versiyon - loadSimpleReports kullanılıyor
+            loadSimpleReports();
         }
-
-        async function loadCategorySales() {
-            try {
-                const response = await fetch(`${API_URL}/api/admin/rapor/kategori-satis`);
-                const result = await response.json();
                 
                 if (!result.basarili) {
                     showAlert('Kategori satışları yüklenemedi', 'error');
@@ -1426,51 +1507,6 @@
                                     </tr>
                                 `;
                             }).join('')}
-                        </tbody>
-                    </table>
-                `;
-            } catch (error) {
-                showAlert('Kategori satışları yüklenemedi', 'error');
-            }
-        }
-
-        async function loadRevenueChart() {
-            try {
-                const response = await fetch(`${API_URL}/api/admin/rapor/gelir-grafik`);
-                const result = await response.json();
-                
-                if (!result.basarili) {
-                    showAlert('Gelir grafiği yüklenemedi', 'error');
-                    return;
-                }
-                
-                const chartDiv = document.getElementById('revenueChart');
-                const maxGelir = Math.max(...result.grafik.map(g => g.gelir));
-                
-                chartDiv.innerHTML = `
-                    <div style="overflow-x: auto;">
-                        <div style="display: flex; align-items: flex-end; gap: 5px; min-width: 1000px; height: 300px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
-                            ${result.grafik.map(item => {
-                                const height = maxGelir > 0 ? (item.gelir / maxGelir) * 250 : 0;
-                                return `
-                                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                                        <div style="font-size: 11px; color: #666; text-align: center;">${item.gelir.toFixed(0)} ₺</div>
-                                        <div style="width: 100%; background: #667eea; border-radius: 4px 4px 0 0; height: ${height}px; min-height: 2px;" title="${item.tarih}: ${item.gelir} ₺ (${item.siparisSayisi} sipariş)"></div>
-                                        <div style="font-size: 10px; color: #999; writing-mode: vertical-rl; transform: rotate(180deg);">${item.tarih.split('.')[0]}.${item.tarih.split('.')[1]}</div>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    </div>
-                    <p style="text-align: center; color: #666; margin-top: 15px; font-size: 13px;">
-                        Son 30 günlük gelir grafiği
-                    </p>
-                `;
-            } catch (error) {
-                showAlert('Gelir grafiği yüklenemedi', 'error');
-            }
-        }
-
         // Initialize
         checkAuth();
     </script>
