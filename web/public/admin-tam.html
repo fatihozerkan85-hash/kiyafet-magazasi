@@ -1477,46 +1477,6 @@
         }
                 
                 if (!result.basarili) {
-                    showAlert('Kategori satışları yüklenemedi', 'error');
-                    return;
-                }
-                
-                const listDiv = document.getElementById('categorySales');
-                if (result.kategoriSatislari.length === 0) {
-                    listDiv.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Henüz satış yok</p>';
-                    return;
-                }
-                
-                listDiv.innerHTML = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Kategori</th>
-                                <th>Satış Adedi</th>
-                                <th>Toplam Gelir</th>
-                                <th>Oran</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${result.kategoriSatislari.map(item => {
-                                const toplamGelir = result.kategoriSatislari.reduce((sum, k) => sum + k.gelir, 0);
-                                const oran = ((item.gelir / toplamGelir) * 100).toFixed(1);
-                                return `
-                                    <tr>
-                                        <td><strong>${item.kategori}</strong></td>
-                                        <td>${item.adet}</td>
-                                        <td>${item.gelir.toFixed(2)} ₺</td>
-                                        <td>
-                                            <div style="display: flex; align-items: center; gap: 10px;">
-                                                <div style="flex: 1; background: #f0f0f0; height: 20px; border-radius: 10px; overflow: hidden;">
-                                                    <div style="width: ${oran}%; background: #667eea; height: 100%;"></div>
-                                                </div>
-                                                <span>${oran}%</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `;
-                            }).join('')}
         // Initialize
         checkAuth();
     </script>
