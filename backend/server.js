@@ -895,6 +895,40 @@ app.post('/api/admin/seed-data', async (req, res) => {
   }
 });
 
+// Email verified kolonu ekle (Migration)
+app.post('/api/admin/add-email-verified', async (req, res) => {
+  try {
+    console.log('🔄 Email verified kolonu ekleniyor...');
+    
+    // Kolonu ekle
+    await sql`
+      ALTER TABLE kullanicilar 
+      ADD COLUMN IF NOT EXISTS email_verified BOOLEAN DEFAULT false
+    `;
+    
+    // Mevcut kullanıcıları verified yap
+    await sql`
+      UPDATE kullanicilar 
+      SET email_verified = true 
+      WHERE email_verified IS NULL
+    `;
+    
+    console.log('✅ Email verified kolonu eklendi');
+    
+    res.json({
+      basarili: true,
+      mesaj: 'Email verified kolonu başarıyla eklendi'
+    });
+  } catch (error) {
+    console.error('❌ Migration hatası:', error);
+    res.status(500).json({
+      basarili: false,
+      mesaj: 'Migration başarısız',
+      hata: error.message
+    });
+  }
+});
+
 // ============================================
 // HEALTH CHECK & ROOT
 // ============================================
