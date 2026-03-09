@@ -317,7 +317,7 @@ async function seedData() {
 }
 
 // Uygulama başladığında veritabanını başlat
-initDatabase();
+// initDatabase(); // Devre dışı - Tablolar zaten mevcut
 
 // ============================================
 // API ENDPOINTS - Ürünler
