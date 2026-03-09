@@ -23,6 +23,10 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// OPTIONS preflight için
+app.options('*', cors());
+
 app.use(express.json());
 
 // No-cache middleware for API endpoints
