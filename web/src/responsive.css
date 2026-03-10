@@ -1,86 +1,99 @@
 /* Mobil Responsive Tasarım - Sadece 768px ve altı için */
 
 @media (max-width: 768px) {
-  /* Header */
+  /* Header - Sabit yükseklik koru */
   header {
-    padding: 10px 0 !important;
-    height: auto !important;
+    height: 120px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
 
+  /* Logo - Arka plan olarak küçült */
   header > div:first-child {
-    flex-direction: column !important;
-    padding: 10px !important;
-    gap: 10px !important;
+    background-size: 800px 200px !important;
+    background-position: center !important;
+    height: 100% !important;
+    position: relative !important;
   }
 
-  /* Logo */
-  header > div > div:nth-child(2) {
-    width: 100% !important;
-    height: 150px !important;
-    max-width: 600px !important;
-  }
-
-  /* Header spacer - gizle */
-  header > div > div:first-child {
-    display: none !important;
-  }
-
-  /* Header icons container */
-  header > div > div:last-child {
-    width: 100% !important;
-    justify-content: flex-start !important;
-    flex-wrap: nowrap !important;
+  /* Butonlar container - Üstte konumlandır */
+  header > div:first-child > div {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    left: 10px !important;
+    z-index: 2 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    flex-wrap: wrap !important;
     gap: 8px !important;
-    overflow-x: auto !important;
-    padding: 0 10px !important;
   }
 
-  /* Header icon buttons */
+  /* Header butonları - Küçült */
   header button {
-    padding: 6px 8px !important;
-    gap: 3px !important;
+    padding: 4px 6px !important;
+    gap: 2px !important;
     flex-shrink: 0 !important;
     white-space: nowrap !important;
     min-width: fit-content !important;
+    font-size: 10px !important;
+    border-radius: 6px !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(200, 90, 142, 0.3) !important;
   }
 
   header button span:first-child {
-    font-size: 20px !important;
+    font-size: 16px !important;
   }
 
   header button span:last-child {
-    font-size: 10px !important;
+    font-size: 9px !important;
     white-space: nowrap !important;
   }
 
-  /* Header badges */
+  /* Header badges - Küçült */
   header button > span:last-child {
-    top: 2px !important;
-    right: 4px !important;
-    min-width: 14px !important;
-    height: 14px !important;
-    font-size: 8px !important;
+    top: 1px !important;
+    right: 2px !important;
+    min-width: 12px !important;
+    height: 12px !important;
+    font-size: 7px !important;
+    padding: 0 3px !important;
   }
 
-  /* Dil seçici */
+  /* Dil seçici - Küçült */
   header select {
-    padding: 6px 8px !important;
-    font-size: 11px !important;
+    padding: 4px 6px !important;
+    font-size: 9px !important;
     flex-shrink: 0 !important;
+    border-radius: 4px !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(200, 90, 142, 0.3) !important;
   }
 
-  /* Search bar container */
-  header + div,
+  /* Search bar - Alt kısımda konumlandır */
   header > div:last-child {
-    padding: 10px !important;
+    position: absolute !important;
+    bottom: 10px !important;
+    left: 10px !important;
+    right: 10px !important;
+    z-index: 2 !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* Search input */
+  /* Search input - Küçült */
   header input[type="text"] {
-    padding: 10px 15px !important;
+    padding: 8px 12px !important;
     width: 100% !important;
-    max-width: 100% !important;
-    font-size: 13px !important;
+    max-width: 300px !important;
+    font-size: 12px !important;
+    border-radius: 20px !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(200, 90, 142, 0.3) !important;
   }
 
   /* Kategori menüsü */
