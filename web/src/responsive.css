@@ -1,17 +1,17 @@
 /* Mobil Responsive Tasarım - Sadece 768px ve altı için */
 
 @media (max-width: 768px) {
-  /* Header - Yüksekliği artır */
+  /* Header - Sabit yükseklik */
   header {
-    height: 140px !important;
+    height: 120px !important;
     padding: 0 !important;
     position: relative !important;
   }
 
-  /* Logo container - Arka plan */
+  /* Logo container - Sola yasla */
   header > div[style*="cursor: pointer"] {
-    background-size: 600px 150px !important;
-    background-position: center 20px !important;
+    background-size: 800px 150px !important;
+    background-position: left center !important;
     width: 100% !important;
     height: 100% !important;
     position: absolute !important;
@@ -20,16 +20,16 @@
     z-index: 1 !important;
   }
 
-  /* Butonlar container */
+  /* Butonlar container - Sağda */
   header > div[style*="maxWidth: 1400"] {
     position: relative !important;
     z-index: 3 !important;
     max-width: 100% !important;
     height: 100% !important;
-    padding: 5px 5px 0 5px !important;
+    padding: 0 !important;
     display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
   }
 
   /* Butonlar wrapper */
@@ -38,7 +38,9 @@
     flex-wrap: wrap !important;
     gap: 4px !important;
     justify-content: flex-end !important;
-    align-items: flex-start !important;
+    align-items: center !important;
+    padding: 5px !important;
+    max-width: 50% !important;
   }
 
   /* Header butonları */
@@ -86,27 +88,132 @@
     border: 1px solid rgba(200, 90, 142, 0.3) !important;
   }
 
-  /* Search bar container */
-  header > div[style*="maxWidth: 1400"]:last-child {
-    position: relative !important;
-    z-index: 3 !important;
-    max-width: 100% !important;
-    padding: 0 10px 5px 10px !important;
-    margin: 0 !important;
-    display: flex !important;
-    justify-content: center !important;
+  /* Search bar - Header'dan gizle */
+  header > div[style*="paddingTop: 10"] {
+    display: none !important;
   }
 
-  /* Search input */
-  header input[type="text"] {
-    padding: 6px 10px !important;
-    width: 100% !important;
-    max-width: 280px !important;
-    font-size: 11px !important;
-    border-radius: 15px !important;
-    background: rgba(255, 255, 255, 0.95) !important;
-    border: 1px solid rgba(200, 90, 142, 0.3) !important;
+  /* Kategori menüsü */
+  .App > div:nth-child(2) {
+    padding: 10px 0 !important;
   }
+
+  .App > div:nth-child(2) > div {
+    padding: 0 10px !important;
+  }
+
+  /* Mobile search - Göster */
+  .mobile-search {
+    display: block !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* Kategori butonları */
+  .App > div:nth-child(2) > div > div:last-child {
+    gap: 8px !important;
+    overflow-x: auto !important;
+    padding-bottom: 5px !important;
+  }
+
+  .App > div:nth-child(2) button {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Ana sayfa container */
+  .App > div:nth-child(3) {
+    padding: 10px !important;
+  }
+
+  /* Kampanya bannerları */
+  .App > div:nth-child(3) > div > div > div:first-child {
+    height: 250px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .App > div:nth-child(3) > div > div > div:first-child h1 {
+    font-size: 24px !important;
+    margin: 0 0 10px 0 !important;
+  }
+
+  .App > div:nth-child(3) > div > div > div:first-child p {
+    font-size: 14px !important;
+    margin: 0 0 20px 0 !important;
+  }
+
+  .App > div:nth-child(3) > div > div > div:first-child button {
+    padding: 12px 30px !important;
+    font-size: 13px !important;
+  }
+
+  /* Kategori grid */
+  .App > div:nth-child(3) > div > div:nth-child(2) {
+    padding: 30px 10px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(2) h2 {
+    font-size: 24px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(2) > div {
+    grid-template-columns: 1fr !important;
+    gap: 15px !important;
+    margin-bottom: 30px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(2) > div > div {
+    height: 200px !important;
+  }
+
+  /* Ürün listesi */
+  .App > div:nth-child(3) > div > div:nth-child(3) {
+    padding: 30px 0 !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(3) > div {
+    padding: 0 10px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(3) h2 {
+    font-size: 20px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(3) > div > div:last-child {
+    grid-template-columns: 1fr !important;
+    gap: 15px !important;
+  }
+
+  .App > div:nth-child(3) > div > div:nth-child(3) img {
+    height: 300px !important;
+  }
+
+  /* Form sayfaları */
+  .App > div:nth-child(3) > div[style*="maxWidth: 400"] {
+    margin: 20px auto !important;
+    padding: 20px !important;
+  }
+
+  /* Sepet */
+  .App > div:nth-child(3) > div > div[style*="display: flex"] {
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 15px !important;
+  }
+
+  .App > div:nth-child(3) > div > div img {
+    width: 100% !important;
+    height: 200px !important;
+  }
+}
+
+/* Desktop - Mobile search gizle */
+@media (min-width: 769px) {
+  .mobile-search {
+    display: none !important;
+  }
+}
 
   /* Kategori menüsü */
   .App > div:nth-child(2) {

@@ -685,6 +685,27 @@ function App() {
       {/* Kategori Menüsü */}
       <div style={{ background: 'white', borderBottom: '1px solid #eee', padding: '15px 0', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}>
+          {/* Search Bar - Mobilde görünür */}
+          <div className="mobile-search" style={{ marginBottom: 10 }}>
+            <input
+              type="text"
+              placeholder={t('search')}
+              value={aramaMetni}
+              onChange={(e) => setAramaMetni(e.target.value)}
+              style={{ 
+                padding: '8px 15px', 
+                borderRadius: 20, 
+                border: '1px solid #ddd', 
+                width: '100%',
+                fontSize: 13,
+                outline: 'none',
+                transition: 'border-color 0.2s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#C85A8E'}
+              onBlur={(e) => e.target.style.borderColor = '#ddd'}
+            />
+          </div>
+          
           <div style={{ display: 'flex', gap: 15, overflowX: 'auto', paddingBottom: 5 }}>
             {kategoriler.map(kategori => (
               <button
