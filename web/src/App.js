@@ -454,11 +454,6 @@ function App() {
               <>
                 <button 
                   onClick={() => { setSecilenSayfa('favorilerim'); favorileriYukle(kullanici.id); }} 
-                  style={{ 
-                    background: 'rgba(255, 255, 255, 0.9)', 
-                    border: '1px solid #ddd', 
-                <button 
-                  onClick={() => { setSecilenSayfa('favorilerim'); favorileriYukle(kullanici.id); }} 
                   title="Favorilerim"
                   style={{ 
                     background: 'rgba(255, 255, 255, 0.9)', 
@@ -546,7 +541,6 @@ function App() {
                 >
                   <span style={{ fontSize: 24 }}>🚪</span>
                   <span style={{ fontSize: 11, color: 'inherit' }}>Çıkış Yap</span>
-                </button>
                 </button>
               </>
             ) : (
