@@ -11,13 +11,14 @@
   /* Logo container - Sola yasla */
   header > div[style*="cursor: pointer"] {
     background-size: 1000px 100px !important;
-    background-position: left center !important;
+    background-position: 0 center !important;
     width: 100% !important;
     height: 100% !important;
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
     z-index: 1 !important;
+    background-repeat: no-repeat !important;
   }
 
   /* Butonlar container - Sağda */
