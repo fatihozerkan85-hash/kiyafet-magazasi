@@ -13,7 +13,7 @@
   header > div[style*="backgroundImage"],
   header div[style*="background"] {
     background-size: 1000px 100px !important;
-    background-position: 0% center !important;
+    background-position: -200px center !important;
     width: 100% !important;
     height: 100% !important;
     position: absolute !important;
