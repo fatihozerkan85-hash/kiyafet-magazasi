@@ -545,59 +545,51 @@ function App() {
                 <button 
                   onClick={() => setSecilenSayfa('giris')} 
                   style={{ 
-                    background: 'rgba(255, 255, 255, 0.9)', 
-                    border: '1px solid #ddd', 
-                    borderRadius: '8px',
+                    background: 'transparent', 
+                    border: 'none',
                     cursor: 'pointer', 
-                    padding: '8px 12px',
+                    padding: '8px',
                     display: 'flex',
-                    flexDirection: 'column',
                     alignItems: 'center',
-                    gap: 4,
+                    justifyContent: 'center',
                     transition: 'all 0.2s',
                     color: '#333'
                   }}
                   onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
-                  <span style={{ fontSize: 24 }}>👤</span>
-                  <span style={{ fontSize: 11, color: 'inherit' }}>Giriş Yap</span>
+                  <span style={{ fontSize: 28 }}>⭕</span>
                 </button>
                 <button 
                   onClick={() => setSecilenSayfa('kayit')} 
                   style={{ 
-                    background: 'rgba(255, 255, 255, 0.9)', 
-                    border: '1px solid #ddd', 
-                    borderRadius: '8px',
+                    background: 'transparent', 
+                    border: 'none',
                     cursor: 'pointer', 
-                    padding: '8px 12px',
+                    padding: '8px',
                     display: 'flex',
-                    flexDirection: 'column',
                     alignItems: 'center',
-                    gap: 4,
+                    justifyContent: 'center',
                     transition: 'all 0.2s',
                     color: '#333'
                   }}
                   onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
-                  <span style={{ fontSize: 24 }}>✎</span>
-                  <span style={{ fontSize: 11, color: 'inherit' }}>Kayıt Ol</span>
+                  <span style={{ fontSize: 28 }}>✏️</span>
                 </button>
               </>
             )}
             <button 
               onClick={() => setSecilenSayfa('sepet')} 
               style={{ 
-                background: 'rgba(255, 255, 255, 0.9)', 
-                border: '1px solid #ddd', 
-                borderRadius: '8px',
+                background: 'transparent', 
+                border: 'none',
                 cursor: 'pointer', 
-                padding: '8px 12px',
+                padding: '8px',
                 display: 'flex',
-                flexDirection: 'column',
                 alignItems: 'center',
-                gap: 4,
+                justifyContent: 'center',
                 position: 'relative',
                 transition: 'all 0.2s',
                 color: '#333'
@@ -605,13 +597,12 @@ function App() {
               onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
               onMouseOut={(e) => e.currentTarget.style.color = '#333'}
             >
-              <span style={{ fontSize: 24 }}>🛒</span>
-              <span style={{ fontSize: 11, color: 'inherit' }}>Sepetim</span>
+              <span style={{ fontSize: 28 }}>🛒</span>
               {sepet.length > 0 && (
                 <span style={{ 
                   position: 'absolute', 
-                  top: 4, 
-                  right: 8, 
+                  top: 0, 
+                  right: 0, 
                   background: '#D4AF37', 
                   color: 'white', 
                   borderRadius: '10px', 
