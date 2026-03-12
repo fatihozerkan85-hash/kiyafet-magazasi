@@ -449,22 +449,21 @@ function App() {
           alignItems: 'center', 
           padding: '0 20px' 
         }}>
-          <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             {kullanici ? (
               <>
                 <button 
                   onClick={() => { setSecilenSayfa('favorilerim'); favorileriYukle(kullanici.id); }} 
                   title="Favorilerim"
                   style={{ 
-                    background: 'rgba(255, 255, 255, 0.9)', 
-                    border: '1px solid #ddd', 
-                    borderRadius: '8px',
+                    background: 'transparent', 
+                    border: 'none',
                     cursor: 'pointer', 
-                    padding: '8px 12px',
+                    padding: '6px',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: 4,
+                    gap: 2,
                     position: 'relative',
                     transition: 'all 0.2s'
                   }}
@@ -475,24 +474,24 @@ function App() {
                     e.currentTarget.style.color = '#333';
                   }}
                 >
-                  <span style={{ fontSize: 24 }}>♡</span>
-                  <span style={{ fontSize: 11, color: 'inherit' }}>Favorilerim</span>
+                  <span style={{ fontSize: 20 }}>♡</span>
+                  <span style={{ fontSize: 9, color: 'inherit' }}>Favorilerim</span>
                   {favoriler.length > 0 && (
                     <span style={{ 
                       position: 'absolute', 
-                      top: 4, 
-                      right: 8, 
+                      top: 0, 
+                      right: 0, 
                       background: '#D4AF37', 
                       color: 'white', 
                       borderRadius: '10px', 
-                      minWidth: 18,
-                      height: 18, 
-                      fontSize: 10, 
+                      minWidth: 16,
+                      height: 16, 
+                      fontSize: 9, 
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'center',
                       fontWeight: 'bold',
-                      padding: '0 5px'
+                      padding: '0 4px'
                     }}>
                       {favoriler.length}
                     </span>
@@ -502,45 +501,43 @@ function App() {
                   onClick={() => { setSecilenSayfa('siparislerim'); siparisleriYukle(); }} 
                   title="Siparişlerim"
                   style={{ 
-                    background: 'rgba(255, 255, 255, 0.9)', 
-                    border: '1px solid #ddd', 
-                    borderRadius: '8px',
+                    background: 'transparent', 
+                    border: 'none',
                     cursor: 'pointer', 
-                    padding: '8px 12px',
+                    padding: '6px',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: 4,
+                    gap: 2,
                     transition: 'all 0.2s',
                     color: '#333'
                   }}
                   onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
-                  <span style={{ fontSize: 24 }}>📦</span>
-                  <span style={{ fontSize: 11, color: 'inherit' }}>Siparişlerim</span>
+                  <span style={{ fontSize: 20 }}>📦</span>
+                  <span style={{ fontSize: 9, color: 'inherit' }}>Siparişlerim</span>
                 </button>
                 <button 
                   onClick={cikisYap} 
                   title="Çıkış Yap"
                   style={{ 
-                    background: 'rgba(255, 255, 255, 0.9)', 
-                    border: '1px solid #ddd', 
-                    borderRadius: '8px',
+                    background: 'transparent', 
+                    border: 'none',
                     cursor: 'pointer', 
-                    padding: '8px 12px',
+                    padding: '6px',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: 4,
+                    gap: 2,
                     transition: 'all 0.2s',
                     color: '#333'
                   }}
                   onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
-                  <span style={{ fontSize: 24 }}>🚪</span>
-                  <span style={{ fontSize: 11, color: 'inherit' }}>Çıkış Yap</span>
+                  <span style={{ fontSize: 20 }}>🚪</span>
+                  <span style={{ fontSize: 9, color: 'inherit' }}>Çıkış Yap</span>
                 </button>
               </>
             ) : (
