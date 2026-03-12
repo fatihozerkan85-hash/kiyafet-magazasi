@@ -474,7 +474,7 @@ function App() {
                     e.currentTarget.style.color = '#333';
                   }}
                 >
-                  <span style={{ fontSize: 20 }}>♡</span>
+                  <span style={{ fontSize: 22 }}>♡</span>
                   <span style={{ fontSize: 9, color: 'inherit' }}>Favorilerim</span>
                   {favoriler.length > 0 && (
                     <span style={{ 
@@ -498,6 +498,48 @@ function App() {
                   )}
                 </button>
                 <button 
+                  onClick={() => setSecilenSayfa('sepet')} 
+                  title="Sepetim"
+                  style={{ 
+                    background: 'transparent', 
+                    border: 'none',
+                    cursor: 'pointer', 
+                    padding: '6px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 2,
+                    position: 'relative',
+                    transition: 'all 0.2s',
+                    color: '#333'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
+                  onMouseOut={(e) => e.currentTarget.style.color = '#333'}
+                >
+                  <span style={{ fontSize: 22 }}>🛒</span>
+                  <span style={{ fontSize: 9, color: 'inherit' }}>Sepetim</span>
+                  {sepet.length > 0 && (
+                    <span style={{ 
+                      position: 'absolute', 
+                      top: 0, 
+                      right: 0, 
+                      background: '#D4AF37', 
+                      color: 'white', 
+                      borderRadius: '10px', 
+                      minWidth: 16,
+                      height: 16, 
+                      fontSize: 9, 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      fontWeight: 'bold',
+                      padding: '0 4px'
+                    }}>
+                      {sepet.length}
+                    </span>
+                  )}
+                </button>
+                <button 
                   onClick={() => { setSecilenSayfa('siparislerim'); siparisleriYukle(); }} 
                   title="Siparişlerim"
                   style={{ 
@@ -515,7 +557,7 @@ function App() {
                   onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
-                  <span style={{ fontSize: 20 }}>📦</span>
+                  <span style={{ fontSize: 22 }}>📦</span>
                   <span style={{ fontSize: 9, color: 'inherit' }}>Siparişlerim</span>
                 </button>
                 <button 
@@ -536,7 +578,7 @@ function App() {
                   onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
                   onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
-                  <span style={{ fontSize: 20 }}>🚪</span>
+                  <span style={{ fontSize: 22 }}>🚪</span>
                   <span style={{ fontSize: 9, color: 'inherit' }}>Çıkış Yap</span>
                 </button>
               </>
