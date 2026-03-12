@@ -13,7 +13,7 @@
   header > div[style*="cursor: pointer"],
   header > div[style*="backgroundImage"],
   header div[style*="background"] {
-    background-size: 850px 350px !important;
+    background-size: 800px 375px !important;
     background-position: -200px center !important;
     width: 100% !important;
     height: 100% !important;
