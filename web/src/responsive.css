@@ -42,15 +42,16 @@
   header > div[style*="maxWidth: 1400"] > div {
     display: flex !important;
     flex-wrap: nowrap !important;
-    gap: 8px !important;
+    gap: 10px !important;
     justify-content: flex-end !important;
     align-items: center !important;
     padding: 5px !important;
     max-width: 50% !important;
   }
 
-  /* Header butonları - Çerçevesiz */
-  header button {
+  /* Header butonları - Çerçevesiz, SVG ikonlar için */
+  header button,
+  header button svg {
     padding: 6px !important;
     gap: 0 !important;
     flex-shrink: 0 !important;
@@ -63,6 +64,13 @@
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
+  }
+
+  /* SVG ikonlar */
+  header button svg {
+    width: 24px !important;
+    height: 24px !important;
+    padding: 0 !important;
   }
 
   header button span:first-child {
