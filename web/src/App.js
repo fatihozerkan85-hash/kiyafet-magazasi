@@ -642,55 +642,6 @@ function App() {
                 </button>
               </>
             )}
-            <button 
-              onClick={() => setSecilenSayfa('sepet')} 
-              title="Sepetim"
-              style={{ 
-                background: 'transparent', 
-                border: 'none',
-                cursor: 'pointer', 
-                padding: '10px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-                transition: 'all 0.2s'
-              }}
-              onMouseOver={(e) => {
-                const svg = e.currentTarget.querySelector('svg');
-                if (svg) svg.style.stroke = '#D4AF37';
-              }}
-              onMouseOut={(e) => {
-                const svg = e.currentTarget.querySelector('svg');
-                if (svg) svg.style.stroke = '#333';
-              }}
-            >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-              </svg>
-              {sepet.length > 0 && (
-                <span style={{ 
-                  position: 'absolute', 
-                  top: 0, 
-                  right: 0, 
-                  background: '#D4AF37', 
-                  color: 'white', 
-                  borderRadius: '10px', 
-                  minWidth: 18,
-                  height: 18, 
-                  fontSize: 10, 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  fontWeight: 'bold',
-                  padding: '0 5px'
-                }}>
-                  {sepet.length}
-                </span>
-              )}
-            </button>
             
             {/* Dil Seçici */}
             <select 
