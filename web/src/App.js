@@ -425,7 +425,7 @@ function App() {
           style={{ 
             cursor: 'pointer',
             backgroundImage: `url(/as.png?v=${new Date().getTime()})`,
-            backgroundSize: '1185px 110px',
+            backgroundSize: '1200px 250px',
             backgroundPosition: 'center calc(50% + 2px)',
             backgroundRepeat: 'no-repeat',
             width: '100%',
