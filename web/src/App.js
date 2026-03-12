@@ -412,7 +412,7 @@ function App() {
   return (
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ 
-        background: '#F5E6D3', 
+        background: 'white', 
         padding: '0', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         position: 'relative',
@@ -425,7 +425,7 @@ function App() {
           style={{ 
             cursor: 'pointer',
             backgroundImage: `url(/as.png?v=${new Date().getTime()})`,
-            backgroundSize: '1200px 250px',
+            backgroundSize: '1000px 250px',
             backgroundPosition: 'center calc(50% + 2px)',
             backgroundRepeat: 'no-repeat',
             width: '100%',

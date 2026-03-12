@@ -1,12 +1,12 @@
 /* Mobil Responsive Tasarım - Sadece 768px ve altı için */
 
 @media (max-width: 768px) {
-  /* Header - Sabit yükseklik ve background */
+  /* Header - Sabit yükseklik */
   header {
     height: 120px !important;
     padding: 0 !important;
     position: relative !important;
-    background: #F5E6D3 !important;
+    background: white !important;
   }
 
   /* Logo container - Sola yasla - ÇOK ÖNEMLİ */
