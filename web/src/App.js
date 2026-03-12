@@ -591,25 +591,17 @@ function App() {
                     background: 'transparent', 
                     border: 'none',
                     cursor: 'pointer', 
-                    padding: '10px',
+                    padding: '6px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
+                    fontSize: 22
                   }}
-                  onMouseOver={(e) => {
-                    const svg = e.currentTarget.querySelector('svg');
-                    if (svg) svg.style.stroke = '#D4AF37';
-                  }}
-                  onMouseOut={(e) => {
-                    const svg = e.currentTarget.querySelector('svg');
-                    if (svg) svg.style.stroke = '#333';
-                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
+                  onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
+                  🔑
                 </button>
                 <button 
                   onClick={() => setSecilenSayfa('kayit')} 
@@ -618,27 +610,57 @@ function App() {
                     background: 'transparent', 
                     border: 'none',
                     cursor: 'pointer', 
-                    padding: '10px',
+                    padding: '6px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
+                    fontSize: 22
                   }}
-                  onMouseOver={(e) => {
-                    const svg = e.currentTarget.querySelector('svg');
-                    if (svg) svg.style.stroke = '#D4AF37';
-                  }}
-                  onMouseOut={(e) => {
-                    const svg = e.currentTarget.querySelector('svg');
-                    if (svg) svg.style.stroke = '#333';
-                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
+                  onMouseOut={(e) => e.currentTarget.style.color = '#333'}
                 >
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="8.5" cy="7" r="4"></circle>
-                    <line x1="20" y1="8" x2="20" y2="14"></line>
-                    <line x1="23" y1="11" x2="17" y2="11"></line>
-                  </svg>
+                  📝
+                </button>
+                <button 
+                  onClick={() => setSecilenSayfa('sepet')} 
+                  title="Sepetim"
+                  style={{ 
+                    background: 'transparent', 
+                    border: 'none',
+                    cursor: 'pointer', 
+                    padding: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative',
+                    transition: 'all 0.2s',
+                    fontSize: 22
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#D4AF37'}
+                  onMouseOut={(e) => e.currentTarget.style.color = '#333'}
+                >
+                  🛒
+                  {sepet.length > 0 && (
+                    <span style={{ 
+                      position: 'absolute', 
+                      top: 0, 
+                      right: 0, 
+                      background: '#D4AF37', 
+                      color: 'white', 
+                      borderRadius: '10px', 
+                      minWidth: 16,
+                      height: 16, 
+                      fontSize: 9, 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      fontWeight: 'bold',
+                      padding: '0 4px'
+                    }}>
+                      {sepet.length}
+                    </span>
+                  )}
                 </button>
               </>
             )}
