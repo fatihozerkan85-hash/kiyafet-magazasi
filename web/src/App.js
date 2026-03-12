@@ -412,7 +412,7 @@ function App() {
   return (
     <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
       <header style={{ 
-        background: 'white', 
+        background: '#F5E6D3', 
         padding: '0', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         position: 'relative',
@@ -424,7 +424,7 @@ function App() {
           onClick={() => setSecilenSayfa('ana')}
           style={{ 
             cursor: 'pointer',
-            backgroundImage: `url(/as.png?v=${Date.now()})`,
+            backgroundImage: `url(/as.png?v=${new Date().getTime()})`,
             backgroundSize: '1185px 110px',
             backgroundPosition: 'center calc(50% + 2px)',
             backgroundRepeat: 'no-repeat',
