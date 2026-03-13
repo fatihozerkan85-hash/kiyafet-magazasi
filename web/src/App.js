@@ -776,11 +776,10 @@ function App() {
         {/* Search Bar - Header İçinde, Sağda Ortalanmış */}
         <div style={{ 
           position: 'absolute',
-          right: '20px',
+          right: '95px',
           top: '50%',
           transform: 'translateY(-50%)',
-          zIndex: 4,
-          marginLeft: '-75px'
+          zIndex: 4
         }}>
           <input
             type="text"
