@@ -29,7 +29,7 @@
   /* Logo 2 container - Üst katman, ortalanmış ve taşmayacak */
   header > div[style*="cursor: pointer"]:nth-child(2),
   header > div[style*="backgroundImage"]:nth-child(2) {
-    background-size: contain !important;
+    background-size: 500px 175px !important;
     background-position: center center !important;
     width: 100% !important;
     height: 100% !important;
@@ -86,8 +86,8 @@
 
   /* SVG ikonlar */
   header button svg {
-    width: 24px !important;
-    height: 24px !important;
+    width: 20px !important;
+    height: 20px !important;
     padding: 0 !important;
   }
 
