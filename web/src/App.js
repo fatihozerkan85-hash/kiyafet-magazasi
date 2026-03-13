@@ -779,7 +779,8 @@ function App() {
           right: '20px',
           top: '50%',
           transform: 'translateY(-50%)',
-          zIndex: 4
+          zIndex: 4,
+          marginLeft: '-75px'
         }}>
           <input
             type="text"
