@@ -776,7 +776,7 @@ function App() {
 
       {/* Search Bar - Header Dışında */}
       <div style={{ background: 'white', paddingBottom: 15, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'center', paddingTop: 10 }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'flex-end', paddingTop: 10, paddingRight: 20 }}>
           <input
             type="text"
             placeholder={t('search')}

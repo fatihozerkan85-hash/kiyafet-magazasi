@@ -125,13 +125,19 @@
     display: none !important;
   }
 
-  /* Kategori menüsü */
+  /* Search bar container - Sağa hizala */
   .App > div:nth-child(2) {
     padding: 10px 0 !important;
   }
 
   .App > div:nth-child(2) > div {
     padding: 0 10px !important;
+    justify-content: flex-end !important;
+    padding-right: 20px !important;
+  }
+
+  .App > div:nth-child(2) > div input {
+    max-width: 100% !important;
   }
 
   /* Mobile search - Göster */
