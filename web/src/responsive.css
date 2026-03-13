@@ -10,9 +10,8 @@
   }
 
   /* Logo container - Header'ı tamamen kapla */
-  header > div[style*="cursor: pointer"],
-  header > div[style*="backgroundImage"],
-  header div[style*="background"] {
+  header > div[style*="cursor: pointer"]:nth-child(1),
+  header > div[style*="backgroundImage"]:nth-child(1) {
     background-size: 2500px 250px !important;
     background-position: center center !important;
     width: 100% !important;
@@ -22,6 +21,23 @@
     left: 0 !important;
     right: 0 !important;
     z-index: 1 !important;
+    background-repeat: no-repeat !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Logo 2 container - Üst katman */
+  header > div[style*="cursor: pointer"]:nth-child(2),
+  header > div[style*="backgroundImage"]:nth-child(2) {
+    background-size: 500px 300px !important;
+    background-position: center center !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 2 !important;
     background-repeat: no-repeat !important;
     margin: 0 !important;
     padding: 0 !important;

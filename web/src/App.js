@@ -436,11 +436,29 @@ function App() {
             zIndex: 1
           }}
         ></div>
+
+        {/* Logo 2 - Üst Katman (Şeffaf) */}
+        <div 
+          onClick={() => setSecilenSayfa('ana')}
+          style={{ 
+            cursor: 'pointer',
+            backgroundImage: `url(/as%202.png)`,
+            backgroundSize: '500px 300px',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 2
+          }}
+        ></div>
         
         {/* Butonlar - Üstte */}
         <div style={{ 
           position: 'relative', 
-          zIndex: 2, 
+          zIndex: 3, 
           maxWidth: 1400, 
           margin: '0 auto', 
           height: '100%', 
