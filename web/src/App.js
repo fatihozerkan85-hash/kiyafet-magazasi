@@ -495,10 +495,10 @@ function App() {
                     if (svg) svg.style.stroke = '#333';
                   }}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                   </svg>
-                  <span style={{ fontSize: 9, color: '#333' }}>Favorilerim</span>
+                  <span style={{ fontSize: 9, color: 'white' }}>Favorilerim</span>
                   {favoriler.length > 0 && (
                     <span style={{ 
                       position: 'absolute', 
@@ -544,12 +544,12 @@ function App() {
                     if (svg) svg.style.stroke = '#333';
                   }}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
                     <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6z"/>
                     <line x1="3" y1="6" x2="21" y2="6"/>
                     <path d="M16 10c0 2.2-1.8 4-4 4s-4-1.8-4-4"/>
                   </svg>
-                  <span style={{ fontSize: 9, color: '#333' }}>Sepetim</span>
+                  <span style={{ fontSize: 9, color: 'white' }}>Sepetim</span>
                   {sepet.length > 0 && (
                     <span style={{ 
                       position: 'absolute', 
@@ -594,12 +594,12 @@ function App() {
                     if (svg) svg.style.stroke = '#333';
                   }}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
                     <path d="M21 8v8c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V8"/>
                     <path d="M23 3H1v5h22V3z"/>
                     <path d="M12 8v13"/>
                   </svg>
-                  <span style={{ fontSize: 9, color: '#333' }}>Siparişlerim</span>
+                  <span style={{ fontSize: 9, color: 'white' }}>Siparişlerim</span>
                 </button>
                 <button 
                   onClick={cikisYap} 
@@ -624,12 +624,12 @@ function App() {
                     if (svg) svg.style.stroke = '#333';
                   }}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
                     <path d="M9 21H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h4"/>
                     <polyline points="16 17 21 12 16 7"/>
                     <line x1="21" y1="12" x2="9" y2="12"/>
                   </svg>
-                  <span style={{ fontSize: 9, color: '#333' }}>Çıkış Yap</span>
+                  <span style={{ fontSize: 9, color: 'white' }}>Çıkış Yap</span>
                 </button>
               </>
             ) : (
@@ -656,7 +656,7 @@ function App() {
                     if (svg) svg.style.stroke = '#333';
                   }}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
                     <circle cx="12" cy="8" r="5"/>
                     <path d="M20 21a8 8 0 1 0-16 0"/>
                   </svg>
@@ -683,7 +683,7 @@ function App() {
                     if (svg) svg.style.stroke = '#333';
                   }}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
                     <circle cx="12" cy="8" r="5"/>
                     <path d="M20 21a8 8 0 1 0-16 0"/>
                     <line x1="12" y1="13" x2="12" y2="19"/>
@@ -713,7 +713,7 @@ function App() {
                     if (svg) svg.style.stroke = '#333';
                   }}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
                     <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6z"/>
                     <line x1="3" y1="6" x2="21" y2="6"/>
                     <path d="M16 10c0 2.2-1.8 4-4 4s-4-1.8-4-4"/>
@@ -776,7 +776,7 @@ function App() {
         {/* Search Bar - Header İçinde, Sağda Ortalanmış */}
         <div style={{ 
           position: 'absolute',
-          right: '395px',
+          right: '455px',
           top: '50%',
           transform: 'translateY(-50%)',
           zIndex: 4
@@ -821,7 +821,7 @@ function App() {
                 outline: 'none',
                 transition: 'border-color 0.2s'
               }}
-              onFocus={(e) => e.target.style.borderColor = '#C85A8E'}
+              onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
               onBlur={(e) => e.target.style.borderColor = '#ddd'}
             />
           </div>
@@ -833,7 +833,7 @@ function App() {
                 onClick={() => { setSecilenKategori(kategori.ad); setSecilenSayfa('ana'); }}
                 style={{
                   padding: '10px 20px',
-                  background: secilenKategori === kategori.ad ? '#C85A8E' : 'transparent',
+                  background: secilenKategori === kategori.ad ? '#D4AF37' : 'transparent',
                   color: secilenKategori === kategori.ad ? 'white' : '#333',
                   border: 'none',
                   borderRadius: 4,
@@ -845,7 +845,7 @@ function App() {
                 }}
                 onMouseOver={(e) => {
                   if (secilenKategori !== kategori.ad) {
-                    e.target.style.color = '#C85A8E';
+                    e.target.style.color = '#D4AF37';
                   }
                 }}
                 onMouseOut={(e) => {
@@ -880,7 +880,7 @@ function App() {
               onKeyDown={(e) => e.key === 'Enter' && girisYap()}
               style={{ width: '100%', padding: 12, marginBottom: 20, border: '1px solid #ddd', borderRadius: 8 }}
             />
-            <button onClick={girisYap} style={{ width: '100%', padding: 15, background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+            <button onClick={girisYap} style={{ width: '100%', padding: 15, background: '#D4AF37', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
               Giriş Yap
             </button>
             <div style={{ textAlign: 'center', marginTop: 15, fontSize: 14 }}>
@@ -923,7 +923,7 @@ function App() {
                   right: 5, 
                   top: 5, 
                   padding: '8px 15px', 
-                  background: emailDogrulamaGonderildi ? '#28a745' : '#C85A8E', 
+                  background: emailDogrulamaGonderildi ? '#28a745' : '#D4AF37', 
                   color: 'white', 
                   border: 'none', 
                   borderRadius: 6, 
@@ -942,7 +942,7 @@ function App() {
                 value={kayitFormu.dogrulamaKodu}
                 onChange={(e) => setKayitFormu({...kayitFormu, dogrulamaKodu: e.target.value})}
                 maxLength={6}
-                style={{ width: '100%', padding: 12, marginBottom: 15, border: '2px solid #C85A8E', borderRadius: 8, fontSize: 16, letterSpacing: 4, textAlign: 'center' }}
+                style={{ width: '100%', padding: 12, marginBottom: 15, border: '2px solid #D4AF37', borderRadius: 8, fontSize: 16, letterSpacing: 4, textAlign: 'center' }}
               />
             )}
             <input
@@ -959,7 +959,7 @@ function App() {
               onChange={(e) => setKayitFormu({...kayitFormu, sifre: e.target.value})}
               style={{ width: '100%', padding: 12, marginBottom: 20, border: '1px solid #ddd', borderRadius: 8 }}
             />
-            <button onClick={kayitOl} style={{ width: '100%', padding: 15, background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+            <button onClick={kayitOl} style={{ width: '100%', padding: 15, background: '#D4AF37', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
               Kayıt Ol
             </button>
             <div style={{ textAlign: 'center', marginTop: 15, fontSize: 14 }}>
@@ -1241,7 +1241,7 @@ function App() {
         {secilenSayfa === 'sepet' && (
           <div style={{ background: 'white', padding: 30, borderRadius: 12 }}>
             <h2 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6z"/>
                 <line x1="3" y1="6" x2="21" y2="6"/>
                 <path d="M16 10c0 2.2-1.8 4-4 4s-4-1.8-4-4"/>
@@ -1251,7 +1251,7 @@ function App() {
             {sepet.length === 0 ? (
               <div style={{ textAlign: 'center', padding: 50 }}>
                 <p style={{ fontSize: 18, color: '#666' }}>Sepetiniz boş</p>
-                <button onClick={() => setSecilenSayfa('ana')} style={{ padding: '12px 30px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginTop: 20 }}>
+                <button onClick={() => setSecilenSayfa('ana')} style={{ padding: '12px 30px', background: '#D4AF37', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginTop: 20 }}>
                   Alışverişe Başla
                 </button>
               </div>
@@ -1284,7 +1284,7 @@ function App() {
                       onChange={(e) => setKuponKodu(e.target.value)}
                       style={{ flex: 1, padding: 12, border: '1px solid #ddd', borderRadius: 8 }}
                     />
-                    <button onClick={kuponUygula} style={{ padding: '12px 30px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+                    <button onClick={kuponUygula} style={{ padding: '12px 30px', background: '#D4AF37', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
                       Uygula
                     </button>
                   </div>
@@ -1296,7 +1296,7 @@ function App() {
                   <div style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'right', marginBottom: 20 }}>
                     Toplam: <span style={{ color: '#000000' }}>{indirimliToplam.toFixed(2)} ₺</span>
                   </div>
-                  <button onClick={() => setSecilenSayfa('odeme')} style={{ width: '100%', padding: 15, background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+                  <button onClick={() => setSecilenSayfa('odeme')} style={{ width: '100%', padding: 15, background: '#D4AF37', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
                     Ödemeye Geç
                   </button>
                 </div>
@@ -1326,7 +1326,7 @@ function App() {
                       <div style={{ padding: 15 }}>
                         <h3>{urun.ad}</h3>
                         <p style={{ fontSize: 20, fontWeight: 'bold', color: '#000000' }}>{urun.fiyat} ₺</p>
-                        <button onClick={() => sepeteEkle(urun)} style={{ width: '100%', padding: 12, background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginBottom: 10 }}>
+                        <button onClick={() => sepeteEkle(urun)} style={{ width: '100%', padding: 12, background: '#D4AF37', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', marginBottom: 10 }}>
                           Sepete Ekle
                         </button>
                         <button onClick={() => favoriToggle(urun.id)} style={{ width: '100%', padding: 12, background: '#e74c3c', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
@@ -1344,7 +1344,7 @@ function App() {
         {secilenSayfa === 'siparislerim' && (
           <div style={{ background: 'white', padding: 30, borderRadius: 12 }}>
             <h2 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 8v8c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V8"/>
                 <path d="M23 3H1v5h22V3z"/>
                 <path d="M12 8v13"/>
@@ -1358,7 +1358,7 @@ function App() {
                 <div key={siparis.id} style={{ padding: 20, borderBottom: '1px solid #eee', marginBottom: 20 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                     <strong>Sipariş No: {siparis.id}</strong>
-                    <span style={{ padding: '5px 15px', background: '#C85A8E', color: 'white', borderRadius: 5, fontSize: 14 }}>
+                    <span style={{ padding: '5px 15px', background: '#D4AF37', color: 'white', borderRadius: 5, fontSize: 14 }}>
                       {siparis.durum}
                     </span>
                   </div>
@@ -1368,7 +1368,7 @@ function App() {
                   </p>
                   {siparis.kargoTakipNo && (
                     <div style={{ marginTop: 10, padding: 15, background: '#f8f9fa', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M21 8v8c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V8"/>
                         <path d="M23 3H1v5h22V3z"/>
                         <path d="M12 8v13"/>
@@ -1376,7 +1376,7 @@ function App() {
                       <strong>Kargo Takip No:</strong> {siparis.kargoTakipNo}
                       <button 
                         onClick={() => { setKargoTakipNo(siparis.kargoTakipNo); kargoTakipSorgula(); }}
-                        style={{ marginLeft: 'auto', padding: '8px 15px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', gap: 5 }}
+                        style={{ marginLeft: 'auto', padding: '8px 15px', background: '#D4AF37', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', gap: 5 }}
                       >
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <circle cx="11" cy="11" r="8"/>
@@ -1391,7 +1391,7 @@ function App() {
             )}
             <div style={{ marginTop: 30, padding: 20, background: '#f8f9fa', borderRadius: 12 }}>
               <h3 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"/>
                   <path d="m21 21-4.35-4.35"/>
                 </svg>
@@ -1405,7 +1405,7 @@ function App() {
                   onChange={(e) => setKargoTakipNo(e.target.value)}
                   style={{ flex: 1, padding: 12, border: '1px solid #ddd', borderRadius: 8 }}
                 />
-                <button onClick={kargoTakipSorgula} style={{ padding: '12px 30px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+                <button onClick={kargoTakipSorgula} style={{ padding: '12px 30px', background: '#D4AF37', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
                   Sorgula
                 </button>
               </div>
@@ -1532,7 +1532,7 @@ function App() {
                     onChange={(e) => setYeniYorum({...yeniYorum, yorum: e.target.value})}
                     style={{ width: '100%', padding: 15, border: '1px solid #ddd', borderRadius: 8, minHeight: 100, fontSize: 14, fontFamily: 'inherit' }}
                   />
-                  <button onClick={yorumEkle} style={{ marginTop: 15, padding: '12px 30px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+                  <button onClick={yorumEkle} style={{ marginTop: 15, padding: '12px 30px', background: '#D4AF37', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
                     📝 Yorum Gönder
                   </button>
                 </div>
@@ -1565,7 +1565,7 @@ function App() {
         {secilenSayfa === 'odeme' && (
           <div style={{ background: 'white', padding: 30, borderRadius: 12 }}>
             <h2 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
                 <line x1="1" y1="10" x2="23" y2="10"/>
               </svg>
@@ -1620,7 +1620,7 @@ function App() {
               </div>
             </div>
 
-            <button onClick={odemeYap} style={{ width: '100%', padding: 15, background: '#C85A8E', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
+            <button onClick={odemeYap} style={{ width: '100%', padding: 15, background: '#D4AF37', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16, fontWeight: 600 }}>
               🎉 Ödemeyi Tamamla
             </button>
           </div>
