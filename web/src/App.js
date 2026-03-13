@@ -443,13 +443,13 @@ function App() {
           style={{ 
             cursor: 'pointer',
             backgroundImage: `url(/as%202.png)`,
-            backgroundSize: '500px 300px',
+            backgroundSize: '1000px 250px',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
             width: '100%',
             height: '100%',
             position: 'absolute',
-            top: 0,
+            top: '-20px',
             left: 0,
             zIndex: 2
           }}
@@ -773,7 +773,7 @@ function App() {
         </div>
 
         {/* Alt Satır: Search Bar - Ortada */}
-        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'center', paddingTop: 10 }}>
+        <div style={{ position: 'relative', zIndex: 3, maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'center', paddingTop: 10 }}>
           <input
             type="text"
             placeholder={t('search')}
