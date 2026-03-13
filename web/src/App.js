@@ -776,7 +776,7 @@ function App() {
         {/* Search Bar - Header İçinde, Sağda Ortalanmış */}
         <div style={{ 
           position: 'absolute',
-          right: '95px',
+          right: '245px',
           top: '50%',
           transform: 'translateY(-50%)',
           zIndex: 4
