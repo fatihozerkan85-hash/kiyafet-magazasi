@@ -32,7 +32,7 @@ export default function AnaSayfa({ navigation, sepetAdet }) {
           style={styles.sepetBtn}
           onPress={() => navigation.navigate('Sepet')}
         >
-          <Text style={styles.sepetIcon}>🛒</Text>
+          <Text style={styles.sepetIcon}>🛍️</Text>
           {sepetAdet > 0 && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{sepetAdet}</Text>

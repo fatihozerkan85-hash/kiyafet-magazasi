@@ -424,15 +424,15 @@ function App() {
           onClick={() => setSecilenSayfa('ana')}
           style={{ 
             cursor: 'pointer',
-            backgroundImage: `url(/as.png?v=2)`,
-            backgroundSize: '800px 415px',
-            backgroundPosition: '-50px center',
+            backgroundImage: `url(/as.svg)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            width: '100%',
-            height: '100%',
+            width: 'calc(100% + 200px)',
+            height: 'calc(100% + 200px)',
             position: 'absolute',
-            top: 0,
-            left: 0,
+            top: '-100px',
+            left: '-100px',
             zIndex: 1
           }}
         ></div>
@@ -477,7 +477,7 @@ function App() {
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                   </svg>
                   <span style={{ fontSize: 9, color: '#333' }}>Favorilerim</span>
                   {favoriler.length > 0 && (
@@ -526,9 +526,9 @@ function App() {
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10c0 2.2-1.8 4-4 4s-4-1.8-4-4"/>
                   </svg>
                   <span style={{ fontSize: 9, color: '#333' }}>Sepetim</span>
                   {sepet.length > 0 && (
@@ -576,10 +576,9 @@ function App() {
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
-                    <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    <path d="M21 8v8c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V8"/>
+                    <path d="M23 3H1v5h22V3z"/>
+                    <path d="M12 8v13"/>
                   </svg>
                   <span style={{ fontSize: 9, color: '#333' }}>Siparişlerim</span>
                 </button>
@@ -607,9 +606,9 @@ function App() {
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                    <path d="M9 21H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
                   </svg>
                   <span style={{ fontSize: 9, color: '#333' }}>Çıkış Yap</span>
                 </button>
@@ -639,8 +638,8 @@ function App() {
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
-                    <circle cx="12" cy="8" r="4"></circle>
-                    <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path>
+                    <circle cx="12" cy="8" r="5"/>
+                    <path d="M20 21a8 8 0 1 0-16 0"/>
                   </svg>
                 </button>
                 <button 
@@ -666,10 +665,10 @@ function App() {
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="8.5" cy="7" r="4"></circle>
-                    <line x1="20" y1="8" x2="20" y2="14"></line>
-                    <line x1="23" y1="11" x2="17" y2="11"></line>
+                    <circle cx="12" cy="8" r="5"/>
+                    <path d="M20 21a8 8 0 1 0-16 0"/>
+                    <line x1="12" y1="13" x2="12" y2="19"/>
+                    <line x1="9" y1="16" x2="15" y2="16"/>
                   </svg>
                 </button>
                 <button 
@@ -696,9 +695,9 @@ function App() {
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10c0 2.2-1.8 4-4 4s-4-1.8-4-4"/>
                   </svg>
                   {sepet.length > 0 && (
                     <span style={{ 
@@ -1138,9 +1137,11 @@ function App() {
                   <img src={urun.resimler[0]} alt={urun.ad} style={{ width: '100%', height: 400, objectFit: 'cover' }} />
                   <button 
                     onClick={(e) => { e.stopPropagation(); favoriToggle(urun.id); }} 
-                    style={{ position: 'absolute', top: 15, right: 15, background: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, fontSize: 22, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    style={{ position: 'absolute', top: 15, right: 15, background: 'white', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   >
-                    {favoriler.some(f => f.urunId === urun.id) ? '❤️' : '🤍'}
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill={favoriler.some(f => f.urunId === urun.id) ? '#e74c3c' : 'none'} stroke={favoriler.some(f => f.urunId === urun.id) ? '#e74c3c' : '#333'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
                   </button>
                   {!urun.stokDurumu && (
                     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1213,7 +1214,14 @@ function App() {
 
         {secilenSayfa === 'sepet' && (
           <div style={{ background: 'white', padding: 30, borderRadius: 12 }}>
-            <h2>🛒 Sepetim</h2>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10c0 2.2-1.8 4-4 4s-4-1.8-4-4"/>
+              </svg>
+              Sepetim
+            </h2>
             {sepet.length === 0 ? (
               <div style={{ textAlign: 'center', padding: 50 }}>
                 <p style={{ fontSize: 18, color: '#666' }}>Sepetiniz boş</p>
@@ -1230,8 +1238,14 @@ function App() {
                       <h3 style={{ margin: '0 0 10px 0' }}>{item.ad}</h3>
                       <p style={{ margin: 0, fontSize: 18, fontWeight: 'bold', color: '#000000' }}>{item.fiyat} ₺</p>
                     </div>
-                    <button onClick={() => sepettenCikar(index)} style={{ padding: '10px 20px', background: '#e74c3c', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
-                      🗑️ Sil
+                    <button onClick={() => sepettenCikar(index)} style={{ padding: '10px 20px', background: '#e74c3c', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        <line x1="10" y1="11" x2="10" y2="17"/>
+                        <line x1="14" y1="11" x2="14" y2="17"/>
+                      </svg>
+                      Sil
                     </button>
                   </div>
                 ))}
@@ -1267,7 +1281,12 @@ function App() {
 
         {secilenSayfa === 'favorilerim' && (
           <div style={{ background: 'white', padding: 30, borderRadius: 12 }}>
-            <h2>❤️ Favorilerim</h2>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              Favorilerim
+            </h2>
             {favoriler.length === 0 ? (
               <p>Henüz favori ürününüz yok</p>
             ) : (
@@ -1298,7 +1317,14 @@ function App() {
 
         {secilenSayfa === 'siparislerim' && (
           <div style={{ background: 'white', padding: 30, borderRadius: 12 }}>
-            <h2>📦 Siparişlerim</h2>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 8v8c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V8"/>
+                <path d="M23 3H1v5h22V3z"/>
+                <path d="M12 8v13"/>
+              </svg>
+              Siparişlerim
+            </h2>
             {siparisler.length === 0 ? (
               <p>Henüz siparişiniz yok</p>
             ) : (
@@ -1315,13 +1341,22 @@ function App() {
                     Tarih: {new Date(siparis.olusturmaTarihi).toLocaleDateString('tr-TR')}
                   </p>
                   {siparis.kargoTakipNo && (
-                    <div style={{ marginTop: 10, padding: 15, background: '#f8f9fa', borderRadius: 8 }}>
-                      <strong>📦 Kargo Takip No:</strong> {siparis.kargoTakipNo}
+                    <div style={{ marginTop: 10, padding: 15, background: '#f8f9fa', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 8v8c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V8"/>
+                        <path d="M23 3H1v5h22V3z"/>
+                        <path d="M12 8v13"/>
+                      </svg>
+                      <strong>Kargo Takip No:</strong> {siparis.kargoTakipNo}
                       <button 
                         onClick={() => { setKargoTakipNo(siparis.kargoTakipNo); kargoTakipSorgula(); }}
-                        style={{ marginLeft: 15, padding: '8px 15px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer', fontSize: 13 }}
+                        style={{ marginLeft: 'auto', padding: '8px 15px', background: '#C85A8E', color: 'white', border: 'none', borderRadius: 5, cursor: 'pointer', fontSize: 13, display: 'flex', alignItems: 'center', gap: 5 }}
                       >
-                        🔍 Takip Et
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="11" cy="11" r="8"/>
+                          <path d="m21 21-4.35-4.35"/>
+                        </svg>
+                        Takip Et
                       </button>
                     </div>
                   )}
@@ -1329,7 +1364,13 @@ function App() {
               ))
             )}
             <div style={{ marginTop: 30, padding: 20, background: '#f8f9fa', borderRadius: 12 }}>
-              <h3>🔍 Kargo Takip Sorgula</h3>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
+                </svg>
+                Kargo Takip Sorgula
+              </h3>
               <div style={{ display: 'flex', gap: 10, marginTop: 15 }}>
                 <input
                   type="text"
@@ -1405,15 +1446,35 @@ function App() {
                   <button 
                     onClick={() => sepeteEkle(secilenUrun)} 
                     disabled={!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0}
-                    style={{ flex: 1, padding: 15, background: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? '#ccc' : '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? 'not-allowed' : 'pointer', fontSize: 16, fontWeight: 600 }}
+                    style={{ flex: 1, padding: 15, background: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? '#ccc' : '#000000', color: 'white', border: 'none', borderRadius: 8, cursor: (!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? 'not-allowed' : 'pointer', fontSize: 16, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
                   >
-                    {(!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? '❌ Stokta Yok' : '🛒 Sepete Ekle'}
+                    {(!secilenUrun.stokDurumu || secilenUrun.stokMiktari === 0) ? (
+                      <>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"/>
+                          <line x1="15" y1="9" x2="9" y2="15"/>
+                          <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                        Stokta Yok
+                      </>
+                    ) : (
+                      <>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M6 2L3 6v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6l-3-4H6z"/>
+                          <line x1="3" y1="6" x2="21" y2="6"/>
+                          <path d="M16 10c0 2.2-1.8 4-4 4s-4-1.8-4-4"/>
+                        </svg>
+                        Sepete Ekle
+                      </>
+                    )}
                   </button>
                   <button 
                     onClick={() => favoriToggle(secilenUrun.id)}
-                    style={{ padding: 15, background: favoriler.some(f => f.urunId === secilenUrun.id) ? '#e74c3c' : '#f0f0f0', color: favoriler.some(f => f.urunId === secilenUrun.id) ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 20 }}
+                    style={{ padding: 15, background: favoriler.some(f => f.urunId === secilenUrun.id) ? '#e74c3c' : '#f0f0f0', color: favoriler.some(f => f.urunId === secilenUrun.id) ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   >
-                    {favoriler.some(f => f.urunId === secilenUrun.id) ? '❤️' : '🤍'}
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill={favoriler.some(f => f.urunId === secilenUrun.id) ? 'white' : 'none'} stroke={favoriler.some(f => f.urunId === secilenUrun.id) ? 'white' : '#333'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -1477,18 +1538,36 @@ function App() {
 
         {secilenSayfa === 'odeme' && (
           <div style={{ background: 'white', padding: 30, borderRadius: 12 }}>
-            <h2>💳 Ödeme</h2>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                <line x1="1" y1="10" x2="23" y2="10"/>
+              </svg>
+              Ödeme
+            </h2>
             <div style={{ marginBottom: 30 }}>
               <h3>Ödeme Yöntemi Seçin</h3>
               <div style={{ display: 'flex', gap: 15, marginTop: 15 }}>
-                <button onClick={() => setOdemeTipi('kart')} style={{ flex: 1, padding: 15, background: odemeTipi === 'kart' ? '#000000' : '#f0f0f0', color: odemeTipi === 'kart' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
-                  💳 Kredi Kartı
+                <button onClick={() => setOdemeTipi('kart')} style={{ flex: 1, padding: 15, background: odemeTipi === 'kart' ? '#000000' : '#f0f0f0', color: odemeTipi === 'kart' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={odemeTipi === 'kart' ? 'white' : '#333'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                    <line x1="1" y1="10" x2="23" y2="10"/>
+                  </svg>
+                  Kredi Kartı
                 </button>
-                <button onClick={() => setOdemeTipi('havale')} style={{ flex: 1, padding: 15, background: odemeTipi === 'havale' ? '#000000' : '#f0f0f0', color: odemeTipi === 'havale' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
-                  🏦 Havale/EFT
+                <button onClick={() => setOdemeTipi('havale')} style={{ flex: 1, padding: 15, background: odemeTipi === 'havale' ? '#000000' : '#f0f0f0', color: odemeTipi === 'havale' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={odemeTipi === 'havale' ? 'white' : '#333'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="5" width="20" height="14" rx="2"/>
+                    <line x1="2" y1="10" x2="22" y2="10"/>
+                  </svg>
+                  Havale/EFT
                 </button>
-                <button onClick={() => setOdemeTipi('kapida')} style={{ flex: 1, padding: 15, background: odemeTipi === 'kapida' ? '#000000' : '#f0f0f0', color: odemeTipi === 'kapida' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
-                  🚪 Kapıda Ödeme
+                <button onClick={() => setOdemeTipi('kapida')} style={{ flex: 1, padding: 15, background: odemeTipi === 'kapida' ? '#000000' : '#f0f0f0', color: odemeTipi === 'kapida' ? 'white' : '#333', border: 'none', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={odemeTipi === 'kapida' ? 'white' : '#333'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                  </svg>
+                  Kapıda Ödeme
                 </button>
               </div>
             </div>
