@@ -424,7 +424,7 @@ function App() {
           onClick={() => setSecilenSayfa('ana')}
           style={{ 
             cursor: 'pointer',
-            backgroundImage: `url(/as.svg)`,
+            backgroundImage: `url(/as.png)`,
             backgroundSize: 'contain',
             backgroundPosition: 'left center',
             backgroundRepeat: 'no-repeat',
