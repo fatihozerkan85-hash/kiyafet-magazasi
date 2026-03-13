@@ -492,7 +492,7 @@ function App() {
                   }}
                   onMouseOut={(e) => {
                     const svg = e.currentTarget.querySelector('svg');
-                    if (svg) svg.style.stroke = '#333';
+                    if (svg) svg.style.stroke = 'white';
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
@@ -541,7 +541,7 @@ function App() {
                   }}
                   onMouseOut={(e) => {
                     const svg = e.currentTarget.querySelector('svg');
-                    if (svg) svg.style.stroke = '#333';
+                    if (svg) svg.style.stroke = 'white';
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
@@ -591,7 +591,7 @@ function App() {
                   }}
                   onMouseOut={(e) => {
                     const svg = e.currentTarget.querySelector('svg');
-                    if (svg) svg.style.stroke = '#333';
+                    if (svg) svg.style.stroke = 'white';
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
@@ -621,7 +621,7 @@ function App() {
                   }}
                   onMouseOut={(e) => {
                     const svg = e.currentTarget.querySelector('svg');
-                    if (svg) svg.style.stroke = '#333';
+                    if (svg) svg.style.stroke = 'white';
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
@@ -653,7 +653,7 @@ function App() {
                   }}
                   onMouseOut={(e) => {
                     const svg = e.currentTarget.querySelector('svg');
-                    if (svg) svg.style.stroke = '#333';
+                    if (svg) svg.style.stroke = 'white';
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
@@ -680,7 +680,7 @@ function App() {
                   }}
                   onMouseOut={(e) => {
                     const svg = e.currentTarget.querySelector('svg');
-                    if (svg) svg.style.stroke = '#333';
+                    if (svg) svg.style.stroke = 'white';
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
@@ -710,7 +710,7 @@ function App() {
                   }}
                   onMouseOut={(e) => {
                     const svg = e.currentTarget.querySelector('svg');
-                    if (svg) svg.style.stroke = '#333';
+                    if (svg) svg.style.stroke = 'white';
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'all 0.2s' }}>
