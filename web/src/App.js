@@ -443,13 +443,13 @@ function App() {
           style={{ 
             cursor: 'pointer',
             backgroundImage: `url(/as%202.png)`,
-            backgroundSize: '1100px 450px',
+            backgroundSize: '1000px 375px',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
             width: '100%',
             height: '100%',
             position: 'absolute',
-            top: '-125px',
+            top: '-70px',
             left: 0,
             zIndex: 2,
             pointerEvents: 'none'
