@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const { sql } = require('@vercel/postgres');
 const nodemailer = require('nodemailer');
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
@@ -19,6 +22,37 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// ============================================
+// SECURITY MIDDLEWARE
+// ============================================
+
+// Helmet - HTTP header güvenliği
+app.use(helmet({
+  contentSecurityPolicy: false, // React için gerekli
+  crossOriginEmbedderPolicy: false
+}));
+
+// XSS temizleme
+app.use(xss());
+
+// Rate limiting - Genel API limiti
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 dakika
+  max: 200, // 15 dakikada 200 istek
+  message: { basarili: false, mesaj: 'Çok fazla istek gönderildi, lütfen 15 dakika sonra tekrar deneyin' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiting - Giriş/Kayıt için daha sıkı
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 dakika
+  max: 10, // 15 dakikada 10 deneme
+  message: { basarili: false, mesaj: 'Çok fazla giriş denemesi yapıldı, lütfen 15 dakika sonra tekrar deneyin' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // CORS ayarları - Tüm origin'lere izin ver (local HTML files için)
 app.use(cors({
   origin: true, // Tüm origin'lere izin ver
@@ -31,6 +65,9 @@ app.use(cors({
 app.options('*', cors());
 
 app.use(express.json());
+
+// Rate limiter'ları uygula
+app.use('/api/', apiLimiter);
 
 // No-cache middleware for API endpoints
 app.use('/api', (req, res, next) => {
@@ -379,7 +416,7 @@ app.get('/api/urunler/:id', async (req, res) => {
 // API ENDPOINTS - Kullanıcı (Giriş & Kayıt)
 // ============================================
 
-app.post('/api/giris', async (req, res) => {
+app.post('/api/giris', authLimiter, async (req, res) => {
   try {
     const { email, sifre } = req.body;
     
@@ -400,7 +437,7 @@ app.post('/api/giris', async (req, res) => {
 });
 
 // Email doğrulama kodu gönder
-app.post('/api/kayit/dogrulama-kodu-gonder', async (req, res) => {
+app.post('/api/kayit/dogrulama-kodu-gonder', authLimiter, async (req, res) => {
   try {
     const { email } = req.body;
     
@@ -440,7 +477,7 @@ app.post('/api/kayit/dogrulama-kodu-gonder', async (req, res) => {
 });
 
 // Kayıt - Doğrulama kodu ile
-app.post('/api/kayit', async (req, res) => {
+app.post('/api/kayit', authLimiter, async (req, res) => {
   try {
     const { email, sifre, ad, soyad, telefon, dogrulamaKodu } = req.body;
     
