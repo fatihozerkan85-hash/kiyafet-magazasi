@@ -449,7 +449,7 @@ function App() {
             width: '100%',
             height: '100%',
             position: 'absolute',
-            top: '-80px',
+            top: '-40px',
             left: 0,
             zIndex: 2,
             pointerEvents: 'none'
