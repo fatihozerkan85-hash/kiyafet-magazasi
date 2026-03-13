@@ -416,7 +416,7 @@ function App() {
         padding: '0', 
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         position: 'relative',
-        overflow: 'hidden',
+        overflow: 'visible',
         height: '120px'
       }}>
         {/* Logo - Arka Plan */}
@@ -443,15 +443,16 @@ function App() {
           style={{ 
             cursor: 'pointer',
             backgroundImage: `url(/as%202.png)`,
-            backgroundSize: '1250px 450px',
+            backgroundSize: '1100px 450px',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
             width: '100%',
             height: '100%',
             position: 'absolute',
-            top: '-50px',
+            top: '-100px',
             left: 0,
-            zIndex: 2
+            zIndex: 2,
+            pointerEvents: 'none'
           }}
         ></div>
         
