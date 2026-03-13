@@ -120,24 +120,18 @@
     border: 1px solid rgba(200, 90, 142, 0.3) !important;
   }
 
-  /* Search bar - Header'dan gizle */
-  header > div[style*="paddingTop: 10"] {
+  /* Search bar - Header içinde, sağda */
+  header > div[style*="position: absolute"][style*="right: 20px"] {
     display: none !important;
   }
 
-  /* Search bar container - Sağa hizala */
+  /* Search bar container - Mobilde kategori menüsünden önce */
   .App > div:nth-child(2) {
     padding: 10px 0 !important;
   }
 
   .App > div:nth-child(2) > div {
     padding: 0 10px !important;
-    justify-content: flex-end !important;
-    padding-right: 20px !important;
-  }
-
-  .App > div:nth-child(2) > div input {
-    max-width: 100% !important;
   }
 
   /* Mobile search - Göster */
