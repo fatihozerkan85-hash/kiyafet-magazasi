@@ -425,14 +425,14 @@ function App() {
           style={{ 
             cursor: 'pointer',
             backgroundImage: `url(/as.svg)`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundSize: 'auto 320px',
+            backgroundPosition: 'center left -100px',
             backgroundRepeat: 'no-repeat',
-            width: 'calc(100% + 200px)',
-            height: 'calc(100% + 200px)',
+            width: '100%',
+            height: '100%',
             position: 'absolute',
-            top: '-100px',
-            left: '-100px',
+            top: 0,
+            left: 0,
             zIndex: 1
           }}
         ></div>
