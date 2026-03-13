@@ -776,14 +776,14 @@ function App() {
         {/* Search Bar - Header İçinde, Sağda Ortalanmış */}
         <div style={{ 
           position: 'absolute',
-          right: '245px',
+          right: '395px',
           top: '50%',
           transform: 'translateY(-50%)',
           zIndex: 4
         }}>
           <input
             type="text"
-            placeholder={t('search')}
+            placeholder="ASL Butique'de Ara"
             value={aramaMetni}
             onChange={(e) => setAramaMetni(e.target.value)}
             style={{ 
