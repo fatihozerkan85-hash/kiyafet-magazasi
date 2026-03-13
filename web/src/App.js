@@ -772,9 +772,11 @@ function App() {
             </select>
           </div>
         </div>
+      </header>
 
-        {/* Alt Satır: Search Bar - Ortada */}
-        <div style={{ position: 'relative', zIndex: 10, maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'center', paddingTop: 10 }}>
+      {/* Search Bar - Header Dışında */}
+      <div style={{ background: 'white', paddingBottom: 15, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', justifyContent: 'center', paddingTop: 10 }}>
           <input
             type="text"
             placeholder={t('search')}
@@ -787,15 +789,13 @@ function App() {
               width: '600px',
               fontSize: 14,
               outline: 'none',
-              transition: 'border-color 0.2s',
-              position: 'relative',
-              zIndex: 10
+              transition: 'border-color 0.2s'
             }}
             onFocus={(e) => e.target.style.borderColor = '#999'}
             onBlur={(e) => e.target.style.borderColor = '#ddd'}
           />
         </div>
-      </header>
+      </div>
 
       {/* Kategori Menüsü */}
       <div style={{ background: 'white', borderBottom: '1px solid #eee', padding: '15px 0', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
