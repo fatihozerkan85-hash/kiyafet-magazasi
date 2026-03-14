@@ -9,24 +9,12 @@
     <title>ASL BUTIQUE</title>
     <style>
       @media (max-width: 768px) {
-        html, body { height: 100% !important; margin: 0 !important; }
-        #root { min-height: 100% !important; }
+        html, body { margin: 0 !important; padding: 0 !important; min-height: 100vh !important; }
+        #root { display: contents !important; }
         .App {
-          display: flex !important;
-          flex-direction: column !important;
+          display: grid !important;
+          grid-template-rows: auto auto 1fr auto !important;
           min-height: 100vh !important;
-          min-height: -webkit-fill-available !important;
-        }
-        .App > header { flex-shrink: 0 !important; }
-        .App > header + div { flex-shrink: 0 !important; }
-        .App > header + div + div {
-          flex-grow: 1 !important;
-          flex-shrink: 1 !important;
-          flex-basis: auto !important;
-        }
-        .App > footer {
-          flex-shrink: 0 !important;
-          width: 100% !important;
         }
       }
     </style>
