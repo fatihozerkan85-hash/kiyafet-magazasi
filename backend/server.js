@@ -1373,6 +1373,67 @@ app.put('/api/admin/footer-sayfa', async (req, res) => {
   }
 });
 
+// SSS (FAQ) tablosu
+const createFaqTable = async () => {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS sss (
+        id SERIAL PRIMARY KEY,
+        soru TEXT NOT NULL,
+        cevap TEXT NOT NULL,
+        sira INT DEFAULT 0,
+        aktif BOOLEAN DEFAULT true,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+  } catch (err) {
+    console.log('SSS tablo hatası:', err.message);
+  }
+};
+createFaqTable();
+
+// SSS listesi (public - schema için)
+app.get('/api/sss', async (req, res) => {
+  try {
+    const { rows } = await sql`SELECT * FROM sss WHERE aktif = true ORDER BY sira ASC, id ASC`;
+    res.json(rows);
+  } catch (err) {
+    res.json([]);
+  }
+});
+
+// SSS ekle (Admin)
+app.post('/api/admin/sss', async (req, res) => {
+  try {
+    const { soru, cevap } = req.body;
+    await sql`INSERT INTO sss (soru, cevap) VALUES (${soru}, ${cevap})`;
+    res.json({ basarili: true, mesaj: 'SSS eklendi' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// SSS güncelle (Admin)
+app.put('/api/admin/sss/:id', async (req, res) => {
+  try {
+    const { soru, cevap } = req.body;
+    await sql`UPDATE sss SET soru = ${soru}, cevap = ${cevap} WHERE id = ${req.params.id}`;
+    res.json({ basarili: true, mesaj: 'SSS güncellendi' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// SSS sil (Admin)
+app.delete('/api/admin/sss/:id', async (req, res) => {
+  try {
+    await sql`DELETE FROM sss WHERE id = ${req.params.id}`;
+    res.json({ basarili: true, mesaj: 'SSS silindi' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Server başlat
 app.listen(PORT, () => {
   console.log(`🚀 Backend sunucusu http://localhost:${PORT} adresinde çalışıyor`);

@@ -43,6 +43,7 @@ function App() {
     sosyalMedya: { instagram: '', facebook: '', twitter: '', youtube: '' }
   });
   const [footerSayfaIcerik, setFooterSayfaIcerik] = useState({ baslik: '', icerik: '' });
+  const [sssListesi, setSssListesi] = useState([]);
 
   useEffect(() => {
     // Kategorileri yükle
@@ -72,6 +73,12 @@ function App() {
       })
       .catch(err => console.error('Footer yüklenemedi:', err));
 
+    // SSS yükle (FAQ Schema için)
+    fetch(`${API_URL}/api/sss`)
+      .then(res => res.json())
+      .then(data => { if (Array.isArray(data)) setSssListesi(data); })
+      .catch(err => console.error('SSS yüklenemedi:', err));
+
     // Ürünleri yükle
     fetch(`${API_URL}/api/urunler`)
       .then(res => res.json())
@@ -100,6 +107,29 @@ function App() {
     setDil(kaydedilmisDil);
     dilYukle(kaydedilmisDil);
   }, []);
+
+  // FAQ Schema JSON-LD enjekte et
+  useEffect(() => {
+    if (sssListesi.length > 0) {
+      const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": sssListesi.map(s => ({
+          "@type": "Question",
+          "name": s.soru,
+          "acceptedAnswer": { "@type": "Answer", "text": s.cevap }
+        }))
+      };
+      let script = document.getElementById('faq-schema');
+      if (!script) {
+        script = document.createElement('script');
+        script.id = 'faq-schema';
+        script.type = 'application/ld+json';
+        document.head.appendChild(script);
+      }
+      script.textContent = JSON.stringify(faqSchema);
+    }
+  }, [sssListesi]);
 
   const dilYukle = async (dilKodu) => {
     try {

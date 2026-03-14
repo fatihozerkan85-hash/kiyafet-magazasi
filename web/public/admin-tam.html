@@ -121,6 +121,7 @@
                 <button class="tab" onclick="switchTab('coupons')">🎟️ Kuponlar</button>
                 <button class="tab" onclick="switchTab('reports')">📊 Raporlar</button>
                 <button class="tab" onclick="switchTab('footer')">🦶 Footer</button>
+                <button class="tab" onclick="switchTab('sss')">❓ SSS</button>
             </div>
 
             <!-- Dashboard Tab -->
@@ -506,6 +507,29 @@
                 </div>
             </div>
 
+            <!-- SSS Tab -->
+            <div id="sss" class="tab-content">
+                <div class="card">
+                    <h2>➕ Yeni SSS Ekle</h2>
+                    <p style="color: #666; margin-bottom: 15px;">Eklediğiniz sorular Google'da zengin sonuç (FAQ rich snippet) olarak görünür.</p>
+                    <form id="sssForm">
+                        <div class="form-group">
+                            <label>Soru</label>
+                            <input type="text" id="sssSoru" required placeholder="ASL Butique nedir?">
+                        </div>
+                        <div class="form-group">
+                            <label>Cevap</label>
+                            <textarea id="sssCevap" required rows="3" placeholder="ASL Butique kadınlara yönelik modern ve şık butik giyim ürünleri sunan bir online alışveriş sitesidir."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">➕ SSS Ekle</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <h2>📋 Mevcut SSS Listesi</h2>
+                    <div id="sssListesi"></div>
+                </div>
+            </div>
+
             <!-- Reports Tab -->
             <div id="reports" class="tab-content">
                 <div class="card">
@@ -621,6 +645,7 @@
             if (tabName === 'coupons') loadCoupons();
             if (tabName === 'reports') loadReports();
             if (tabName === 'footer') loadFooter();
+            if (tabName === 'sss') loadSss();
         }
 
         // Dashboard
@@ -1763,6 +1788,71 @@
                 }
             } catch (error) {
                 showAlert('❌ Sayfa kaydedilemedi', 'error');
+            }
+        }
+
+        // SSS (FAQ) Yönetimi
+        async function loadSss() {
+            try {
+                const response = await fetch(`${API_URL}/api/sss`);
+                const sorular = await response.json();
+                
+                const div = document.getElementById('sssListesi');
+                if (!sorular.length) {
+                    div.innerHTML = '<p style="text-align: center; color: #666; padding: 30px;">Henüz SSS eklenmemiş</p>';
+                    return;
+                }
+                
+                div.innerHTML = sorular.map(s => `
+                    <div style="border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <strong style="font-size: 15px;">❓ ${s.soru}</strong>
+                                <p style="color: #666; margin-top: 8px; font-size: 14px;">${s.cevap}</p>
+                            </div>
+                            <button class="btn btn-danger" onclick="deleteSss(${s.id})" style="padding: 6px 12px; font-size: 12px; margin-left: 10px;">🗑️ Sil</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                showAlert('❌ SSS yüklenemedi', 'error');
+            }
+        }
+
+        document.getElementById('sssForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                soru: document.getElementById('sssSoru').value,
+                cevap: document.getElementById('sssCevap').value
+            };
+            try {
+                const response = await fetch(`${API_URL}/api/admin/sss`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ SSS eklendi!', 'success');
+                    document.getElementById('sssForm').reset();
+                    loadSss();
+                }
+            } catch (error) {
+                showAlert('❌ SSS eklenemedi', 'error');
+            }
+        });
+
+        async function deleteSss(id) {
+            if (!confirm('Bu soruyu silmek istediğinizden emin misiniz?')) return;
+            try {
+                const response = await fetch(`${API_URL}/api/admin/sss/${id}`, { method: 'DELETE' });
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ SSS silindi', 'success');
+                    loadSss();
+                }
+            } catch (error) {
+                showAlert('❌ SSS silinemedi', 'error');
             }
         }
 
