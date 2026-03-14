@@ -56,7 +56,19 @@ function App() {
     // Footer bilgilerini yükle
     fetch(`${API_URL}/api/footer`)
       .then(res => res.json())
-      .then(data => { if (data && !data.error) setFooterBilgileri(data); })
+      .then(data => { 
+        if (data && !data.error) {
+          // yardim ve kurumsal items formatını normalize et
+          if (data.yardim && data.yardim.items) data.yardim = data.yardim.items;
+          if (data.kurumsal && data.kurumsal.items) data.kurumsal = data.kurumsal.items;
+          if (!Array.isArray(data.yardim)) data.yardim = ['Sipariş Sorgulama', 'İade ve Değişim', 'Sıkça Sorulan Sorular', 'Beden Tablosu', 'İşlem Rehberi'];
+          if (!Array.isArray(data.kurumsal)) data.kurumsal = ['Hakkımızda', 'Gizlilik Politikası', 'Kullanım Koşulları', 'KVKK Aydınlatma Metni', 'İletişim'];
+          if (!data.iletisim) data.iletisim = { telefon: '', email: '', whatsapp: '', calismaSaatleri: '' };
+          if (!data.hakkimizda) data.hakkimizda = { baslik: 'Hakkımızda', icerik: '' };
+          if (!data.sosyalMedya) data.sosyalMedya = { instagram: '', facebook: '', twitter: '', youtube: '' };
+          setFooterBilgileri(data);
+        }
+      })
       .catch(err => console.error('Footer yüklenemedi:', err));
 
     // Ürünleri yükle
