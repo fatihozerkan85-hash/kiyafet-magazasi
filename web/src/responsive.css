@@ -242,6 +242,11 @@
   /* Footer */
   footer {
     padding: 30px 0 15px !important;
+    margin-top: auto !important;
+    width: 100% !important;
+    clear: both !important;
+    position: relative !important;
+    z-index: 1 !important;
   }
 
   footer > div:nth-child(2) > div {
@@ -265,6 +270,13 @@
     flex-wrap: wrap !important;
     justify-content: center !important;
     gap: 10px !important;
+  }
+
+  /* Ana container - footer'ı en alta it */
+  .App {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100vh !important;
   }
 }
 
