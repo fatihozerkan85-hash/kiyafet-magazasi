@@ -918,7 +918,7 @@ function App() {
           <div className="mobile-search" style={{ marginBottom: 10 }}>
             <input
               type="text"
-              placeholder={t('search')}
+              placeholder="ASL Butique'de Ara"
               value={aramaMetni}
               onChange={(e) => setAramaMetni(e.target.value)}
               onKeyDown={(e) => {
