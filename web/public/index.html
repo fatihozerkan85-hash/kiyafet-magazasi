@@ -9,35 +9,24 @@
     <title>ASL BUTIQUE</title>
     <style>
       @media (max-width: 768px) {
-        #root, #root > .App {
+        html, body { height: 100% !important; margin: 0 !important; }
+        #root { min-height: 100% !important; }
+        .App {
           display: flex !important;
           flex-direction: column !important;
           min-height: 100vh !important;
+          min-height: -webkit-fill-available !important;
         }
-        /* Header ve kategori menüsü sabit */
-        #root > .App > header,
-        #root > .App > header + div {
+        .App > header { flex-shrink: 0 !important; }
+        .App > header + div { flex-shrink: 0 !important; }
+        .App > header + div + div {
+          flex-grow: 1 !important;
+          flex-shrink: 1 !important;
+          flex-basis: auto !important;
+        }
+        .App > footer {
           flex-shrink: 0 !important;
-        }
-        /* Ana içerik - kalan alanı doldur */
-        #root > .App > header + div + div {
-          flex: 1 1 auto !important;
-          margin-top: 0 !important;
-          margin-bottom: 0 !important;
-        }
-        /* Footer - kesinlikle en altta */
-        #root > .App > footer {
-          flex-shrink: 0 !important;
-          margin-top: auto !important;
-          order: 999 !important;
-        }
-        /* Ürün grid - mobilde tek kolon */
-        #root > .App > header + div + div div[style*="grid-template-columns"] {
-          grid-template-columns: 1fr !important;
-        }
-        /* Ürün resimleri - mobilde küçült */
-        #root > .App > header + div + div img {
-          max-height: 300px !important;
+          width: 100% !important;
         }
       }
     </style>
