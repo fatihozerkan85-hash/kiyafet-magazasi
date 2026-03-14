@@ -173,6 +173,11 @@
     flex: 1 !important;
   }
 
+  /* Ana içerik - maxWidth 1200 container */
+  .App > div[style*="maxWidth"] {
+    flex: 1 !important;
+  }
+
   /* Kampanya bannerları */
   .App > div:nth-child(3) > div > div > div:first-child {
     height: 250px !important;
@@ -268,6 +273,8 @@
     grid-template-columns: 1fr !important;
     gap: 25px !important;
     text-align: center !important;
+    max-width: 100% !important;
+    padding: 0 15px !important;
   }
 
   footer > div:nth-child(2) > div > div > div[style*="display: flex"][style*="gap: 12"] {
