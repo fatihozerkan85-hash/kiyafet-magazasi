@@ -42,6 +42,7 @@ function App() {
     kurumsal: ['Hakkımızda', 'Gizlilik Politikası', 'Kullanım Koşulları', 'KVKK Aydınlatma Metni', 'İletişim'],
     sosyalMedya: { instagram: '', facebook: '', twitter: '', youtube: '' }
   });
+  const [footerSayfaIcerik, setFooterSayfaIcerik] = useState({ baslik: '', icerik: '' });
 
   useEffect(() => {
     // Kategorileri yükle
@@ -330,6 +331,22 @@ function App() {
   const sepeteEkle = (urun) => {
     setSepet([...sepet, { ...urun, adet: 1 }]);
     alert('✅ Ürün sepete eklendi!');
+  };
+
+  const footerSayfaAc = (baslik) => {
+    const slug = baslik.toLowerCase().replace(/ş/g,'s').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ı/g,'i').replace(/İ/g,'i').replace(/Ş/g,'s').replace(/Ç/g,'c').replace(/Ğ/g,'g').replace(/Ü/g,'u').replace(/Ö/g,'o').replace(/ /g,'-').replace(/[^a-z0-9-]/g,'');
+    fetch(`${API_URL}/api/footer-sayfa/${slug}`)
+      .then(res => res.json())
+      .then(data => {
+        setFooterSayfaIcerik({ baslik: data.baslik || baslik, icerik: data.icerik || '' });
+        setSecilenSayfa('footer-sayfa');
+        window.scrollTo(0, 0);
+      })
+      .catch(() => {
+        setFooterSayfaIcerik({ baslik: baslik, icerik: '' });
+        setSecilenSayfa('footer-sayfa');
+        window.scrollTo(0, 0);
+      });
   };
 
   const sepetToplam = sepet.reduce((sum, item) => sum + (item.fiyat * (item.adet || 1)), 0);
@@ -1651,6 +1668,22 @@ function App() {
           </div>
         )}
 
+        {secilenSayfa === 'footer-sayfa' && (
+          <div style={{ background: 'white', padding: 30, borderRadius: 12 }}>
+            <button onClick={() => setSecilenSayfa('ana')} style={{ marginBottom: 20, padding: '10px 20px', background: '#f0f0f0', border: 'none', borderRadius: 8, cursor: 'pointer' }}>
+              ← Geri Dön
+            </button>
+            <h2 style={{ marginBottom: 20, color: '#333' }}>{footerSayfaIcerik.baslik}</h2>
+            {footerSayfaIcerik.icerik ? (
+              <div style={{ lineHeight: 1.8, color: '#555', fontSize: 15, whiteSpace: 'pre-wrap' }}
+                dangerouslySetInnerHTML={{ __html: footerSayfaIcerik.icerik }}
+              />
+            ) : (
+              <p style={{ color: '#999', fontStyle: 'italic' }}>Bu sayfa için henüz içerik eklenmemiş.</p>
+            )}
+          </div>
+        )}
+
       </div>
 
       {/* Footer */}
@@ -1685,6 +1718,7 @@ function App() {
             <h4 style={{ color: 'white', marginBottom: 15, fontSize: 16, fontWeight: 600 }}>YARDIM</h4>
             {footerBilgileri.yardim.map((item, i) => (
               <p key={i} style={{ fontSize: 13, color: '#999', marginBottom: 8, cursor: 'pointer' }}
+                onClick={() => footerSayfaAc(item)}
                 onMouseOver={e => e.target.style.color = 'white'}
                 onMouseOut={e => e.target.style.color = '#999'}
               >{item}</p>
@@ -1696,6 +1730,7 @@ function App() {
             <h4 style={{ color: 'white', marginBottom: 15, fontSize: 16, fontWeight: 600 }}>KURUMSAL BİLGİLER</h4>
             {footerBilgileri.kurumsal.map((item, i) => (
               <p key={i} style={{ fontSize: 13, color: '#999', marginBottom: 8, cursor: 'pointer' }}
+                onClick={() => footerSayfaAc(item)}
                 onMouseOver={e => e.target.style.color = 'white'}
                 onMouseOut={e => e.target.style.color = '#999'}
               >{item}</p>
@@ -1720,9 +1755,9 @@ function App() {
           <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 20px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, fontSize: 12, color: '#666' }}>
             <span>© 2026 ASL Butique - Tüm Hakları Saklıdır</span>
             <div style={{ display: 'flex', gap: 20 }}>
-              <span style={{ cursor: 'pointer' }}>Üyelik Sözleşmesi</span>
-              <span style={{ cursor: 'pointer' }}>Gizlilik Politikası</span>
-              <span style={{ cursor: 'pointer' }}>KVKK Aydınlatma Metni</span>
+              <span style={{ cursor: 'pointer' }} onClick={() => footerSayfaAc('Üyelik Sözleşmesi')}>Üyelik Sözleşmesi</span>
+              <span style={{ cursor: 'pointer' }} onClick={() => footerSayfaAc('Gizlilik Politikası')}>Gizlilik Politikası</span>
+              <span style={{ cursor: 'pointer' }} onClick={() => footerSayfaAc('KVKK Aydınlatma Metni')}>KVKK Aydınlatma Metni</span>
             </div>
           </div>
         </div>

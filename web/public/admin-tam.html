@@ -509,6 +509,13 @@
                 </div>
 
                 <button class="btn btn-success" onclick="saveFooter()" style="width: 100%; padding: 15px; font-size: 16px;">💾 Footer Bilgilerini Kaydet</button>
+
+                <div class="card" style="margin-top: 20px;">
+                    <h2>📄 Footer Sayfa İçerikleri</h2>
+                    <p style="color: #666; margin-bottom: 15px;">Yardım ve Kurumsal başlıklarına tıklanınca açılacak sayfa içeriklerini buradan düzenleyin.</p>
+                    <div id="footerSayfaListesi"></div>
+                    <button class="btn btn-primary" onclick="loadFooterSayfalar()" style="margin-top: 10px;">🔄 Sayfaları Yenile</button>
+                </div>
             </div>
 
             <!-- Reports Tab -->
@@ -1615,6 +1622,8 @@
                 console.error('Footer yüklenemedi:', error);
                 showAlert('❌ Footer bilgileri yüklenemedi', 'error');
             }
+            // Sayfa içeriklerini de yükle
+            loadFooterSayfalar();
         }
 
         function renderYardimList() {
@@ -1701,12 +1710,74 @@
                 const result = await response.json();
                 if (result.basarili) {
                     showAlert('✅ Footer bilgileri kaydedildi!', 'success');
+                    // Sayfa listesini de güncelle
+                    setTimeout(() => loadFooterSayfalar(), 500);
                 } else {
                     showAlert('❌ ' + (result.mesaj || 'Kayıt başarısız'), 'error');
                 }
             } catch (error) {
                 console.error('Footer kayıt hatası:', error);
                 showAlert('❌ Footer bilgileri kaydedilemedi', 'error');
+            }
+        }
+
+        // Footer Sayfaları Yönetimi
+        function slugify(text) {
+            return text.toLowerCase()
+                .replace(/ş/g,'s').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ı/g,'i')
+                .replace(/İ/g,'i').replace(/Ş/g,'s').replace(/Ç/g,'c').replace(/Ğ/g,'g').replace(/Ü/g,'u').replace(/Ö/g,'o')
+                .replace(/ /g,'-').replace(/[^a-z0-9-]/g,'');
+        }
+
+        async function loadFooterSayfalar() {
+            // Tüm yardım + kurumsal + copyright başlıklarını topla
+            const tumBasliklar = [
+                ...footerYardimItems,
+                ...footerKurumsalItems,
+                'Üyelik Sözleşmesi', 'Gizlilik Politikası', 'KVKK Aydınlatma Metni'
+            ];
+            // Mevcut sayfaları API'den al
+            let mevcutSayfalar = {};
+            try {
+                const res = await fetch(`${API_URL}/api/footer-sayfalar`);
+                const sayfalar = await res.json();
+                sayfalar.forEach(s => { mevcutSayfalar[s.slug] = s; });
+            } catch(e) {}
+
+            const div = document.getElementById('footerSayfaListesi');
+            div.innerHTML = tumBasliklar.map(baslik => {
+                const slug = slugify(baslik);
+                const mevcut = mevcutSayfalar[slug];
+                const icerik = mevcut ? mevcut.icerik : '';
+                return `
+                    <div class="card" style="margin-bottom: 10px; padding: 15px;">
+                        <h4 style="margin-bottom: 10px;">${baslik}</h4>
+                        <div class="form-group">
+                            <label>Sayfa İçeriği (HTML destekler)</label>
+                            <textarea id="sayfa-${slug}" rows="4" placeholder="Bu sayfa için içerik girin...">${icerik}</textarea>
+                        </div>
+                        <button class="btn btn-success" onclick="saveFooterSayfa('${baslik}', '${slug}')" style="padding: 8px 16px; font-size: 13px;">💾 Kaydet</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function saveFooterSayfa(baslik, slug) {
+            const icerik = document.getElementById('sayfa-' + slug).value;
+            try {
+                const response = await fetch(`${API_URL}/api/admin/footer-sayfa`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ baslik, icerik, slug })
+                });
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ "' + baslik + '" sayfası kaydedildi!', 'success');
+                } else {
+                    showAlert('❌ Kayıt başarısız', 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Sayfa kaydedilemedi', 'error');
             }
         }
 

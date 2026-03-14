@@ -1309,7 +1309,65 @@ app.put('/api/admin/footer', async (req, res) => {
         ON CONFLICT (anahtar) DO UPDATE SET deger = ${jsonDeger}, updated_at = NOW()
       `;
     }
-    res.json({ success: true, message: 'Footer güncellendi' });
+    res.json({ basarili: true, mesaj: 'Footer güncellendi' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Footer Sayfaları tablosu
+const createFooterPagesTable = async () => {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS footer_sayfalari (
+        id SERIAL PRIMARY KEY,
+        baslik VARCHAR(200) NOT NULL,
+        icerik TEXT DEFAULT '',
+        slug VARCHAR(200) UNIQUE NOT NULL,
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+  } catch (err) {
+    console.log('Footer sayfaları tablo hatası:', err.message);
+  }
+};
+createFooterPagesTable();
+
+// Footer sayfası getir (slug ile)
+app.get('/api/footer-sayfa/:slug', async (req, res) => {
+  try {
+    const slug = req.params.slug;
+    const { rows } = await sql`SELECT * FROM footer_sayfalari WHERE slug = ${slug}`;
+    if (rows.length > 0) {
+      res.json(rows[0]);
+    } else {
+      res.json({ baslik: slug, icerik: '', slug: slug });
+    }
+  } catch (err) {
+    res.json({ baslik: '', icerik: '', slug: req.params.slug });
+  }
+});
+
+// Tüm footer sayfalarını getir
+app.get('/api/footer-sayfalar', async (req, res) => {
+  try {
+    const { rows } = await sql`SELECT * FROM footer_sayfalari ORDER BY baslik`;
+    res.json(rows);
+  } catch (err) {
+    res.json([]);
+  }
+});
+
+// Footer sayfası kaydet/güncelle (Admin)
+app.put('/api/admin/footer-sayfa', async (req, res) => {
+  try {
+    const { baslik, icerik, slug } = req.body;
+    await sql`
+      INSERT INTO footer_sayfalari (baslik, icerik, slug, updated_at)
+      VALUES (${baslik}, ${icerik}, ${slug}, NOW())
+      ON CONFLICT (slug) DO UPDATE SET baslik = ${baslik}, icerik = ${icerik}, updated_at = NOW()
+    `;
+    res.json({ basarili: true, mesaj: 'Sayfa kaydedildi' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
