@@ -1702,8 +1702,8 @@ function App() {
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 30 }}>
           {/* Hakkımızda */}
           <div>
-            <h4 style={{ color: 'white', marginBottom: 15, fontSize: 16, fontWeight: 600 }}>{footerBilgileri.hakkimizda.baslik}</h4>
-            <p style={{ fontSize: 13, lineHeight: 1.6, color: '#999' }}>{footerBilgileri.hakkimizda.icerik}</p>
+            <h4 style={{ color: 'white', marginBottom: 15, fontSize: 16, fontWeight: 600, cursor: 'pointer' }} onClick={() => footerSayfaAc(footerBilgileri.hakkimizda.baslik)}>{footerBilgileri.hakkimizda.baslik}</h4>
+            <p style={{ fontSize: 13, lineHeight: 1.6, color: '#999', cursor: 'pointer' }} onClick={() => footerSayfaAc(footerBilgileri.hakkimizda.baslik)}>{footerBilgileri.hakkimizda.icerik}</p>
             {/* Sosyal Medya */}
             <div style={{ display: 'flex', gap: 12, marginTop: 15 }}>
               {footerBilgileri.sosyalMedya.instagram && <a href={footerBilgileri.sosyalMedya.instagram} target="_blank" rel="noreferrer" style={{ color: '#ccc', fontSize: 20 }}>📷</a>}
