@@ -132,6 +132,30 @@ function App() {
     }
   }, [sssListesi]);
 
+  // Browser history yönetimi - geri tuşu desteği
+  useEffect(() => {
+    // Sayfa değiştiğinde history'ye push et
+    const currentState = { sayfa: secilenSayfa };
+    if (window.history.state?.sayfa !== secilenSayfa) {
+      window.history.pushState(currentState, '', '');
+    }
+  }, [secilenSayfa]);
+
+  useEffect(() => {
+    // İlk yüklemede state'i ayarla
+    window.history.replaceState({ sayfa: 'ana' }, '', '');
+    
+    const handlePopState = (event) => {
+      if (event.state && event.state.sayfa) {
+        setSecilenSayfa(event.state.sayfa);
+      } else {
+        setSecilenSayfa('ana');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const dilYukle = async (dilKodu) => {
     try {
       const response = await fetch(`${API_URL}/api/dil/${dilKodu}`);
