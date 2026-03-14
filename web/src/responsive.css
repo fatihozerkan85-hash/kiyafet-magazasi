@@ -1,12 +1,19 @@
 /* Mobil Responsive Tasarım - Sadece 768px ve altı için */
 
 @media (max-width: 768px) {
+  /* Yatay taşmayı engelle */
+  html, body, #root {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+
   /* Header - Sabit yükseklik */
   header {
     height: 120px !important;
     padding: 0 !important;
     position: relative !important;
     background: white !important;
+    overflow: hidden !important;
   }
 
   /* Logo container - Header'ı tamamen kapla */
@@ -277,6 +284,8 @@
     display: flex !important;
     flex-direction: column !important;
     min-height: 100vh !important;
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
   }
 }
 
