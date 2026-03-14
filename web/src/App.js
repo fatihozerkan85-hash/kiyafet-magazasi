@@ -44,6 +44,7 @@ function App() {
   });
   const [footerSayfaIcerik, setFooterSayfaIcerik] = useState({ baslik: '', icerik: '' });
   const [sssListesi, setSssListesi] = useState([]);
+  const [cerezOnay, setCerezOnay] = useState(() => localStorage.getItem('cerezOnay') === 'true');
 
   useEffect(() => {
     // Kategorileri yükle
@@ -1715,6 +1716,15 @@ function App() {
         )}
 
       </div>
+
+      {/* Çerez Uyarısı */}
+      {!cerezOnay && (
+        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.95)', color: '#ccc', padding: '15px 20px', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 15, flexWrap: 'wrap', fontSize: 13 }}>
+          <span>🍪 Bu site, deneyiminizi iyileştirmek için çerez ve yerel depolama kullanmaktadır. Siteyi kullanmaya devam ederek <span style={{ color: '#E91E63', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => footerSayfaAc('Çerez Politikası')}>Çerez Politikamızı</span> kabul etmiş olursunuz.</span>
+          <button onClick={() => { setCerezOnay(true); localStorage.setItem('cerezOnay', 'true'); }} style={{ background: '#E91E63', color: 'white', border: 'none', padding: '8px 24px', borderRadius: 6, cursor: 'pointer', fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap' }}>Kabul Et</button>
+          <button onClick={() => { setCerezOnay(true); localStorage.setItem('cerezOnay', 'true'); }} style={{ background: 'transparent', color: '#999', border: '1px solid #555', padding: '8px 16px', borderRadius: 6, cursor: 'pointer', fontSize: 13, whiteSpace: 'nowrap' }}>Reddet</button>
+        </div>
+      )}
 
       {/* Footer */}
       <footer style={{ background: '#1a1a1a', color: '#ccc', padding: '40px 0 20px' }}>
