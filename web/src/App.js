@@ -439,7 +439,7 @@ function App() {
 
         {/* Logo 2 - Üst Katman (Şeffaf) */}
         <div 
-          onClick={() => setSecilenSayfa('ana')}
+          onClick={() => { setSecilenSayfa('ana'); setSecilenKategori('Tümü'); window.scrollTo(0, 0); }}
           style={{ 
             cursor: 'pointer',
             backgroundImage: `url(/as%202.png)`,
@@ -451,8 +451,7 @@ function App() {
             position: 'absolute',
             top: '10px',
             left: '-235px',
-            zIndex: 2,
-            pointerEvents: 'none'
+            zIndex: 2
           }}
         ></div>
         
