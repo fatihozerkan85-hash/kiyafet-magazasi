@@ -7,6 +7,16 @@
     <meta name="theme-color" content="#C85A8E" />
     <meta name="description" content="ASL BUTIQUE - Online Alışveriş" />
     <title>ASL BUTIQUE</title>
+    <style>
+      @media (max-width: 768px) {
+        #root { display: flex !important; flex-direction: column !important; min-height: 100vh !important; }
+        #root > .App { display: flex !important; flex-direction: column !important; min-height: 100vh !important; }
+        #root > .App > header { flex-shrink: 0 !important; }
+        #root > .App > header + div { flex-shrink: 0 !important; }
+        #root > .App > header + div + div { flex: 1 1 auto !important; }
+        #root > .App > footer { flex-shrink: 0 !important; margin-top: auto !important; }
+      }
+    </style>
   </head>
   <body>
     <noscript>Bu uygulamayı çalıştırmak için JavaScript'i etkinleştirmeniz gerekir.</noscript>
