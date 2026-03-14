@@ -451,18 +451,6 @@
                 </div>
 
                 <div class="card">
-                    <h2>ℹ️ Hakkımızda</h2>
-                    <div class="form-group">
-                        <label>Başlık</label>
-                        <input type="text" id="footerHakkimizdaBaslik" placeholder="Hakkımızda">
-                    </div>
-                    <div class="form-group">
-                        <label>İçerik</label>
-                        <textarea id="footerHakkimizdaIcerik" rows="4" placeholder="Şirket hakkında bilgi..."></textarea>
-                    </div>
-                </div>
-
-                <div class="card">
                     <h2>❓ Yardım Linkleri</h2>
                     <div id="yardimListesi"></div>
                     <div class="form-group" style="margin-top: 10px;">
@@ -1589,11 +1577,7 @@
                     document.getElementById('footerCalismaSaatleri').value = data.iletisim.calismaSaatleri || '';
                 }
 
-                // Hakkımızda
-                if (data.hakkimizda) {
-                    document.getElementById('footerHakkimizdaBaslik').value = data.hakkimizda.baslik || '';
-                    document.getElementById('footerHakkimizdaIcerik').value = data.hakkimizda.icerik || '';
-                }
+                // Hakkımızda - artık footer sayfaları bölümünden yönetiliyor
 
                 // Yardım
                 if (data.yardim && data.yardim.items) {
@@ -1683,8 +1667,8 @@
                     calismaSaatleri: document.getElementById('footerCalismaSaatleri').value
                 },
                 hakkimizda: {
-                    baslik: document.getElementById('footerHakkimizdaBaslik').value,
-                    icerik: document.getElementById('footerHakkimizdaIcerik').value
+                    baslik: 'Hakkımızda',
+                    icerik: 'ASL Butique, kaliteli ve şık giyim ürünleri sunan online mağazanızdır.'
                 },
                 yardim: {
                     items: footerYardimItems
@@ -1732,6 +1716,7 @@
         async function loadFooterSayfalar() {
             // Tüm yardım + kurumsal + copyright başlıklarını topla
             const tumBasliklar = [
+                'Hakkımızda',
                 ...footerYardimItems,
                 ...footerKurumsalItems,
                 'Üyelik Sözleşmesi', 'Gizlilik Politikası', 'KVKK Aydınlatma Metni'
