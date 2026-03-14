@@ -830,7 +830,7 @@ function App() {
             {kategoriler.map(kategori => (
               <button
                 key={kategori.id}
-                onClick={() => { setSecilenKategori(kategori.ad); setSecilenSayfa('ana'); }}
+                onClick={() => { setSecilenKategori(kategori.ad); setSecilenSayfa('ana'); setTimeout(() => { const el = document.getElementById('urun-listesi'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }}
                 style={{
                   padding: '10px 20px',
                   background: secilenKategori === kategori.ad ? '#E91E63' : 'transparent',
@@ -1068,7 +1068,7 @@ function App() {
                 {kategoriler.filter(k => k.ad !== 'Tümü').map(kategori => (
                   <div
                     key={kategori.id}
-                    onClick={() => { setSecilenKategori(kategori.ad); window.scrollTo(0, 0); }}
+                    onClick={() => { setSecilenKategori(kategori.ad); setTimeout(() => { const el = document.getElementById('urun-listesi'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }}
                     style={{
                       position: 'relative',
                       height: 350,
@@ -1125,7 +1125,7 @@ function App() {
             </div>
 
             {/* Ürün Listesi - Modern Grid */}
-            <div style={{ background: '#f8f9fa', padding: '60px 0' }}>
+            <div id="urun-listesi" style={{ background: '#f8f9fa', padding: '60px 0' }}>
               <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40 }}>
                   <h2 style={{ fontSize: 32, fontWeight: 'bold', margin: 0, color: '#000' }}>
