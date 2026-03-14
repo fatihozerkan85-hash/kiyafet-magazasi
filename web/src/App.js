@@ -492,9 +492,15 @@ function App() {
     return yildizlar;
   };
 
-  const filtreliUrunler = secilenKategori === 'Tümü' 
-    ? urunler 
-    : urunler.filter(urun => urun.kategori === secilenKategori);
+  const filtreliUrunler = urunler.filter(urun => {
+    const kategoriUygun = secilenKategori === 'Tümü' || urun.kategori === secilenKategori;
+    const aramaUygun = !aramaMetni || 
+      urun.ad?.toLowerCase().includes(aramaMetni.toLowerCase()) ||
+      urun.aciklama?.toLowerCase().includes(aramaMetni.toLowerCase()) ||
+      urun.kategori?.toLowerCase().includes(aramaMetni.toLowerCase()) ||
+      urun.marka?.toLowerCase().includes(aramaMetni.toLowerCase());
+    return kategoriUygun && aramaUygun;
+  });
 
   // Banner otomatik geçiş
   useEffect(() => {
@@ -883,6 +889,12 @@ function App() {
             placeholder="ASL Butique'de Ara"
             value={aramaMetni}
             onChange={(e) => setAramaMetni(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && aramaMetni.trim()) {
+                setSecilenSayfa('ana');
+                setTimeout(() => { const el = document.getElementById('urun-listesi'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100);
+              }
+            }}
             style={{ 
               padding: '10px 20px', 
               borderRadius: 25, 
@@ -909,6 +921,12 @@ function App() {
               placeholder={t('search')}
               value={aramaMetni}
               onChange={(e) => setAramaMetni(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && aramaMetni.trim()) {
+                  setSecilenSayfa('ana');
+                  setTimeout(() => { const el = document.getElementById('urun-listesi'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100);
+                }
+              }}
               style={{ 
                 padding: '8px 15px', 
                 borderRadius: 20, 
