@@ -478,9 +478,10 @@ function App() {
           display: 'flex', 
           justifyContent: 'flex-end', 
           alignItems: 'center', 
-          padding: '0 20px' 
+          padding: '0 20px',
+          pointerEvents: 'none'
         }}>
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center', pointerEvents: 'auto' }}>
             {kullanici ? (
               <>
                 <button 
