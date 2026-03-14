@@ -513,7 +513,7 @@ function App() {
   }, [kampanyalar.length]);
 
   return (
-    <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
+    <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5', display: 'flex', flexDirection: 'column' }}>
       <header style={{ 
         background: 'white', 
         padding: '0', 
@@ -976,7 +976,7 @@ function App() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1200, margin: '20px auto', padding: 20 }}>
+      <div style={{ maxWidth: 1200, margin: '20px auto', padding: 20, flex: 1 }}>
         {secilenSayfa === 'giris' && (
           <div style={{ maxWidth: 400, margin: '50px auto', background: 'white', padding: 40, borderRadius: 12 }}>
             <h2>Giriş Yap</h2>
