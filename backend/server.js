@@ -1251,6 +1251,70 @@ app.get('/', (req, res) => {
   });
 });
 
+// ============================================
+// FOOTER YÖNETİMİ
+// ============================================
+
+// Footer tablosu oluştur
+const createFooterTable = async () => {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS footer_bilgileri (
+        id SERIAL PRIMARY KEY,
+        anahtar VARCHAR(100) UNIQUE NOT NULL,
+        deger TEXT NOT NULL,
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+    // Varsayılan değerleri ekle
+    const { rows } = await sql`SELECT COUNT(*) as count FROM footer_bilgileri`;
+    if (parseInt(rows[0].count) === 0) {
+      await sql`INSERT INTO footer_bilgileri (anahtar, deger) VALUES 
+        ('iletisim', '{"telefon":"0850 000 00 00","email":"info@aslbutique.com","whatsapp":"+90 500 000 0000","calismaSaatleri":"09:00 - 22:00"}'),
+        ('hakkimizda', '{"baslik":"Hakkımızda","icerik":"ASL Butique, kaliteli ve şık giyim ürünleri sunan online mağazanızdır."}'),
+        ('yardim', '["Sipariş Sorgulama","İade ve Değişim","Sıkça Sorulan Sorular","Beden Tablosu","İşlem Rehberi"]'),
+        ('kurumsal', '["Hakkımızda","Gizlilik Politikası","Kullanım Koşulları","KVKK Aydınlatma Metni","İletişim"]'),
+        ('sosyalMedya', '{"instagram":"","facebook":"","twitter":"","youtube":""}')
+      `;
+    }
+  } catch (err) {
+    console.log('Footer tablo hatası:', err.message);
+  }
+};
+createFooterTable();
+
+// Footer bilgilerini getir
+app.get('/api/footer', async (req, res) => {
+  try {
+    const { rows } = await sql`SELECT * FROM footer_bilgileri`;
+    const result = {};
+    rows.forEach(row => {
+      try { result[row.anahtar] = JSON.parse(row.deger); } catch(e) { result[row.anahtar] = row.deger; }
+    });
+    res.json(result);
+  } catch (err) {
+    res.json({ iletisim: { telefon: '', email: '', whatsapp: '', calismaSaatleri: '' }, hakkimizda: { baslik: 'Hakkımızda', icerik: '' }, yardim: [], kurumsal: [], sosyalMedya: {} });
+  }
+});
+
+// Footer bilgilerini güncelle (Admin)
+app.put('/api/admin/footer', async (req, res) => {
+  try {
+    const data = req.body;
+    for (const [anahtar, deger] of Object.entries(data)) {
+      const jsonDeger = JSON.stringify(deger);
+      await sql`
+        INSERT INTO footer_bilgileri (anahtar, deger, updated_at) 
+        VALUES (${anahtar}, ${jsonDeger}, NOW())
+        ON CONFLICT (anahtar) DO UPDATE SET deger = ${jsonDeger}, updated_at = NOW()
+      `;
+    }
+    res.json({ success: true, message: 'Footer güncellendi' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Server başlat
 app.listen(PORT, () => {
   console.log(`🚀 Backend sunucusu http://localhost:${PORT} adresinde çalışıyor`);

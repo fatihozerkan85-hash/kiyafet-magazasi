@@ -35,6 +35,13 @@ function App() {
   const [dil, setDil] = useState('tr');
   const [dilMetinleri, setDilMetinleri] = useState({});
   const [kategoriler, setKategoriler] = useState([]);
+  const [footerBilgileri, setFooterBilgileri] = useState({
+    iletisim: { telefon: '0850 000 00 00', email: 'info@aslbutique.com', whatsapp: '+90 500 000 0000', calismaSaatleri: '09:00 - 22:00' },
+    hakkimizda: { baslik: 'Hakkımızda', icerik: 'ASL Butique, kaliteli ve şık giyim ürünleri sunan online mağazanızdır.' },
+    yardim: ['Sipariş Sorgulama', 'İade ve Değişim', 'Sıkça Sorulan Sorular', 'Beden Tablosu', 'İşlem Rehberi'],
+    kurumsal: ['Hakkımızda', 'Gizlilik Politikası', 'Kullanım Koşulları', 'KVKK Aydınlatma Metni', 'İletişim'],
+    sosyalMedya: { instagram: '', facebook: '', twitter: '', youtube: '' }
+  });
 
   useEffect(() => {
     // Kategorileri yükle
@@ -46,6 +53,12 @@ function App() {
       })
       .catch(err => console.error('❌ Kategori yükleme hatası:', err));
     
+    // Footer bilgilerini yükle
+    fetch(`${API_URL}/api/footer`)
+      .then(res => res.json())
+      .then(data => { if (data && !data.error) setFooterBilgileri(data); })
+      .catch(err => console.error('Footer yüklenemedi:', err));
+
     // Ürünleri yükle
     fetch(`${API_URL}/api/urunler`)
       .then(res => res.json())
@@ -1626,6 +1639,82 @@ function App() {
         )}
 
       </div>
+
+      {/* Footer */}
+      <footer style={{ background: '#1a1a1a', color: '#ccc', padding: '40px 0 20px' }}>
+        {/* Üst İletişim Barı */}
+        <div style={{ borderBottom: '1px solid #333', paddingBottom: 20, marginBottom: 30 }}>
+          <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 20px', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 30, fontSize: 14 }}>
+            {footerBilgileri.iletisim.whatsapp && <span>📱 WhatsApp: {footerBilgileri.iletisim.whatsapp}</span>}
+            {footerBilgileri.iletisim.telefon && <span>📞 {footerBilgileri.iletisim.telefon}</span>}
+            {footerBilgileri.iletisim.calismaSaatleri && <span>🕐 Çalışma Saatleri: {footerBilgileri.iletisim.calismaSaatleri}</span>}
+            {footerBilgileri.iletisim.email && <span>✉️ {footerBilgileri.iletisim.email}</span>}
+          </div>
+        </div>
+
+        {/* Ana Footer İçerik */}
+        <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 30 }}>
+          {/* Hakkımızda */}
+          <div>
+            <h4 style={{ color: 'white', marginBottom: 15, fontSize: 16, fontWeight: 600 }}>{footerBilgileri.hakkimizda.baslik}</h4>
+            <p style={{ fontSize: 13, lineHeight: 1.6, color: '#999' }}>{footerBilgileri.hakkimizda.icerik}</p>
+            {/* Sosyal Medya */}
+            <div style={{ display: 'flex', gap: 12, marginTop: 15 }}>
+              {footerBilgileri.sosyalMedya.instagram && <a href={footerBilgileri.sosyalMedya.instagram} target="_blank" rel="noreferrer" style={{ color: '#ccc', fontSize: 20 }}>📷</a>}
+              {footerBilgileri.sosyalMedya.facebook && <a href={footerBilgileri.sosyalMedya.facebook} target="_blank" rel="noreferrer" style={{ color: '#ccc', fontSize: 20 }}>👤</a>}
+              {footerBilgileri.sosyalMedya.twitter && <a href={footerBilgileri.sosyalMedya.twitter} target="_blank" rel="noreferrer" style={{ color: '#ccc', fontSize: 20 }}>🐦</a>}
+              {footerBilgileri.sosyalMedya.youtube && <a href={footerBilgileri.sosyalMedya.youtube} target="_blank" rel="noreferrer" style={{ color: '#ccc', fontSize: 20 }}>▶️</a>}
+            </div>
+          </div>
+
+          {/* Yardım */}
+          <div>
+            <h4 style={{ color: 'white', marginBottom: 15, fontSize: 16, fontWeight: 600 }}>YARDIM</h4>
+            {footerBilgileri.yardim.map((item, i) => (
+              <p key={i} style={{ fontSize: 13, color: '#999', marginBottom: 8, cursor: 'pointer' }}
+                onMouseOver={e => e.target.style.color = 'white'}
+                onMouseOut={e => e.target.style.color = '#999'}
+              >{item}</p>
+            ))}
+          </div>
+
+          {/* Kurumsal */}
+          <div>
+            <h4 style={{ color: 'white', marginBottom: 15, fontSize: 16, fontWeight: 600 }}>KURUMSAL BİLGİLER</h4>
+            {footerBilgileri.kurumsal.map((item, i) => (
+              <p key={i} style={{ fontSize: 13, color: '#999', marginBottom: 8, cursor: 'pointer' }}
+                onMouseOver={e => e.target.style.color = 'white'}
+                onMouseOut={e => e.target.style.color = '#999'}
+              >{item}</p>
+            ))}
+          </div>
+
+          {/* Favori Kategoriler */}
+          <div>
+            <h4 style={{ color: 'white', marginBottom: 15, fontSize: 16, fontWeight: 600 }}>FAVORİ KATEGORİLER</h4>
+            {kategoriler.filter(k => k.aktif !== false).map((kat, i) => (
+              <p key={i} style={{ fontSize: 13, color: '#999', marginBottom: 8, cursor: 'pointer' }}
+                onClick={() => { setSecilenKategori(kat.ad); setSecilenSayfa('ana'); setTimeout(() => { const el = document.getElementById('urun-listesi'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }}
+                onMouseOver={e => e.target.style.color = 'white'}
+                onMouseOut={e => e.target.style.color = '#999'}
+              >{kat.ad}</p>
+            ))}
+          </div>
+        </div>
+
+        {/* Alt Bar - Copyright */}
+        <div style={{ borderTop: '1px solid #333', marginTop: 30, paddingTop: 20 }}>
+          <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 20px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, fontSize: 12, color: '#666' }}>
+            <span>© 2026 ASL Butique - Tüm Hakları Saklıdır</span>
+            <div style={{ display: 'flex', gap: 20 }}>
+              <span style={{ cursor: 'pointer' }}>Üyelik Sözleşmesi</span>
+              <span style={{ cursor: 'pointer' }}>Gizlilik Politikası</span>
+              <span style={{ cursor: 'pointer' }}>KVKK Aydınlatma Metni</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+
     </div>
   );
 }

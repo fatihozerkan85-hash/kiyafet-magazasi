@@ -120,6 +120,7 @@
                 <button class="tab" onclick="switchTab('users')">👥 Kullanıcılar</button>
                 <button class="tab" onclick="switchTab('coupons')">🎟️ Kuponlar</button>
                 <button class="tab" onclick="switchTab('reports')">📊 Raporlar</button>
+                <button class="tab" onclick="switchTab('footer')">🦶 Footer</button>
             </div>
 
             <!-- Dashboard Tab -->
@@ -423,6 +424,93 @@
                 </div>
             </div>
 
+            <!-- Footer Tab -->
+            <div id="footer" class="tab-content">
+                <div class="card">
+                    <h2>📞 İletişim Bilgileri</h2>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Telefon</label>
+                            <input type="text" id="footerTelefon" placeholder="0850 000 00 00">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="footerEmail" placeholder="info@aslbutique.com">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>WhatsApp</label>
+                            <input type="text" id="footerWhatsapp" placeholder="+90 500 000 0000">
+                        </div>
+                        <div class="form-group">
+                            <label>Çalışma Saatleri</label>
+                            <input type="text" id="footerCalismaSaatleri" placeholder="09:00 - 22:00">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>ℹ️ Hakkımızda</h2>
+                    <div class="form-group">
+                        <label>Başlık</label>
+                        <input type="text" id="footerHakkimizdaBaslik" placeholder="Hakkımızda">
+                    </div>
+                    <div class="form-group">
+                        <label>İçerik</label>
+                        <textarea id="footerHakkimizdaIcerik" rows="4" placeholder="Şirket hakkında bilgi..."></textarea>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>❓ Yardım Linkleri</h2>
+                    <div id="yardimListesi"></div>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="yeniYardimItem" placeholder="Yeni yardım linki ekle...">
+                            <button class="btn btn-primary" onclick="addYardimItem()">➕ Ekle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>🏢 Kurumsal Bilgiler</h2>
+                    <div id="kurumsalListesi"></div>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="yeniKurumsalItem" placeholder="Yeni kurumsal bilgi ekle...">
+                            <button class="btn btn-primary" onclick="addKurumsalItem()">➕ Ekle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>📱 Sosyal Medya</h2>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Instagram URL</label>
+                            <input type="url" id="footerInstagram" placeholder="https://instagram.com/...">
+                        </div>
+                        <div class="form-group">
+                            <label>Facebook URL</label>
+                            <input type="url" id="footerFacebook" placeholder="https://facebook.com/...">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Twitter URL</label>
+                            <input type="url" id="footerTwitter" placeholder="https://twitter.com/...">
+                        </div>
+                        <div class="form-group">
+                            <label>YouTube URL</label>
+                            <input type="url" id="footerYoutube" placeholder="https://youtube.com/...">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-success" onclick="saveFooter()" style="width: 100%; padding: 15px; font-size: 16px;">💾 Footer Bilgilerini Kaydet</button>
+            </div>
+
             <!-- Reports Tab -->
             <div id="reports" class="tab-content">
                 <div class="card">
@@ -537,6 +625,7 @@
             if (tabName === 'users') loadUsers();
             if (tabName === 'coupons') loadCoupons();
             if (tabName === 'reports') loadReports();
+            if (tabName === 'footer') loadFooter();
         }
 
         // Dashboard
@@ -1474,6 +1563,151 @@
         function loadSalesReport(period) {
             // Basitleştirilmiş versiyon - loadSimpleReports kullanılıyor
             loadSimpleReports();
+        }
+
+        // Footer Management
+        let footerYardimItems = [];
+        let footerKurumsalItems = [];
+
+        async function loadFooter() {
+            try {
+                const response = await fetch(`${API_URL}/api/footer`);
+                const data = await response.json();
+
+                // İletişim
+                if (data.iletisim) {
+                    document.getElementById('footerTelefon').value = data.iletisim.telefon || '';
+                    document.getElementById('footerEmail').value = data.iletisim.email || '';
+                    document.getElementById('footerWhatsapp').value = data.iletisim.whatsapp || '';
+                    document.getElementById('footerCalismaSaatleri').value = data.iletisim.calismaSaatleri || '';
+                }
+
+                // Hakkımızda
+                if (data.hakkimizda) {
+                    document.getElementById('footerHakkimizdaBaslik').value = data.hakkimizda.baslik || '';
+                    document.getElementById('footerHakkimizdaIcerik').value = data.hakkimizda.icerik || '';
+                }
+
+                // Yardım
+                if (data.yardim && data.yardim.items) {
+                    footerYardimItems = data.yardim.items;
+                } else {
+                    footerYardimItems = ['Sıkça Sorulan Sorular', 'Kargo Takibi', 'İade ve Değişim', 'Sipariş Takibi'];
+                }
+                renderYardimList();
+
+                // Kurumsal
+                if (data.kurumsal && data.kurumsal.items) {
+                    footerKurumsalItems = data.kurumsal.items;
+                } else {
+                    footerKurumsalItems = ['Gizlilik Politikası', 'Kullanım Koşulları', 'KVKK Aydınlatma Metni', 'Çerez Politikası'];
+                }
+                renderKurumsalList();
+
+                // Sosyal Medya
+                if (data.sosyalMedya) {
+                    document.getElementById('footerInstagram').value = data.sosyalMedya.instagram || '';
+                    document.getElementById('footerFacebook').value = data.sosyalMedya.facebook || '';
+                    document.getElementById('footerTwitter').value = data.sosyalMedya.twitter || '';
+                    document.getElementById('footerYoutube').value = data.sosyalMedya.youtube || '';
+                }
+            } catch (error) {
+                console.error('Footer yüklenemedi:', error);
+                showAlert('❌ Footer bilgileri yüklenemedi', 'error');
+            }
+        }
+
+        function renderYardimList() {
+            const div = document.getElementById('yardimListesi');
+            div.innerHTML = footerYardimItems.map((item, i) => `
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <input type="text" value="${item}" onchange="footerYardimItems[${i}]=this.value" style="flex: 1;">
+                    <button class="btn btn-danger" onclick="removeYardimItem(${i})" style="padding: 8px 12px;">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function addYardimItem() {
+            const input = document.getElementById('yeniYardimItem');
+            if (input.value.trim()) {
+                footerYardimItems.push(input.value.trim());
+                input.value = '';
+                renderYardimList();
+            }
+        }
+
+        function removeYardimItem(index) {
+            footerYardimItems.splice(index, 1);
+            renderYardimList();
+        }
+
+        function renderKurumsalList() {
+            const div = document.getElementById('kurumsalListesi');
+            div.innerHTML = footerKurumsalItems.map((item, i) => `
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <input type="text" value="${item}" onchange="footerKurumsalItems[${i}]=this.value" style="flex: 1;">
+                    <button class="btn btn-danger" onclick="removeKurumsalItem(${i})" style="padding: 8px 12px;">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function addKurumsalItem() {
+            const input = document.getElementById('yeniKurumsalItem');
+            if (input.value.trim()) {
+                footerKurumsalItems.push(input.value.trim());
+                input.value = '';
+                renderKurumsalList();
+            }
+        }
+
+        function removeKurumsalItem(index) {
+            footerKurumsalItems.splice(index, 1);
+            renderKurumsalList();
+        }
+
+        async function saveFooter() {
+            const data = {
+                iletisim: {
+                    telefon: document.getElementById('footerTelefon').value,
+                    email: document.getElementById('footerEmail').value,
+                    whatsapp: document.getElementById('footerWhatsapp').value,
+                    calismaSaatleri: document.getElementById('footerCalismaSaatleri').value
+                },
+                hakkimizda: {
+                    baslik: document.getElementById('footerHakkimizdaBaslik').value,
+                    icerik: document.getElementById('footerHakkimizdaIcerik').value
+                },
+                yardim: {
+                    items: footerYardimItems
+                },
+                kurumsal: {
+                    items: footerKurumsalItems
+                },
+                sosyalMedya: {
+                    instagram: document.getElementById('footerInstagram').value,
+                    facebook: document.getElementById('footerFacebook').value,
+                    twitter: document.getElementById('footerTwitter').value,
+                    youtube: document.getElementById('footerYoutube').value
+                }
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/api/admin/footer`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.basarili) {
+                    showAlert('✅ Footer bilgileri kaydedildi!', 'success');
+                } else {
+                    showAlert('❌ ' + (result.mesaj || 'Kayıt başarısız'), 'error');
+                }
+            } catch (error) {
+                console.error('Footer kayıt hatası:', error);
+                showAlert('❌ Footer bilgileri kaydedilemedi', 'error');
+            }
         }
 
         // Initialize
