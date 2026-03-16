@@ -46,23 +46,25 @@
     <noscript>Bu uygulamayı çalıştırmak için JavaScript'i etkinleştirmeniz gerekir.</noscript>
     <div id="root"></div>
     <script>
-      // Debug: Bu script calisiyorsa yeni build deploy edilmis demektir
       if(window.innerWidth <= 768) {
-        console.log('FOOTER-FIX-V5: Script yuklendi - ' + new Date().toISOString());
-        
-        // 2 saniye sonra kontrol et
         setTimeout(function() {
           var app = document.querySelector('.App');
-          if(app) {
-            var cs = window.getComputedStyle(app);
-            console.log('FOOTER-FIX-V5: .App display=' + cs.display + ' flexDir=' + cs.flexDirection + ' minH=' + cs.minHeight);
-            var footer = app.querySelector('footer');
-            if(footer) {
-              var fcs = window.getComputedStyle(footer);
-              console.log('FOOTER-FIX-V5: footer marginTop=' + fcs.marginTop);
-            }
-          }
-        }, 2000);
+          if(!app) return;
+          var cs = window.getComputedStyle(app);
+          var footer = app.querySelector('footer');
+          var fcs = footer ? window.getComputedStyle(footer) : null;
+          var info = 'V5 DEBUG | ' +
+            'App.display=' + cs.display + 
+            ' | App.flexDir=' + cs.flexDirection + 
+            ' | App.minH=' + cs.minHeight +
+            ' | App.height=' + cs.height +
+            ' | Footer.mTop=' + (fcs ? fcs.marginTop : 'N/A') +
+            ' | Children=' + app.children.length;
+          var d = document.createElement('div');
+          d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:8px;font-size:11px;z-index:99999;word-break:break-all;';
+          d.textContent = info;
+          document.body.appendChild(d);
+        }, 3000);
       }
     </script>
   </body>
