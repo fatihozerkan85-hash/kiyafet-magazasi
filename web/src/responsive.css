@@ -11,24 +11,17 @@
     overflow-x: hidden !important;
   }
 
-  /* .App - flex column layout */
+  /* .App - FLEX YERINE BLOCK LAYOUT */
   .App {
-    display: flex !important;
-    flex-direction: column !important;
+    display: block !important;
     min-height: 100vh !important;
     overflow-x: hidden !important;
     max-width: 100vw !important;
   }
 
-  /* Tum child'lar shrink olmasin */
-  .App > * {
-    flex-shrink: 0 !important;
-  }
-
-  /* Footer en alta */
+  /* Footer - block layout'ta zaten en altta, ek stil gerekmiyor */
   .App > footer {
-    margin-top: auto !important;
-    flex-shrink: 0 !important;
+    width: 100% !important;
   }
 
   /* Header - Sabit yükseklik */
