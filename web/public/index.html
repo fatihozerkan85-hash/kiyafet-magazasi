@@ -8,63 +8,89 @@
     <meta name="description" content="ASL BUTIQUE - Online Alışveriş" />
     <title>ASL BUTIQUE</title>
     <style>
-      /* Mobil footer fix */
-      @media (max-width: 768px) {
-        .App {
-          display: flex !important;
-          flex-direction: column !important;
-          min-height: 100vh !important;
-        }
-        .App > footer {
-          margin-top: auto !important;
-        }
-      }
+      /* Mobil footer fix - JS ile yonetiliyor */
     </style>
   </head>
   <body>
     <noscript>Bu uygulamayı çalıştırmak için JavaScript'i etkinleştirmeniz gerekir.</noscript>
     <div id="root"></div>
     <script>
-      // Mobil footer fix - async içerik yüklendikten sonra footer'ı düzelt
-      if (window.innerWidth <= 768) {
-        var fixFooter = function() {
+      (function() {
+        if (window.innerWidth > 768) return;
+
+        var debounceTimer = null;
+
+        function fixFooter() {
           var app = document.querySelector('.App');
           if (!app) return;
-          var footer = app.querySelector(':scope > footer');
+          var footer = app.querySelector('footer');
           if (!footer) return;
-          // App'in gerçek içerik yüksekliğini hesapla
-          var children = app.children;
-          var totalH = 0;
-          for (var i = 0; i < children.length; i++) {
-            totalH += children[i].offsetHeight || 0;
+
+          // Flex'i kapat, position relative yap
+          app.style.display = 'block';
+          app.style.position = 'relative';
+
+          // Footer haric content yuksekligi
+          var contentH = 0;
+          for (var i = 0; i < app.children.length; i++) {
+            var child = app.children[i];
+            if (child.tagName !== 'FOOTER' && child.style.position !== 'fixed') {
+              contentH += child.getBoundingClientRect().height;
+            }
           }
+
+          var footerH = footer.getBoundingClientRect().height;
+          var totalNeeded = contentH + footerH;
           var viewH = window.innerHeight;
-          if (totalH > viewH) {
-            app.style.minHeight = totalH + 'px';
-          }
-        };
-        // MutationObserver ile DOM değişikliklerini izle
-        var observer = new MutationObserver(function() {
-          fixFooter();
-        });
-        var startObserver = function() {
-          var app = document.querySelector('.App');
-          if (app) {
-            observer.observe(app, { childList: true, subtree: true, attributes: true });
-            fixFooter();
+
+          // App yuksekligini ayarla - icerik + footer
+          if (totalNeeded < viewH) {
+            app.style.minHeight = viewH + 'px';
           } else {
-            setTimeout(startObserver, 100);
+            app.style.minHeight = totalNeeded + 'px';
           }
-        };
-        // Sayfa yüklendiğinde başlat
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', startObserver);
-        } else {
-          startObserver();
         }
-        // Resize'da da çalıştır
-        window.addEventListener('resize', fixFooter);
-      }
+
+        function debouncedFix() {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(fixFooter, 50);
+        }
+
+        // DOM hazir olunca basla
+        function init() {
+          var app = document.querySelector('.App');
+          if (!app) {
+            setTimeout(init, 200);
+            return;
+          }
+
+          // Ilk calistir
+          fixFooter();
+
+          // Her DOM degisikliginde calistir
+          var obs = new MutationObserver(debouncedFix);
+          obs.observe(app, { childList: true, subtree: true });
+
+          // Img load olunca da calistir (urun resimleri)
+          app.addEventListener('load', debouncedFix, true);
+
+          // Periyodik kontrol - ilk 10 saniye her 500ms
+          var count = 0;
+          var interval = setInterval(function() {
+            fixFooter();
+            count++;
+            if (count >= 20) clearInterval(interval);
+          }, 500);
+
+          window.addEventListener('resize', debouncedFix);
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else {
+          init();
+        }
+      })();
     </script>
   </body>
 </html>

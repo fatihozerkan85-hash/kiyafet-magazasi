@@ -7,18 +7,10 @@
     max-width: 100vw !important;
   }
 
-  /* Ana container - footer'ı en alta it */
+  /* Ana container - JS ile footer pozisyonu yonetiliyor */
   .App {
-    display: flex !important;
-    flex-direction: column !important;
-    min-height: 100vh !important;
     overflow-x: hidden !important;
     max-width: 100vw !important;
-  }
-
-  .App > footer {
-    margin-top: auto !important;
-    flex-shrink: 0 !important;
   }
 
   /* Header - Sabit yükseklik */
