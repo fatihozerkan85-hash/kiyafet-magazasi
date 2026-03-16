@@ -49,35 +49,37 @@
     <div id="root"></div>
     <script>
       if(window.innerWidth <= 768) {
-        setTimeout(function() {
+        function fixHeights() {
           var app = document.querySelector('.App');
           if(!app) return;
+          // Main content div (3. child, index 2)
           var mainDiv = app.children[2];
-          if(!mainDiv) return;
-          var mcs = window.getComputedStyle(mainDiv);
-          var info = 'V9 | MainDiv: display=' + mcs.display + 
-            ' height=' + mcs.height + 
-            ' maxHeight=' + mcs.maxHeight + 
-            ' minHeight=' + mcs.minHeight +
-            ' overflow=' + mcs.overflow +
-            ' overflowY=' + mcs.overflowY +
-            ' position=' + mcs.position +
-            ' boxSizing=' + mcs.boxSizing +
-            ' padding=' + mcs.padding +
-            ' h=' + Math.round(mainDiv.getBoundingClientRect().height) +
-            ' sH=' + mainDiv.scrollHeight +
-            ' oH=' + mainDiv.offsetHeight +
-            ' cH=' + mainDiv.clientHeight;
-          // Ilk child'in bilgisi
-          var fc = mainDiv.children[0];
-          if(fc) {
-            info += ' | FirstChild: tag=' + fc.tagName + ' h=' + Math.round(fc.getBoundingClientRect().height) + ' sH=' + fc.scrollHeight;
+          if(mainDiv && mainDiv.tagName === 'DIV' && mainDiv.tagName !== 'FOOTER') {
+            mainDiv.style.setProperty('height', 'auto', 'important');
+            mainDiv.style.setProperty('min-height', '0', 'important');
+            mainDiv.style.setProperty('overflow', 'visible', 'important');
+            // Ilk child da
+            if(mainDiv.children[0]) {
+              mainDiv.children[0].style.setProperty('height', 'auto', 'important');
+              mainDiv.children[0].style.setProperty('overflow', 'visible', 'important');
+            }
           }
-          var d = document.createElement('div');
-          d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:blue;color:white;padding:8px;font-size:10px;z-index:99999;word-break:break-all;max-height:120px;overflow-y:auto;';
-          d.textContent = info;
-          document.body.appendChild(d);
-        }, 4000);
+        }
+        
+        function init() {
+          var app = document.querySelector('.App');
+          if(!app) { setTimeout(init, 200); return; }
+          fixHeights();
+          // DOM degisikliklerini izle
+          new MutationObserver(fixHeights).observe(app, { childList: true, subtree: true });
+          // Periyodik kontrol - ilk 15 saniye
+          var c = 0;
+          var iv = setInterval(function() { fixHeights(); if(++c >= 30) clearInterval(iv); }, 500);
+        }
+        
+        if(document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else { init(); }
       }
     </script>
   </body>
