@@ -9,13 +9,18 @@
     <title>ASL BUTIQUE</title>
     <style>
       @media (max-width: 768px) {
-        html, body { margin: 0 !important; padding: 0 !important; min-height: 100vh !important; }
-        #root { display: contents !important; }
+        html, body { margin: 0 !important; padding: 0 !important; }
+        #root { min-height: 100vh !important; }
         .App {
-          display: grid !important;
-          grid-template-rows: auto auto 1fr auto !important;
+          display: flex !important;
+          flex-direction: column !important;
           min-height: 100vh !important;
         }
+        .App > header { flex: 0 0 auto !important; }
+        .App > header + div { flex: 0 0 auto !important; }
+        .App > header + div + div { flex: 1 0 auto !important; }
+        .App > div[style*="position: fixed"] { flex: 0 0 0px !important; }
+        .App > footer { flex: 0 0 auto !important; position: relative !important; }
       }
     </style>
   </head>
