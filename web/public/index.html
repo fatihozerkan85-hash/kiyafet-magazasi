@@ -8,89 +8,31 @@
     <meta name="description" content="ASL BUTIQUE - Online Alışveriş" />
     <title>ASL BUTIQUE</title>
     <style>
-      /* Mobil footer fix - JS ile yonetiliyor */
+      @media (max-width: 768px) {
+        html, body {
+          height: auto !important;
+          min-height: 100vh !important;
+        }
+        #root {
+          display: flex !important;
+          flex-direction: column !important;
+          min-height: 100vh !important;
+        }
+        .App {
+          display: flex !important;
+          flex-direction: column !important;
+          flex: 1 !important;
+          min-height: auto !important;
+          height: auto !important;
+        }
+        .App > footer {
+          margin-top: auto !important;
+        }
+      }
     </style>
   </head>
   <body>
     <noscript>Bu uygulamayı çalıştırmak için JavaScript'i etkinleştirmeniz gerekir.</noscript>
     <div id="root"></div>
-    <script>
-      (function() {
-        if (window.innerWidth > 768) return;
-
-        var debounceTimer = null;
-
-        function fixFooter() {
-          var app = document.querySelector('.App');
-          if (!app) return;
-          var footer = app.querySelector('footer');
-          if (!footer) return;
-
-          // Flex'i kapat, position relative yap
-          app.style.display = 'block';
-          app.style.position = 'relative';
-
-          // Footer haric content yuksekligi
-          var contentH = 0;
-          for (var i = 0; i < app.children.length; i++) {
-            var child = app.children[i];
-            if (child.tagName !== 'FOOTER' && child.style.position !== 'fixed') {
-              contentH += child.getBoundingClientRect().height;
-            }
-          }
-
-          var footerH = footer.getBoundingClientRect().height;
-          var totalNeeded = contentH + footerH;
-          var viewH = window.innerHeight;
-
-          // App yuksekligini ayarla - icerik + footer
-          if (totalNeeded < viewH) {
-            app.style.minHeight = viewH + 'px';
-          } else {
-            app.style.minHeight = totalNeeded + 'px';
-          }
-        }
-
-        function debouncedFix() {
-          clearTimeout(debounceTimer);
-          debounceTimer = setTimeout(fixFooter, 50);
-        }
-
-        // DOM hazir olunca basla
-        function init() {
-          var app = document.querySelector('.App');
-          if (!app) {
-            setTimeout(init, 200);
-            return;
-          }
-
-          // Ilk calistir
-          fixFooter();
-
-          // Her DOM degisikliginde calistir
-          var obs = new MutationObserver(debouncedFix);
-          obs.observe(app, { childList: true, subtree: true });
-
-          // Img load olunca da calistir (urun resimleri)
-          app.addEventListener('load', debouncedFix, true);
-
-          // Periyodik kontrol - ilk 10 saniye her 500ms
-          var count = 0;
-          var interval = setInterval(function() {
-            fixFooter();
-            count++;
-            if (count >= 20) clearInterval(interval);
-          }, 500);
-
-          window.addEventListener('resize', debouncedFix);
-        }
-
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', init);
-        } else {
-          init();
-        }
-      })();
-    </script>
   </body>
 </html>
