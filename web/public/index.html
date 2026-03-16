@@ -8,11 +8,63 @@
     <meta name="description" content="ASL BUTIQUE - Online Alışveriş" />
     <title>ASL BUTIQUE</title>
     <style>
-      /* Mobil footer fix - responsive.css ile senkronize */
+      /* Mobil footer fix */
+      @media (max-width: 768px) {
+        .App {
+          display: flex !important;
+          flex-direction: column !important;
+          min-height: 100vh !important;
+        }
+        .App > footer {
+          margin-top: auto !important;
+        }
+      }
     </style>
   </head>
   <body>
     <noscript>Bu uygulamayı çalıştırmak için JavaScript'i etkinleştirmeniz gerekir.</noscript>
     <div id="root"></div>
+    <script>
+      // Mobil footer fix - async içerik yüklendikten sonra footer'ı düzelt
+      if (window.innerWidth <= 768) {
+        var fixFooter = function() {
+          var app = document.querySelector('.App');
+          if (!app) return;
+          var footer = app.querySelector(':scope > footer');
+          if (!footer) return;
+          // App'in gerçek içerik yüksekliğini hesapla
+          var children = app.children;
+          var totalH = 0;
+          for (var i = 0; i < children.length; i++) {
+            totalH += children[i].offsetHeight || 0;
+          }
+          var viewH = window.innerHeight;
+          if (totalH > viewH) {
+            app.style.minHeight = totalH + 'px';
+          }
+        };
+        // MutationObserver ile DOM değişikliklerini izle
+        var observer = new MutationObserver(function() {
+          fixFooter();
+        });
+        var startObserver = function() {
+          var app = document.querySelector('.App');
+          if (app) {
+            observer.observe(app, { childList: true, subtree: true, attributes: true });
+            fixFooter();
+          } else {
+            setTimeout(startObserver, 100);
+          }
+        };
+        // Sayfa yüklendiğinde başlat
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', startObserver);
+        } else {
+          startObserver();
+        }
+        // Resize'da da çalıştır
+        window.addEventListener('resize', fixFooter);
+      }
+    </script>
   </body>
 </html>

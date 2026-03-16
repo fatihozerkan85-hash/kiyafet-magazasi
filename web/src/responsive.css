@@ -16,10 +16,10 @@
     max-width: 100vw !important;
   }
 
-  .App > header { flex: 0 0 auto !important; }
-  .App > header + div { flex: 0 0 auto !important; }
-  .App > header + div + div { flex: 1 0 auto !important; }
-  .App > footer { flex: 0 0 auto !important; }
+  .App > footer {
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+  }
 
   /* Header - Sabit yükseklik */
   header {
