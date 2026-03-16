@@ -7,11 +7,6 @@
     <meta name="theme-color" content="#C85A8E" />
     <meta name="description" content="ASL BUTIQUE - Online Alışveriş" />
     <title>ASL BUTIQUE</title>
-    <style>
-      @media screen and (max-width: 768px) {
-        .App { position: relative !important; }
-      }
-    </style>
   </head>
   <body>
     <noscript>Bu uygulamayı çalıştırmak için JavaScript'i etkinleştirmeniz gerekir.</noscript>
@@ -23,44 +18,48 @@
       function fix() {
         var app = document.querySelector('.App');
         if(!app) return;
+        var footer = null;
+        var contentScrollH = 0;
 
-        // Tum child'larin SCROLL yuksekligini topla
-        var total = 0;
         for(var i = 0; i < app.children.length; i++) {
           var c = app.children[i];
-          // fixed pozisyonlu elementleri (cerez banner) atla
-          if(c.style.position === 'fixed') continue;
-          var sh = c.scrollHeight || 0;
-          // margin'leri de ekle
-          var cs = window.getComputedStyle(c);
-          var mt = parseInt(cs.marginTop) || 0;
-          var mb = parseInt(cs.marginBottom) || 0;
-          total += sh + mt + mb;
+          if(c.tagName === 'FOOTER') {
+            footer = c;
+          } else if(c.style.position !== 'fixed') {
+            var cs = window.getComputedStyle(c);
+            contentScrollH += c.scrollHeight + (parseInt(cs.marginTop)||0) + (parseInt(cs.marginBottom)||0);
+          }
         }
 
-        // .App'in min-height'ini toplam scroll yuksekligine ayarla
+        if(!footer) return;
+
+        var footerH = footer.scrollHeight;
+        var totalH = contentScrollH + footerH;
         var viewH = window.innerHeight;
-        var needed = Math.max(total, viewH);
-        app.style.setProperty('min-height', needed + 'px', 'important');
+        var finalH = Math.max(totalH, viewH);
+
+        // App'i position relative yap ve yuksekligi ayarla
+        app.style.setProperty('position', 'relative', 'important');
+        app.style.setProperty('min-height', finalH + 'px', 'important');
+        app.style.setProperty('padding-bottom', footerH + 'px', 'important');
+
+        // Footer'i absolute bottom 0 yap
+        footer.style.setProperty('position', 'absolute', 'important');
+        footer.style.setProperty('bottom', '0', 'important');
+        footer.style.setProperty('left', '0', 'important');
+        footer.style.setProperty('right', '0', 'important');
+        footer.style.setProperty('width', '100%', 'important');
       }
 
       function init() {
         var app = document.querySelector('.App');
         if(!app) { setTimeout(init, 200); return; }
-
         fix();
-
-        // DOM degisikliklerinde tekrar hesapla
         new MutationObserver(function(){ setTimeout(fix, 100); })
           .observe(app, { childList: true, subtree: true });
-
-        // Resim yuklendiginde tekrar hesapla
         app.addEventListener('load', function(){ setTimeout(fix, 100); }, true);
-
-        // Ilk 20 saniye periyodik kontrol
         var n = 0;
         var iv = setInterval(function(){ fix(); if(++n >= 40) clearInterval(iv); }, 500);
-
         window.addEventListener('resize', fix);
       }
 

@@ -11,11 +11,16 @@
     overflow-x: hidden !important;
   }
 
-  /* .App - JS ile min-height hesaplaniyor */
+  /* .App - JS ile pozisyon ve yukseklik ayarlaniyor */
   .App {
     position: relative !important;
     overflow-x: hidden !important;
     max-width: 100vw !important;
+  }
+
+  /* Footer - JS ile absolute bottom yapiliyor */
+  .App > footer {
+    width: 100% !important;
   }
 
   /* Header - Sabit yükseklik */
