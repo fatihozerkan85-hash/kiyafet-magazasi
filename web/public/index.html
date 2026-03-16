@@ -53,18 +53,32 @@
           var cs = window.getComputedStyle(app);
           var footer = app.querySelector('footer');
           var fcs = footer ? window.getComputedStyle(footer) : null;
-          var info = 'V5 DEBUG | ' +
-            'App.display=' + cs.display + 
-            ' | App.flexDir=' + cs.flexDirection + 
-            ' | App.minH=' + cs.minHeight +
-            ' | App.height=' + cs.height +
-            ' | Footer.mTop=' + (fcs ? fcs.marginTop : 'N/A') +
-            ' | Children=' + app.children.length;
+          
+          // Her child'in bilgisini topla
+          var childInfo = '';
+          for(var i = 0; i < app.children.length; i++) {
+            var c = app.children[i];
+            var ccs = window.getComputedStyle(c);
+            var tag = c.tagName;
+            var h = c.getBoundingClientRect().height;
+            var top = c.getBoundingClientRect().top;
+            var overflow = ccs.overflow;
+            childInfo += ' | C' + i + '=' + tag + ' h=' + Math.round(h) + ' top=' + Math.round(top) + ' ovf=' + overflow;
+          }
+          
+          // scrollHeight vs clientHeight
+          var mainDiv = app.children[2]; // 3. child = main content
+          var mainInfo = mainDiv ? 'MainDiv scrollH=' + mainDiv.scrollHeight + ' clientH=' + mainDiv.clientHeight + ' ovf=' + window.getComputedStyle(mainDiv).overflow : 'N/A';
+          
+          var info = 'V6 | App.h=' + Math.round(app.getBoundingClientRect().height) + 
+            ' App.scrollH=' + app.scrollHeight +
+            childInfo +
+            ' | ' + mainInfo;
           var d = document.createElement('div');
-          d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:8px;font-size:11px;z-index:99999;word-break:break-all;';
+          d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:8px;font-size:10px;z-index:99999;word-break:break-all;max-height:150px;overflow-y:auto;';
           d.textContent = info;
           document.body.appendChild(d);
-        }, 3000);
+        }, 4000);
       }
     </script>
   </body>
