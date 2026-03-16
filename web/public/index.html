@@ -7,40 +7,9 @@
     <meta name="theme-color" content="#C85A8E" />
     <meta name="description" content="ASL BUTIQUE - Online Alışveriş" />
     <title>ASL BUTIQUE</title>
-    <style id="mobile-footer-fix">
+    <style>
       @media screen and (max-width: 768px) {
-        html { height: auto !important; }
-        body { height: auto !important; margin: 0 !important; }
-        #root { height: auto !important; }
-        
-        .App,
-        div.App,
-        #root > .App,
-        #root > div.App,
-        div[class="App"],
-        #root > div[class="App"] {
-          display: block !important;
-          min-height: 100vh !important;
-          position: relative !important;
-        }
-
-        /* Tum child'lar flex-shrink: 0 - kuculmeyecek */
-        .App > *,
-        div.App > * {
-          flex-shrink: 0 !important;
-        }
-        
-        /* Footer - margin-top auto ile en alta */
-        .App > footer,
-        div.App > footer,
-        #root > .App > footer,
-        #root > div > footer {
-          margin-top: auto !important;
-          flex-shrink: 0 !important;
-          position: relative !important;
-          z-index: 1 !important;
-          width: 100% !important;
-        }
+        .App { position: relative !important; }
       }
     </style>
   </head>
@@ -48,39 +17,57 @@
     <noscript>Bu uygulamayı çalıştırmak için JavaScript'i etkinleştirmeniz gerekir.</noscript>
     <div id="root"></div>
     <script>
-      if(window.innerWidth <= 768) {
-        function fixHeights() {
-          var app = document.querySelector('.App');
-          if(!app) return;
-          // Main content div (3. child, index 2)
-          var mainDiv = app.children[2];
-          if(mainDiv && mainDiv.tagName === 'DIV' && mainDiv.tagName !== 'FOOTER') {
-            mainDiv.style.setProperty('height', 'auto', 'important');
-            mainDiv.style.setProperty('min-height', '0', 'important');
-            mainDiv.style.setProperty('overflow', 'visible', 'important');
-            // Ilk child da
-            if(mainDiv.children[0]) {
-              mainDiv.children[0].style.setProperty('height', 'auto', 'important');
-              mainDiv.children[0].style.setProperty('overflow', 'visible', 'important');
-            }
-          }
+    (function(){
+      if(window.innerWidth > 768) return;
+
+      function fix() {
+        var app = document.querySelector('.App');
+        if(!app) return;
+
+        // Tum child'larin SCROLL yuksekligini topla
+        var total = 0;
+        for(var i = 0; i < app.children.length; i++) {
+          var c = app.children[i];
+          // fixed pozisyonlu elementleri (cerez banner) atla
+          if(c.style.position === 'fixed') continue;
+          var sh = c.scrollHeight || 0;
+          // margin'leri de ekle
+          var cs = window.getComputedStyle(c);
+          var mt = parseInt(cs.marginTop) || 0;
+          var mb = parseInt(cs.marginBottom) || 0;
+          total += sh + mt + mb;
         }
-        
-        function init() {
-          var app = document.querySelector('.App');
-          if(!app) { setTimeout(init, 200); return; }
-          fixHeights();
-          // DOM degisikliklerini izle
-          new MutationObserver(fixHeights).observe(app, { childList: true, subtree: true });
-          // Periyodik kontrol - ilk 15 saniye
-          var c = 0;
-          var iv = setInterval(function() { fixHeights(); if(++c >= 30) clearInterval(iv); }, 500);
-        }
-        
-        if(document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', init);
-        } else { init(); }
+
+        // .App'in min-height'ini toplam scroll yuksekligine ayarla
+        var viewH = window.innerHeight;
+        var needed = Math.max(total, viewH);
+        app.style.setProperty('min-height', needed + 'px', 'important');
       }
+
+      function init() {
+        var app = document.querySelector('.App');
+        if(!app) { setTimeout(init, 200); return; }
+
+        fix();
+
+        // DOM degisikliklerinde tekrar hesapla
+        new MutationObserver(function(){ setTimeout(fix, 100); })
+          .observe(app, { childList: true, subtree: true });
+
+        // Resim yuklendiginde tekrar hesapla
+        app.addEventListener('load', function(){ setTimeout(fix, 100); }, true);
+
+        // Ilk 20 saniye periyodik kontrol
+        var n = 0;
+        var iv = setInterval(function(){ fix(); if(++n >= 40) clearInterval(iv); }, 500);
+
+        window.addEventListener('resize', fix);
+      }
+
+      if(document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else { init(); }
+    })();
     </script>
   </body>
 </html>
