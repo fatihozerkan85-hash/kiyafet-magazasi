@@ -22,10 +22,15 @@
         div[class="App"],
         #root > div[class="App"] {
           min-height: 100vh !important;
-          height: auto !important;
           display: flex !important;
           flex-direction: column !important;
           position: relative !important;
+        }
+
+        /* Tum child'lar flex-shrink: 0 - kuculmeyecek */
+        .App > *,
+        div.App > * {
+          flex-shrink: 0 !important;
         }
         
         /* Footer - margin-top auto ile en alta */
@@ -50,32 +55,17 @@
         setTimeout(function() {
           var app = document.querySelector('.App');
           if(!app) return;
-          var cs = window.getComputedStyle(app);
-          var footer = app.querySelector('footer');
-          var fcs = footer ? window.getComputedStyle(footer) : null;
-          
-          // Her child'in bilgisini topla
           var childInfo = '';
           for(var i = 0; i < app.children.length; i++) {
             var c = app.children[i];
             var ccs = window.getComputedStyle(c);
-            var tag = c.tagName;
-            var h = c.getBoundingClientRect().height;
-            var top = c.getBoundingClientRect().top;
-            var overflow = ccs.overflow;
-            childInfo += ' | C' + i + '=' + tag + ' h=' + Math.round(h) + ' top=' + Math.round(top) + ' ovf=' + overflow;
+            childInfo += ' C' + i + '=' + c.tagName + ' h=' + Math.round(c.getBoundingClientRect().height) + 
+              ' sH=' + c.scrollHeight + ' shrink=' + ccs.flexShrink + ' |';
           }
-          
-          // scrollHeight vs clientHeight
-          var mainDiv = app.children[2]; // 3. child = main content
-          var mainInfo = mainDiv ? 'MainDiv scrollH=' + mainDiv.scrollHeight + ' clientH=' + mainDiv.clientHeight + ' ovf=' + window.getComputedStyle(mainDiv).overflow : 'N/A';
-          
-          var info = 'V6 | App.h=' + Math.round(app.getBoundingClientRect().height) + 
-            ' App.scrollH=' + app.scrollHeight +
-            childInfo +
-            ' | ' + mainInfo;
+          var info = 'V7 | App.h=' + Math.round(app.getBoundingClientRect().height) + 
+            ' sH=' + app.scrollHeight + ' |' + childInfo;
           var d = document.createElement('div');
-          d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:8px;font-size:10px;z-index:99999;word-break:break-all;max-height:150px;overflow-y:auto;';
+          d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:8px;font-size:10px;z-index:99999;word-break:break-all;max-height:120px;overflow-y:auto;';
           d.textContent = info;
           document.body.appendChild(d);
         }, 4000);
