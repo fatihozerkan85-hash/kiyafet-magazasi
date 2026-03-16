@@ -7,18 +7,24 @@
     max-width: 100vw !important;
   }
 
-  /* #root - grid ile footer en alta */
   #root {
     overflow-x: hidden !important;
-    display: grid !important;
-    grid-template-rows: 1fr auto !important;
-    min-height: 100vh !important;
   }
 
-  /* .App - JS ile flex column yapılıyor, burada sadece overflow */
+  /* .App - flex column layout */
   .App {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100vh !important;
+    height: auto !important;
     overflow-x: hidden !important;
     max-width: 100vw !important;
+  }
+
+  /* Footer en alta */
+  .App > footer {
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
   }
 
   /* Header - Sabit yükseklik */

@@ -7,49 +7,63 @@
     <meta name="theme-color" content="#C85A8E" />
     <meta name="description" content="ASL BUTIQUE - Online Alışveriş" />
     <title>ASL BUTIQUE</title>
+    <style id="mobile-footer-fix">
+      /* MOBIL FOOTER FIX - en agresif yontem */
+      @media screen and (max-width: 768px) {
+        html { height: auto !important; }
+        body { height: auto !important; min-height: 100vh !important; margin: 0 !important; }
+        #root { height: auto !important; min-height: 100vh !important; }
+        
+        /* .App - tum olasiliklari kapat */
+        .App,
+        div.App,
+        #root > .App,
+        #root > div.App,
+        div[class="App"],
+        #root > div[class="App"] {
+          min-height: 100vh !important;
+          height: auto !important;
+          display: flex !important;
+          flex-direction: column !important;
+          position: relative !important;
+        }
+        
+        /* Footer - margin-top auto ile en alta */
+        .App > footer,
+        div.App > footer,
+        #root > .App > footer,
+        #root > div > footer {
+          margin-top: auto !important;
+          flex-shrink: 0 !important;
+          position: relative !important;
+          z-index: 1 !important;
+          width: 100% !important;
+        }
+      }
+    </style>
   </head>
   <body>
     <noscript>Bu uygulamayı çalıştırmak için JavaScript'i etkinleştirmeniz gerekir.</noscript>
     <div id="root"></div>
     <script>
-    (function(){
-      if(window.innerWidth > 768) return;
-      var fixing = false;
-
-      function applyFix(app) {
-        if(fixing) return;
-        fixing = true;
-        app.style.cssText = app.style.cssText + 
-          '; display: flex !important; flex-direction: column !important; min-height: 100vh !important;';
-        var footer = app.querySelector('footer');
-        if(footer) {
-          footer.style.cssText = footer.style.cssText + 
-            '; margin-top: auto !important; flex-shrink: 0 !important;';
-        }
-        setTimeout(function(){ fixing = false; }, 50);
-      }
-
-      function init() {
-        var app = document.querySelector('.App');
-        if(!app) { setTimeout(init, 100); return; }
+      // Debug: Bu script calisiyorsa yeni build deploy edilmis demektir
+      if(window.innerWidth <= 768) {
+        console.log('FOOTER-FIX-V5: Script yuklendi - ' + new Date().toISOString());
         
-        applyFix(app);
-
-        // React re-render'larını yakala
-        new MutationObserver(function() {
-          var a = document.querySelector('.App');
-          if(a) applyFix(a);
-        }).observe(document.getElementById('root'), { 
-          childList: true, subtree: true, attributes: true, attributeFilter: ['style']
-        });
+        // 2 saniye sonra kontrol et
+        setTimeout(function() {
+          var app = document.querySelector('.App');
+          if(app) {
+            var cs = window.getComputedStyle(app);
+            console.log('FOOTER-FIX-V5: .App display=' + cs.display + ' flexDir=' + cs.flexDirection + ' minH=' + cs.minHeight);
+            var footer = app.querySelector('footer');
+            if(footer) {
+              var fcs = window.getComputedStyle(footer);
+              console.log('FOOTER-FIX-V5: footer marginTop=' + fcs.marginTop);
+            }
+          }
+        }, 2000);
       }
-
-      if(document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-      } else {
-        init();
-      }
-    })();
     </script>
   </body>
 </html>
