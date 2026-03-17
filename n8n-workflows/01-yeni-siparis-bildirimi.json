@@ -1,0 +1,55 @@
+{
+  "name": "ASL Butique - Yeni Sipariş Bildirimi",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "asl-yeni-siparis",
+        "responseMode": "onReceived",
+        "responseData": "allEntries"
+      },
+      "name": "Webhook - Yeni Sipariş",
+      "type": "n8n-nodes-base.webhook",
+      "position": [250, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$env.EMAIL_FROM || 'info@aslbutique.com'}}",
+        "toEmail": "={{$env.ADMIN_EMAIL || 'admin@aslbutique.com'}}",
+        "subject": "🛒 Yeni Sipariş #{{$json.siparisId}} - {{$json.toplamTutar}} TL",
+        "text": "Yeni sipariş alındı!\n\nSipariş No: #{{$json.siparisId}}\nToplam: {{$json.toplamTutar}} TL\nÜrün Sayısı: {{$json.urunSayisi}}\nÖdeme: {{$json.odemeTipi}}\nAdres: {{$json.adres}}\nTelefon: {{$json.telefon}}\n\nTarih: {{$json.timestamp}}"
+      },
+      "name": "Email - Admin Bildirim",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [500, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot{{$env.TELEGRAM_BOT_TOKEN}}/sendMessage",
+        "method": "POST",
+        "body": {
+          "chat_id": "={{$env.TELEGRAM_CHAT_ID}}",
+          "text": "🛒 *Yeni Sipariş!*\n\n📦 Sipariş No: #{{$json.siparisId}}\n💰 Toplam: {{$json.toplamTutar}} TL\n📱 Tel: {{$json.telefon}}\n📍 Adres: {{$json.adres}}",
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Telegram Bildirim",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [500, 400],
+      "typeVersion": 3
+    }
+  ],
+  "connections": {
+    "Webhook - Yeni Sipariş": {
+      "main": [
+        [
+          { "node": "Email - Admin Bildirim", "type": "main", "index": 0 },
+          { "node": "Telegram Bildirim", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}

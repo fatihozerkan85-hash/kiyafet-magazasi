@@ -1,0 +1,52 @@
+{
+  "name": "ASL Butique - Sipariş Durum Değişikliği",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "asl-siparis-durum",
+        "responseMode": "onReceived"
+      },
+      "name": "Webhook - Durum Değişikliği",
+      "type": "n8n-nodes-base.webhook",
+      "position": [250, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            { "value1": "={{$json.musteri.email}}", "operation": "isNotEmpty" }
+          ]
+        }
+      },
+      "name": "Müşteri Email Var mı?",
+      "type": "n8n-nodes-base.if",
+      "position": [450, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$env.EMAIL_FROM}}",
+        "toEmail": "={{$json.musteri.email}}",
+        "subject": "📦 Sipariş Durumu Güncellendi - #{{$json.siparisId}}",
+        "html": "<div style='font-family:Arial;max-width:600px;margin:0 auto;padding:20px'><h1 style='color:#C85A8E'>ASL BUTIQUE</h1><h2>Sipariş Durumu Güncellendi</h2><p>Sayın {{$json.musteri.ad}},</p><p>Sipariş No: <strong>#{{$json.siparisId}}</strong></p><p>Yeni Durum: <strong>{{$json.yeniDurum}}</strong></p>{{#if $json.kargoFirmasi}}<p>Kargo: {{$json.kargoFirmasi}}</p>{{/if}}{{#if $json.takipNo}}<p>Takip No: {{$json.takipNo}}</p>{{/if}}<hr><p style='color:#999;font-size:12px'>ASL BUTIQUE - www.aslbutique.com.tr</p></div>"
+      },
+      "name": "Email - Müşteri Bildirim",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [700, 200],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Webhook - Durum Değişikliği": {
+      "main": [[ { "node": "Müşteri Email Var mı?", "type": "main", "index": 0 } ]]
+    },
+    "Müşteri Email Var mı?": {
+      "main": [
+        [{ "node": "Email - Müşteri Bildirim", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  }
+}

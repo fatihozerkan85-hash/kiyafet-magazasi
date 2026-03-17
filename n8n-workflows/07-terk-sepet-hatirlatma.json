@@ -1,0 +1,52 @@
+{
+  "name": "ASL Butique - Terk Edilmiş Sepet Hatırlatma",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "cronExpression", "expression": "0 10 * * *" }] }
+      },
+      "name": "Her Gün 10:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [250, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://kiyafet-magazasi-backend.vercel.app/api/n8n/terk-sepet-kontrol",
+        "method": "POST"
+      },
+      "name": "Terk Sepet Kontrol API",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [450, 300],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [{ "value1": "={{$json.pasifKullaniciSayisi}}", "operation": "larger", "value2": 0 }]
+        }
+      },
+      "name": "Pasif Kullanıcı Var mı?",
+      "type": "n8n-nodes-base.if",
+      "position": [650, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$env.EMAIL_FROM}}",
+        "toEmail": "={{$env.ADMIN_EMAIL}}",
+        "subject": "🛒 {{$json.pasifKullaniciSayisi}} kullanıcı alışveriş yapmadı",
+        "text": "Son 7 günde sipariş vermeyen {{$json.pasifKullaniciSayisi}} kayıtlı kullanıcı var.\n\nBu kullanıcılara özel kampanya veya hatırlatma emaili göndermeyi düşünebilirsiniz."
+      },
+      "name": "Email - Admin Bildirim",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [850, 200],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Her Gün 10:00": { "main": [[ { "node": "Terk Sepet Kontrol API", "type": "main", "index": 0 } ]] },
+    "Terk Sepet Kontrol API": { "main": [[ { "node": "Pasif Kullanıcı Var mı?", "type": "main", "index": 0 } ]] },
+    "Pasif Kullanıcı Var mı?": { "main": [[ { "node": "Email - Admin Bildirim", "type": "main", "index": 0 } ], []] }
+  }
+}

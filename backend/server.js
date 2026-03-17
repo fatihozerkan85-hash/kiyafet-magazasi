@@ -540,6 +540,16 @@ app.post('/api/kayit', authLimiter, async (req, res) => {
     delete kullanici.sifre; // Şifreyi gönderme
     
     console.log('✅ Kayıt başarılı:', kullanici.email);
+    
+    // n8n: Yeni kullanıcı kaydı bildirimi
+    n8nWebhookGonder(N8N_WEBHOOKS.yeniKayit, {
+      tip: 'yeni_kayit',
+      kullaniciId: kullanici.id,
+      email: kullanici.email,
+      ad: kullanici.ad,
+      soyad: kullanici.soyad
+    }).catch(() => {});
+
     res.json({ basarili: true, mesaj: 'Kayıt başarılı', kullanici });
   } catch (error) {
     console.error('❌ Kayıt endpoint hatası:', error);
@@ -837,6 +847,15 @@ app.post('/api/admin/urun', async (req, res) => {
     `;
     
     res.json({ basarili: true, mesaj: 'Ürün eklendi', urun: rows[0] });
+
+    // n8n: Yeni ürün bildirimi (Instagram/Facebook otomatik paylaşım için)
+    n8nWebhookGonder(N8N_WEBHOOKS.yeniUrun, {
+      tip: 'yeni_urun',
+      urun: toCamelCase(rows[0]),
+      instagramCaption: eskiFiyat
+        ? `✨ Yeni Ürün: ${ad} ✨\n💰 ${eskiFiyat} TL yerine ${fiyat} TL!\n🏷️ ${kategori}\n🛒 www.aslbutique.com.tr\n\n#aslbutique #yeniurun #moda #${(kategori || '').toLowerCase()}`
+        : `✨ Yeni Ürün: ${ad} ✨\n💰 ${fiyat} TL\n🏷️ ${kategori}\n🛒 www.aslbutique.com.tr\n\n#aslbutique #yeniurun #moda #${(kategori || '').toLowerCase()}`
+    }).catch(() => {});
   } catch (error) {
     res.status(500).json({ basarili: false, mesaj: 'Ürün eklenemedi', hata: error.message });
   }
@@ -1016,6 +1035,20 @@ app.post('/api/siparis', async (req, res) => {
       `;
     }
     
+    // n8n: Yeni sipariş bildirimi
+    n8nWebhookGonder(N8N_WEBHOOKS.yeniSiparis, {
+      tip: 'yeni_siparis',
+      siparisId,
+      toplamTutar,
+      urunSayisi: urunler.length,
+      adres,
+      telefon,
+      odemeTipi,
+      kuponKodu: kuponKodu || null,
+      indirimTutari: indirimTutari || 0,
+      urunler
+    }).catch(() => {});
+
     res.json({ mesaj: 'Siparişiniz alındı', siparisId });
   } catch (error) {
     res.status(500).json({ mesaj: 'Sipariş oluşturulamadı', hata: error.message });
@@ -1094,8 +1127,24 @@ app.patch('/api/admin/siparis/:id/durum', async (req, res) => {
     if (rows.length === 0) {
       return res.status(404).json({ basarili: false, mesaj: 'Sipariş bulunamadı' });
     }
-    
-    res.json({ basarili: true, mesaj: 'Sipariş durumu güncellendi', siparis: toCamelCase(rows[0]) });
+
+    // n8n: Sipariş durum değişikliği bildirimi
+    // Müşteriye email/WhatsApp göndermek için
+    const siparis = toCamelCase(rows[0]);
+    const { rows: kullaniciRows } = await sql`
+      SELECT email, ad, soyad, telefon FROM kullanicilar WHERE id = ${siparis.kullaniciId}
+    `.catch(() => ({ rows: [] }));
+
+    n8nWebhookGonder(N8N_WEBHOOKS.siparisDurum, {
+      tip: 'siparis_durum_degisikligi',
+      siparisId: parseInt(req.params.id),
+      yeniDurum: durum,
+      kargoFirmasi: kargoFirmasi || null,
+      takipNo: takipNo || null,
+      musteri: kullaniciRows.length > 0 ? toCamelCase(kullaniciRows[0]) : null
+    }).catch(() => {});
+
+    res.json({ basarili: true, mesaj: 'Sipariş durumu güncellendi', siparis });
   } catch (error) {
     res.status(500).json({ basarili: false, mesaj: 'Sipariş güncellenemedi', hata: error.message });
   }
@@ -1175,6 +1224,228 @@ app.post('/api/admin/add-email-verified', async (req, res) => {
       hata: error.message
     });
   }
+});
+
+// ============================================
+// N8N WEBHOOK & OTOMASYON SİSTEMİ
+// ============================================
+
+// n8n webhook URL'leri (environment variables'dan)
+const N8N_WEBHOOKS = {
+  yeniSiparis: process.env.N8N_WEBHOOK_YENI_SIPARIS || null,
+  siparisDurum: process.env.N8N_WEBHOOK_SIPARIS_DURUM || null,
+  dusukStok: process.env.N8N_WEBHOOK_DUSUK_STOK || null,
+  yeniUrun: process.env.N8N_WEBHOOK_YENI_URUN || null,
+  yeniKayit: process.env.N8N_WEBHOOK_YENI_KAYIT || null,
+  kampanyaKontrol: process.env.N8N_WEBHOOK_KAMPANYA_KONTROL || null,
+  gunlukRapor: process.env.N8N_WEBHOOK_GUNLUK_RAPOR || null,
+  terkSepet: process.env.N8N_WEBHOOK_TERK_SEPET || null,
+  instagramPaylas: process.env.N8N_WEBHOOK_INSTAGRAM || null,
+};
+
+// n8n'e webhook gönderme helper fonksiyonu
+async function n8nWebhookGonder(webhookUrl, data) {
+  if (!webhookUrl) return null;
+  try {
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...data, timestamp: new Date().toISOString(), kaynak: 'asl-butique-backend' })
+    });
+    console.log(`✅ n8n webhook gönderildi: ${webhookUrl}`);
+    return response.ok;
+  } catch (error) {
+    console.error(`❌ n8n webhook hatası (${webhookUrl}):`, error.message);
+    return false;
+  }
+}
+
+// --- n8n Tetikleme: Günlük Rapor & Stok Kontrolü ---
+app.post('/api/n8n/gunluk-rapor', async (req, res) => {
+  try {
+    const bugun = new Date().toISOString().split('T')[0];
+    const { rows: siparisler } = await sql`
+      SELECT COUNT(*) as toplam_siparis, COALESCE(SUM(toplam_tutar), 0) as toplam_ciro
+      FROM siparisler WHERE DATE(created_at) = ${bugun}
+    `;
+    const { rows: bekleyen } = await sql`SELECT COUNT(*) as sayi FROM siparisler WHERE durum = 'beklemede'`;
+    const { rows: urunSayisi } = await sql`SELECT COUNT(*) as sayi FROM urunler`;
+    const { rows: kullaniciSayisi } = await sql`SELECT COUNT(*) as sayi FROM kullanicilar`;
+    const { rows: dusukStok } = await sql`SELECT COUNT(*) as sayi FROM urunler WHERE stok_durumu = false`;
+    const { rows: sonSiparisler } = await sql`
+      SELECT s.id, s.toplam_tutar, s.durum, s.created_at, k.email, k.ad
+      FROM siparisler s LEFT JOIN kullanicilar k ON s.kullanici_id = k.id
+      ORDER BY s.created_at DESC LIMIT 10
+    `;
+
+    const rapor = {
+      tarih: bugun,
+      gunlukSiparis: parseInt(siparisler[0].toplam_siparis),
+      gunlukCiro: parseFloat(siparisler[0].toplam_ciro),
+      bekleyenSiparis: parseInt(bekleyen[0].sayi),
+      toplamUrun: parseInt(urunSayisi[0].sayi),
+      toplamKullanici: parseInt(kullaniciSayisi[0].sayi),
+      stokTukenen: parseInt(dusukStok[0].sayi),
+      sonSiparisler: toCamelCase(sonSiparisler)
+    };
+
+    // n8n'e gönder
+    await n8nWebhookGonder(N8N_WEBHOOKS.gunlukRapor, rapor);
+
+    res.json({ basarili: true, rapor });
+  } catch (error) {
+    res.status(500).json({ basarili: false, hata: error.message });
+  }
+});
+
+// --- n8n Tetikleme: Stok Kontrolü ---
+app.post('/api/n8n/stok-kontrol', async (req, res) => {
+  try {
+    const { rows: dusukStokUrunler } = await sql`
+      SELECT id, ad, kategori, fiyat, stok_durumu, resimler
+      FROM urunler WHERE stok_durumu = false
+    `;
+
+    if (dusukStokUrunler.length > 0) {
+      await n8nWebhookGonder(N8N_WEBHOOKS.dusukStok, {
+        tip: 'dusuk_stok_uyarisi',
+        urunSayisi: dusukStokUrunler.length,
+        urunler: toCamelCase(dusukStokUrunler)
+      });
+    }
+
+    res.json({ basarili: true, dusukStokSayisi: dusukStokUrunler.length, urunler: toCamelCase(dusukStokUrunler) });
+  } catch (error) {
+    res.status(500).json({ basarili: false, hata: error.message });
+  }
+});
+
+// --- n8n Tetikleme: Kampanya Otomatik Kontrol ---
+app.post('/api/n8n/kampanya-kontrol', async (req, res) => {
+  try {
+    const simdi = new Date().toISOString();
+
+    // Süresi dolan aktif kampanyaları kapat
+    const { rows: kapanan } = await sql`
+      UPDATE kampanyalar SET aktif = false, updated_at = CURRENT_TIMESTAMP
+      WHERE aktif = true AND bitis_tarihi IS NOT NULL AND bitis_tarihi < ${simdi}
+      RETURNING *
+    `;
+
+    // Başlama zamanı gelen pasif kampanyaları aç
+    const { rows: baslayan } = await sql`
+      UPDATE kampanyalar SET aktif = true, updated_at = CURRENT_TIMESTAMP
+      WHERE aktif = false AND baslangic_tarihi IS NOT NULL AND baslangic_tarihi <= ${simdi}
+        AND (bitis_tarihi IS NULL OR bitis_tarihi > ${simdi})
+      RETURNING *
+    `;
+
+    const sonuc = { kapananKampanyalar: kapanan.length, baslayanKampanyalar: baslayan.length, kapanan, baslayan };
+    await n8nWebhookGonder(N8N_WEBHOOKS.kampanyaKontrol, sonuc);
+
+    res.json({ basarili: true, ...sonuc });
+  } catch (error) {
+    res.status(500).json({ basarili: false, hata: error.message });
+  }
+});
+
+// --- n8n Tetikleme: Instagram Günlük Paylaşım ---
+app.post('/api/n8n/instagram-paylasim', async (req, res) => {
+  try {
+    // Rastgele bir ürün seç (stokta olan)
+    const { rows: urunler } = await sql`
+      SELECT id, ad, ad_en, aciklama, fiyat, eski_fiyat, kategori, resimler, marka
+      FROM urunler WHERE stok_durumu = true
+      ORDER BY RANDOM() LIMIT 3
+    `;
+
+    // Aktif kampanyaları al
+    const { rows: kampanyalar } = await sql`
+      SELECT baslik, aciklama FROM kampanyalar WHERE aktif = true LIMIT 2
+    `;
+
+    const paylasimData = {
+      tip: 'gunluk_instagram_paylasim',
+      urunler: toCamelCase(urunler),
+      kampanyalar: kampanyalar,
+      oneriler: urunler.map(u => ({
+        baslik: u.ad,
+        fiyat: u.fiyat,
+        eskiFiyat: u.eski_fiyat,
+        resim: u.resimler && u.resimler.length > 0 ? u.resimler[0] : null,
+        caption: u.eski_fiyat
+          ? `✨ ${u.ad} ✨\n💰 ${u.eski_fiyat} TL yerine sadece ${u.fiyat} TL!\n🏷️ ${u.kategori}\n🛒 Hemen sipariş ver!\n\n#aslbutique #moda #indirim #${u.kategori.toLowerCase()}`
+          : `✨ ${u.ad} ✨\n💰 ${u.fiyat} TL\n🏷️ ${u.kategori}\n🛒 Hemen sipariş ver!\n\n#aslbutique #moda #${u.kategori.toLowerCase()}`,
+        hashtags: `#aslbutique #moda #giyim #${u.kategori.toLowerCase()} #onlineshopping #fashion #style`
+      }))
+    };
+
+    await n8nWebhookGonder(N8N_WEBHOOKS.instagramPaylas, paylasimData);
+
+    res.json({ basarili: true, paylasim: paylasimData });
+  } catch (error) {
+    res.status(500).json({ basarili: false, hata: error.message });
+  }
+});
+
+// --- n8n Tetikleme: Terk Edilmiş Sepet Kontrolü ---
+// Not: Sepet bilgisi frontend'de localStorage'da tutulduğu için,
+// bu endpoint kullanıcı giriş yapmış ama sipariş vermemişleri kontrol eder
+app.post('/api/n8n/terk-sepet-kontrol', async (req, res) => {
+  try {
+    // Son 24 saatte giriş yapıp sipariş vermemiş kullanıcılar
+    const { rows: pasifKullanicilar } = await sql`
+      SELECT k.id, k.email, k.ad, k.soyad
+      FROM kullanicilar k
+      WHERE k.id NOT IN (
+        SELECT DISTINCT kullanici_id FROM siparisler 
+        WHERE created_at > NOW() - INTERVAL '7 days' AND kullanici_id IS NOT NULL
+      )
+      AND k.rol = 'musteri'
+      AND k.email_verified = true
+      ORDER BY k.created_at DESC
+      LIMIT 50
+    `;
+
+    if (pasifKullanicilar.length > 0) {
+      await n8nWebhookGonder(N8N_WEBHOOKS.terkSepet, {
+        tip: 'terk_sepet_hatirlatma',
+        kullaniciSayisi: pasifKullanicilar.length,
+        kullanicilar: toCamelCase(pasifKullanicilar)
+      });
+    }
+
+    res.json({ basarili: true, pasifKullaniciSayisi: pasifKullanicilar.length });
+  } catch (error) {
+    res.status(500).json({ basarili: false, hata: error.message });
+  }
+});
+
+// --- n8n Durum Kontrolü ---
+app.get('/api/n8n/durum', (req, res) => {
+  const aktifWebhooklar = Object.entries(N8N_WEBHOOKS)
+    .filter(([_, url]) => url)
+    .map(([isim, url]) => ({ isim, aktif: true, url: url.substring(0, 30) + '...' }));
+
+  const pasifWebhooklar = Object.entries(N8N_WEBHOOKS)
+    .filter(([_, url]) => !url)
+    .map(([isim]) => ({ isim, aktif: false }));
+
+  res.json({
+    basarili: true,
+    n8nEntegrasyonu: aktifWebhooklar.length > 0 ? 'aktif' : 'yapılandırılmamış',
+    aktifWebhookSayisi: aktifWebhooklar.length,
+    aktifWebhooklar,
+    pasifWebhooklar,
+    kullanilabilirEndpointler: [
+      'POST /api/n8n/gunluk-rapor - Günlük satış raporu',
+      'POST /api/n8n/stok-kontrol - Stok durumu kontrolü',
+      'POST /api/n8n/kampanya-kontrol - Kampanya otomatik başlat/bitir',
+      'POST /api/n8n/instagram-paylasim - Instagram paylaşım verisi',
+      'POST /api/n8n/terk-sepet-kontrol - Terk edilmiş sepet kontrolü',
+      'GET  /api/n8n/durum - n8n entegrasyon durumu'
+    ]
+  });
 });
 
 // ============================================

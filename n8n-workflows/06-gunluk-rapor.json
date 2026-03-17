@@ -1,0 +1,55 @@
+{
+  "name": "ASL Butique - Günlük/Haftalık Satış Raporu",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "cronExpression", "expression": "0 21 * * *" }] }
+      },
+      "name": "Her Gün 21:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [250, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://kiyafet-magazasi-backend.vercel.app/api/n8n/gunluk-rapor",
+        "method": "POST"
+      },
+      "name": "Günlük Rapor API",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [450, 300],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$env.EMAIL_FROM}}",
+        "toEmail": "={{$env.ADMIN_EMAIL}}",
+        "subject": "📊 Günlük Rapor - {{$json.rapor.tarih}} | {{$json.rapor.gunlukCiro}} TL",
+        "html": "<div style='font-family:Arial;max-width:600px;margin:0 auto;padding:20px'><h1 style='color:#C85A8E'>ASL BUTIQUE - Günlük Rapor</h1><h3>{{$json.rapor.tarih}}</h3><table style='width:100%;border-collapse:collapse'><tr style='background:#f5f5f5'><td style='padding:10px;border:1px solid #ddd'>Günlük Sipariş</td><td style='padding:10px;border:1px solid #ddd;font-weight:bold'>{{$json.rapor.gunlukSiparis}}</td></tr><tr><td style='padding:10px;border:1px solid #ddd'>Günlük Ciro</td><td style='padding:10px;border:1px solid #ddd;font-weight:bold;color:#C85A8E'>{{$json.rapor.gunlukCiro}} TL</td></tr><tr style='background:#f5f5f5'><td style='padding:10px;border:1px solid #ddd'>Bekleyen Sipariş</td><td style='padding:10px;border:1px solid #ddd;font-weight:bold'>{{$json.rapor.bekleyenSiparis}}</td></tr><tr><td style='padding:10px;border:1px solid #ddd'>Toplam Ürün</td><td style='padding:10px;border:1px solid #ddd'>{{$json.rapor.toplamUrun}}</td></tr><tr style='background:#f5f5f5'><td style='padding:10px;border:1px solid #ddd'>Toplam Kullanıcı</td><td style='padding:10px;border:1px solid #ddd'>{{$json.rapor.toplamKullanici}}</td></tr><tr><td style='padding:10px;border:1px solid #ddd'>Stok Tükenen</td><td style='padding:10px;border:1px solid #ddd;color:red'>{{$json.rapor.stokTukenen}}</td></tr></table></div>"
+      },
+      "name": "Email - Günlük Rapor",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [700, 200],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot{{$env.TELEGRAM_BOT_TOKEN}}/sendMessage",
+        "method": "POST",
+        "body": {
+          "chat_id": "={{$env.TELEGRAM_CHAT_ID}}",
+          "text": "📊 *Günlük Rapor - {{$json.rapor.tarih}}*\n\n🛒 Sipariş: {{$json.rapor.gunlukSiparis}}\n💰 Ciro: {{$json.rapor.gunlukCiro}} TL\n⏳ Bekleyen: {{$json.rapor.bekleyenSiparis}}\n📦 Ürün: {{$json.rapor.toplamUrun}}\n👥 Kullanıcı: {{$json.rapor.toplamKullanici}}\n⚠️ Stok Tükenen: {{$json.rapor.stokTukenen}}",
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Telegram - Günlük Rapor",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [700, 400],
+      "typeVersion": 3
+    }
+  ],
+  "connections": {
+    "Her Gün 21:00": { "main": [[ { "node": "Günlük Rapor API", "type": "main", "index": 0 } ]] },
+    "Günlük Rapor API": { "main": [[ { "node": "Email - Günlük Rapor", "type": "main", "index": 0 }, { "node": "Telegram - Günlük Rapor", "type": "main", "index": 0 } ]] }
+  }
+}

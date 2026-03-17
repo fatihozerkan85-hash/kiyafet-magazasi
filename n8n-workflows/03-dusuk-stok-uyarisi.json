@@ -1,0 +1,52 @@
+{
+  "name": "ASL Butique - Düşük Stok Uyarısı",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "hours", "hoursInterval": 6 }] }
+      },
+      "name": "Her 6 Saatte Kontrol",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [250, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://kiyafet-magazasi-backend.vercel.app/api/n8n/stok-kontrol",
+        "method": "POST"
+      },
+      "name": "Stok Kontrol API",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [450, 300],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [{ "value1": "={{$json.dusukStokSayisi}}", "operation": "larger", "value2": 0 }]
+        }
+      },
+      "name": "Düşük Stok Var mı?",
+      "type": "n8n-nodes-base.if",
+      "position": [650, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$env.EMAIL_FROM}}",
+        "toEmail": "={{$env.ADMIN_EMAIL}}",
+        "subject": "⚠️ Stok Uyarısı - {{$json.dusukStokSayisi}} ürün tükendi!",
+        "text": "Dikkat! {{$json.dusukStokSayisi}} ürünün stoğu tükenmiş.\n\nAdmin panelden kontrol edin:\nhttps://www.aslbutique.com.tr/admin"
+      },
+      "name": "Email - Stok Uyarısı",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [850, 200],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Her 6 Saatte Kontrol": { "main": [[ { "node": "Stok Kontrol API", "type": "main", "index": 0 } ]] },
+    "Stok Kontrol API": { "main": [[ { "node": "Düşük Stok Var mı?", "type": "main", "index": 0 } ]] },
+    "Düşük Stok Var mı?": { "main": [[ { "node": "Email - Stok Uyarısı", "type": "main", "index": 0 } ], []] }
+  }
+}

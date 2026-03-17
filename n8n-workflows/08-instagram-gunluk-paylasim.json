@@ -1,0 +1,88 @@
+{
+  "name": "ASL Butique - Instagram Günlük Otomatik Paylaşım",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "cronExpression", "expression": "0 12 * * *" }] }
+      },
+      "name": "Her Gün 12:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [250, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://kiyafet-magazasi-backend.vercel.app/api/n8n/instagram-paylasim",
+        "method": "POST"
+      },
+      "name": "Instagram Paylaşım Verisi Al",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [450, 300],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "paylasim.oneriler"
+      },
+      "name": "Her Ürün İçin Ayır",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [650, 300],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v18.0/{{$env.INSTAGRAM_BUSINESS_ID}}/media",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "image_url", "value": "={{$json.resim}}" },
+            { "name": "caption", "value": "={{$json.caption}}" },
+            { "name": "access_token", "value": "={{$env.INSTAGRAM_ACCESS_TOKEN}}" }
+          ]
+        }
+      },
+      "name": "Instagram - Medya Oluştur",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [850, 200],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v18.0/{{$env.INSTAGRAM_BUSINESS_ID}}/media_publish",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "creation_id", "value": "={{$json.id}}" },
+            { "name": "access_token", "value": "={{$env.INSTAGRAM_ACCESS_TOKEN}}" }
+          ]
+        }
+      },
+      "name": "Instagram - Yayınla",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [1050, 200],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "amount": 3600
+      },
+      "name": "1 Saat Bekle",
+      "type": "n8n-nodes-base.wait",
+      "position": [1050, 400],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Her Gün 12:00": { "main": [[ { "node": "Instagram Paylaşım Verisi Al", "type": "main", "index": 0 } ]] },
+    "Instagram Paylaşım Verisi Al": { "main": [[ { "node": "Her Ürün İçin Ayır", "type": "main", "index": 0 } ]] },
+    "Her Ürün İçin Ayır": { "main": [[ { "node": "Instagram - Medya Oluştur", "type": "main", "index": 0 } ]] },
+    "Instagram - Medya Oluştur": { "main": [[ { "node": "Instagram - Yayınla", "type": "main", "index": 0 } ]] },
+    "Instagram - Yayınla": { "main": [[ { "node": "1 Saat Bekle", "type": "main", "index": 0 } ]] },
+    "1 Saat Bekle": { "main": [[ { "node": "Her Ürün İçin Ayır", "type": "main", "index": 0 } ]] }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

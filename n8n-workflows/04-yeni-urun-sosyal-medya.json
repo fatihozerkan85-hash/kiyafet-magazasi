@@ -1,0 +1,68 @@
+{
+  "name": "ASL Butique - Yeni Ürün Sosyal Medya Paylaşımı",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "asl-yeni-urun",
+        "responseMode": "onReceived"
+      },
+      "name": "Webhook - Yeni Ürün",
+      "type": "n8n-nodes-base.webhook",
+      "position": [250, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v18.0/{{$env.INSTAGRAM_BUSINESS_ID}}/media",
+        "method": "POST",
+        "body": {
+          "image_url": "={{$json.urun.resimler[0]}}",
+          "caption": "={{$json.instagramCaption}}",
+          "access_token": "={{$env.INSTAGRAM_ACCESS_TOKEN}}"
+        }
+      },
+      "name": "Instagram - Medya Oluştur",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [500, 200],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v18.0/{{$env.INSTAGRAM_BUSINESS_ID}}/media_publish",
+        "method": "POST",
+        "body": {
+          "creation_id": "={{$json.id}}",
+          "access_token": "={{$env.INSTAGRAM_ACCESS_TOKEN}}"
+        }
+      },
+      "name": "Instagram - Yayınla",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [750, 200],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$env.EMAIL_FROM}}",
+        "toEmail": "={{$env.ADMIN_EMAIL}}",
+        "subject": "📸 Yeni ürün Instagram'da paylaşıldı: {{$json.urun.ad}}",
+        "text": "Yeni ürün otomatik olarak Instagram'da paylaşıldı.\n\nÜrün: {{$json.urun.ad}}\nFiyat: {{$json.urun.fiyat}} TL"
+      },
+      "name": "Email - Paylaşım Bildirimi",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [500, 450],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Webhook - Yeni Ürün": {
+      "main": [[
+        { "node": "Instagram - Medya Oluştur", "type": "main", "index": 0 },
+        { "node": "Email - Paylaşım Bildirimi", "type": "main", "index": 0 }
+      ]]
+    },
+    "Instagram - Medya Oluştur": {
+      "main": [[ { "node": "Instagram - Yayınla", "type": "main", "index": 0 } ]]
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "name": "ASL Butique - Kampanya Otomatik Yönetim",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "hours", "hoursInterval": 1 }] }
+      },
+      "name": "Her Saat Kontrol",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [250, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://kiyafet-magazasi-backend.vercel.app/api/n8n/kampanya-kontrol",
+        "method": "POST"
+      },
+      "name": "Kampanya Kontrol API",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [450, 300],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            { "value1": "={{$json.kapananKampanyalar + $json.baslayanKampanyalar}}", "operation": "larger", "value2": 0 }
+          ]
+        }
+      },
+      "name": "Değişiklik Var mı?",
+      "type": "n8n-nodes-base.if",
+      "position": [650, 300],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$env.EMAIL_FROM}}",
+        "toEmail": "={{$env.ADMIN_EMAIL}}",
+        "subject": "📢 Kampanya Güncelleme - {{$json.baslayanKampanyalar}} başladı, {{$json.kapananKampanyalar}} bitti",
+        "text": "Kampanya otomatik güncelleme yapıldı.\n\nBaşlayan: {{$json.baslayanKampanyalar}}\nBiten: {{$json.kapananKampanyalar}}"
+      },
+      "name": "Email - Kampanya Bildirim",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [850, 200],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Her Saat Kontrol": { "main": [[ { "node": "Kampanya Kontrol API", "type": "main", "index": 0 } ]] },
+    "Kampanya Kontrol API": { "main": [[ { "node": "Değişiklik Var mı?", "type": "main", "index": 0 } ]] },
+    "Değişiklik Var mı?": { "main": [[ { "node": "Email - Kampanya Bildirim", "type": "main", "index": 0 } ], []] }
+  }
+}
